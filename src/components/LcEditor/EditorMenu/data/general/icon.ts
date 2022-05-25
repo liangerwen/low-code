@@ -1,12 +1,5 @@
-import {
-  IconCheckCircleFill,
-  IconPlusCircleFill,
-  IconQuestionCircleFill,
-} from "@arco-design/web-react/icon";
-
 const component = {
   name: "icon-close-circle-fill",
-  type: IconCheckCircleFill,
   props: {
     style: { fontSize: 24 },
   },
@@ -22,21 +15,18 @@ export default {
       component,
       {
         name: "icon-question-circle-fill",
-        type: IconQuestionCircleFill,
         props: {
           style: { fontSize: 24 },
         },
       },
       {
         name: "icon-plus-circle-fill",
-        type: IconPlusCircleFill,
         props: {
           style: { fontSize: 24 },
         },
       },
       {
         name: "icon-check-circle-fill",
-        type: IconCheckCircleFill,
         props: {
           style: { fontSize: 24 },
         },

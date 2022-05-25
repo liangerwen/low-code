@@ -6,7 +6,7 @@ import styles from "./App.module.less";
 import "@arco-design/web-react/dist/css/arco.css";
 import { useState } from "react";
 
-export default function () {
+export default () => {
   const [schema, setSchema] = useState<ISchema>([]);
 
   return (
@@ -14,7 +14,12 @@ export default function () {
       <Layout.Header className="bg-white h-14 box-border p-2 border-gray-200 border-b">
         <LcToolBar />
       </Layout.Header>
-      <LcEditor schema={schema} onChange={(schema) => setSchema(schema)} />
+      <LcEditor
+        schema={schema}
+        onChange={(schema) => {
+          setSchema(schema);
+        }}
+      />
     </Layout>
   );
-}
+};

@@ -1,8 +1,5 @@
-import { Input } from "@arco-design/web-react";
-
 const component = {
   name: "a-input",
-  type: Input,
   props: {
     placeholder: "Please enter something",
     allowClear: true,

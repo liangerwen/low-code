@@ -10,10 +10,11 @@ import {
 import { IconQuestionCircle } from "@arco-design/web-react/icon";
 import { v4 as uuidv4 } from "uuid";
 import chunk from "lodash/chunk";
-import data from "./data";
+import data, { getComponentByName } from "./data";
 import styles from "./styles/component-tab.module.less";
 import "./styles/component-tab.less";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { LcEditorContext } from "..";
 
 const { Row, Col } = Grid;
 
@@ -26,7 +27,7 @@ const renderIcon = (name: string) => {
 const renderDemo = (demo: (IComponent | string)[]) => {
   return demo.map((component, idx) => {
     if (typeof component === "string") return component;
-    const Demo = component.type;
+    const Demo = getComponentByName(component.name);
     return (
       <Demo {...component.props} key={idx}>
         {component?.children?.length && renderDemo(component.children)}
@@ -36,6 +37,11 @@ const renderDemo = (demo: (IComponent | string)[]) => {
 };
 
 export default () => {
+  const { setMoveComponent } = useContext(LcEditorContext);
+
+  const onDragStart = (component: IComponent) => {
+    setMoveComponent({ ...component, id: uuidv4() });
+  };
   const defaultActiveKeys = data.map((_item, idx) => String(idx));
 
   const [activeKeys, setActiveKeys] = useState(defaultActiveKeys);
@@ -70,7 +76,12 @@ export default () => {
                 <Row key={rowIdx} gutter={12}>
                   {row.map((col, colIdx) => (
                     <Col span={12} key={colIdx}>
-                      <Button long type="dashed" draggable>
+                      <Button
+                        long
+                        type="dashed"
+                        draggable
+                        onDragStart={() => onDragStart(col.component)}
+                      >
                         <Space className="flex justify-between" align="center">
                           {renderIcon(col.icon)}
                           {col.text}

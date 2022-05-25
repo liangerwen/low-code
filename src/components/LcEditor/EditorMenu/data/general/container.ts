@@ -1,10 +1,5 @@
-import { Grid } from "@arco-design/web-react";
-
-const { Row } = Grid;
-
 const component = {
   name: "a-row",
-  type: Row,
   container: true,
 };
 

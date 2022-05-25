@@ -1,8 +1,5 @@
-import { Tree } from "@arco-design/web-react";
-
 const component = {
   name: "a-tree",
-  type: Tree,
   props: {
     treeData: [
       {

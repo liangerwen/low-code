@@ -1,8 +1,5 @@
-import { Button } from "@arco-design/web-react";
-
 const component = {
   name: "a-button",
-  type: Button,
   props: {
     type: "primary",
   },

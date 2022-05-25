@@ -1,8 +1,5 @@
-import { Table } from "@arco-design/web-react";
-
 const component = {
   name: "a-table",
-  type: Table,
   props: {
     columns: [
       {

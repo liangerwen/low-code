@@ -1,8 +1,5 @@
-import { Link } from "@arco-design/web-react";
-
 const component = {
   name: "a-link",
-  type: Link,
   props: {
     href: "link",
     icon: "222",

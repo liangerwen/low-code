@@ -14,19 +14,19 @@ export const LcIconFontProvider: React.FC<{
   );
 };
 
-export default function (props: {
+export default (props: {
   spin?: boolean;
   className?: string;
   style?: React.CSSProperties;
-}) {
+}) => {
   const urls = useContext(LcIconFontContext);
   if (!urls || urls.length === 0) {
     console.error("LcIconFont: no icon font provider found");
-    return () => null;
+    return null;
   }
   let IconFont: any;
   urls.forEach((u) => {
     IconFont = Icon.addFromIconFontCn({ src: u });
   });
   return <IconFont {...props} />;
-}
+};
