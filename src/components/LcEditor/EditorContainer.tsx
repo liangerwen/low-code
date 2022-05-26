@@ -3,7 +3,6 @@ import {
   Drawer,
   Grid,
   Layout,
-  Modal,
   Space,
   Tooltip,
 } from "@arco-design/web-react";
@@ -16,6 +15,7 @@ import {
   IconRedo,
   IconUndo,
 } from "@arco-design/web-react/icon";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import ReactJson from "react-json-view";
 import classNames from "classnames";
 import { ReactNode, useContext, useState } from "react";
@@ -41,11 +41,14 @@ const Warp = (
     [key: string]: any;
   } = { inline: false, span: 24 }
 ) => {
+  const [animationParent] = useAutoAnimate<HTMLDivElement>({ duration: 150 });
   const { inline, span, children, ...resetProps } = props;
   return inline ? (
-    <div {...resetProps}>{children}</div>
+    <div ref={animationParent} {...resetProps}>
+      {children}
+    </div>
   ) : (
-    <Col span={span} {...resetProps}>
+    <Col ref={animationParent} span={span} {...resetProps}>
       {children}
     </Col>
   );
@@ -68,13 +71,14 @@ export default (props: IProps) => {
       const events = s.container
         ? {
             onDrop,
-            onDragOver,
+            onDragOver: (e: DragEvent) => onDragOver(e, s.id),
             onDragLeave: (e: DragEvent) => onDragLeave(e, s.id),
             onDragEnter: (e: DragEvent) => onDragEnter(e, s.id),
             onClick: (e: Event) => onActive(e, s),
           }
         : {
             onClick: (e: Event) => onActive(e, s),
+            onDragOver: (e: DragEvent) => onDragOver(e, s.id),
           };
       if (s.id) {
         return (
@@ -162,9 +166,10 @@ export default (props: IProps) => {
       );
     }
   };
-  const onDragOver = (e: DragEvent) => {
+  const onDragOver = (e: DragEvent, id?: string) => {
     e.preventDefault();
     e.stopPropagation();
+    console.log(id);
   };
   const onDrop = (e: DragEvent) => {
     setActiveComponent(moveComponent);
@@ -224,6 +229,8 @@ export default (props: IProps) => {
     },
   ];
 
+  const [animationParent] = useAutoAnimate({ duration: 150 });
+
   return (
     <Layout className="h-full">
       <Layout.Content className="flex flex-col">
@@ -248,13 +255,14 @@ export default (props: IProps) => {
           ]}
           onClick={() => setActiveComponent(null)}
           // @ts-ignore
-          onDragEnter={(e) => onDragEnter(e, PAGE_FLAG)}
+          onDragEnter={(e: DragEvent) => onDragEnter(e, PAGE_FLAG)}
           // @ts-ignore
-          onDragLeave={(e) => onDragLeave(e, PAGE_FLAG)}
+          onDragLeave={(e: DragEvent) => onDragLeave(e, PAGE_FLAG)}
           // @ts-ignore
-          onDragOver={onDragOver}
+          onDragOver={(e: DragEvent) => onDragOver(e, PAGE_FLAG)}
           // @ts-ignore
           onDrop={onDrop}
+          ref={animationParent}
         >
           {renderComponents(props.schema)}
         </Row>
