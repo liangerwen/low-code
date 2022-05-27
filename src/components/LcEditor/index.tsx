@@ -48,6 +48,8 @@ export default (props: IProps) => {
 
   const onDragEnd = (data: DropResult) => {
     console.log("onDragEnd", data);
+    setMovingComponent(null);
+    setPosition({ id: "-1", index: -1 });
     const {
       source: { droppableId: scoureId, index: scoureIndex },
       destination,
@@ -56,6 +58,18 @@ export default (props: IProps) => {
     if (!destination) return;
     const { droppableId: targetId, index: targetIndex } = destination;
     if (targetId === draggableId) return;
+    // const dragComponent = findComponent(
+    //   props.schema,
+    //   (c) => c.id === draggableId
+    // );
+    // const targetComponent = dragComponent
+    //   ? findComponent(
+    //       dragComponent?.children as ISchema,
+    //       (c) => c.id === targetId
+    //     )
+    //   : null;
+    // console.log(targetComponent);
+    // if (targetComponent) return;
     if (!movingComponent) {
       Message.error(`发生意料之外的错误`);
       return;
@@ -81,6 +95,7 @@ export default (props: IProps) => {
         }
       });
     } else {
+      // 移动组件
       newSchema = updateObject(props.schema, (schema) => {
         if (scoureId === PAGE_FLAG) {
           schema.splice(scoureIndex, 1);
@@ -111,8 +126,6 @@ export default (props: IProps) => {
       });
     }
     props.onChange(newSchema);
-    setMovingComponent(null);
-    setPosition({ id: "-1", index: -1 });
   };
 
   const onDragStart = (data: DragStart) => {
