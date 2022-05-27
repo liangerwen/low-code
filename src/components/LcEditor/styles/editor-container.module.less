@@ -17,15 +17,39 @@
   cursor: pointer;
   border: 1px dashed rgb(156, 163, 175);
   pointer-events: all;
+  position: relative;
   &:hover {
     border-color: #00a8ff;
+    .lc-child-action {
+      display: inline-block;
+    }
+  }
+  .lc-child-action {
+    background-color: rgb(var(--primary-6));
+    color: #fff;
+    padding: 0 4px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: none;
+    z-index: 999;
   }
 }
-.lc-avtive {
+.lc-active {
   border: 1px solid #00a8ff;
   background-color: #c0dafa;
-  cursor: move;
 }
 .lc-move {
   background-color: rgb(252, 209, 161);
+}
+.lc-moving-component {
+  border: 2px solid rgb(var(--primary-6));
+  color: rgb(var(--primary-6));
+  text-align: center;
+  background-color: #fff;
+  padding: 6px;
+  font-size: 14px;
+  height: 36px !important;
+  width: 100px !important;
+  line-height: 24px;
 }

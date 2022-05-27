@@ -7,4 +7,24 @@
 }
 .lc-menu-item {
   border: none !important;
+  .lc-menu-item-btn {
+    color: var(--color-text-2);
+    border: 1px dashed var(--color-neutral-3);
+    padding: 6px 12px;
+    border-radius: 4px;
+    background-color: var(--color-secondary);
+    font-size: 14px;
+    &:hover {
+      border-color: rgb(var(--primary-5));
+      color: rgb(var(--primary-5));
+    }
+    &.dragging {
+      border: 2px solid rgb(var(--primary-6));
+      color: rgb(var(--primary-6));
+      text-align: center;
+      background-color: #fff;
+      padding: 6px;
+      border-radius: 0;
+    }
+  }
 }

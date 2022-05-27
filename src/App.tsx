@@ -2,12 +2,31 @@ import { Layout } from "@arco-design/web-react";
 import LcEditor from "./components/LcEditor";
 import LcToolBar from "./components/LcToolBar";
 import classNames from "classnames";
+import { v4 as uuidv4 } from "uuid";
 import styles from "./App.module.less";
 import "@arco-design/web-react/dist/css/arco.css";
 import { useState } from "react";
 
 export default () => {
-  const [schema, setSchema] = useState<ISchema>([]);
+  const [schema, setSchema] = useState<ISchema>([
+    {
+      id: uuidv4(),
+      name: "a-row",
+      container: true,
+      children: [
+        {
+          id: uuidv4(),
+
+          name: "a-button",
+          props: {
+            type: "primary",
+          },
+          children: ["按钮"],
+          inline: true,
+        },
+      ],
+    },
+  ]);
 
   return (
     <Layout className={classNames(styles["lc-body"], "overflow-hidden")}>

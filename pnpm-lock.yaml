@@ -3,9 +3,9 @@ lockfileVersion: 5.4
 specifiers:
   '@arco-design/web-react': ^2.33.1
   '@arco-plugins/vite-react': ^1.1.0
-  '@formkit/auto-animate': 1.0.0-alpha.1
   '@types/lodash': ^4.14.182
   '@types/react': ^18.0.0
+  '@types/react-beautiful-dnd': ^13.1.2
   '@types/react-dom': ^18.0.0
   '@types/uuid': ^8.3.4
   '@unocss/preset-attributify': ^0.31.12
@@ -19,6 +19,7 @@ specifiers:
   react-beautiful-dnd: ^13.1.0
   react-dom: ^18.0.0
   react-json-view: ^1.21.3
+  react-use-hover: ^2.0.0
   typescript: ^4.6.3
   unocss: ^0.31.12
   uuid: ^8.3.2
@@ -26,19 +27,20 @@ specifiers:
 
 dependencies:
   '@arco-design/web-react': 2.33.1_ohobp6rpsmerwlq5ipwfh5yigy
-  '@formkit/auto-animate': 1.0.0-alpha.1_react@18.1.0
   classnames: 2.3.1
   lodash: 4.17.21
   react: 18.1.0
   react-beautiful-dnd: 13.1.0_ef5jwxihqo6n7gxfmzogljlgcm
   react-dom: 18.1.0_react@18.1.0
   react-json-view: 1.21.3_ohobp6rpsmerwlq5ipwfh5yigy
+  react-use-hover: 2.0.0_react@18.1.0
   uuid: 8.3.2
 
 devDependencies:
   '@arco-plugins/vite-react': 1.1.0
   '@types/lodash': 4.14.182
   '@types/react': 18.0.9
+  '@types/react-beautiful-dnd': 13.1.2
   '@types/react-dom': 18.0.5
   '@types/uuid': 8.3.4
   '@unocss/preset-attributify': 0.31.17
@@ -377,20 +379,6 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@formkit/auto-animate/1.0.0-alpha.1_react@18.1.0:
-    resolution: {integrity: sha512-/R3RDa8uL1nFmf1YCTZgC1z2luPKBVoOkqFWYFuIKwf67uXcKJcYCA9tkBwmcXfVi8o+56+EWRYYnM8y/ayjBQ==}
-    peerDependencies:
-      react: ^16.8.0
-      vue: ^3.0.0
-    peerDependenciesMeta:
-      react:
-        optional: true
-      vue:
-        optional: true
-    dependencies:
-      react: 18.1.0
-    dev: false
-
   /@iconify/types/1.1.0:
     resolution: {integrity: sha512-Jh0llaK2LRXQoYsorIH8maClebsnzTcve+7U3rQUSnC11X4jtPnFuyatqFLvMxZ8MLG8dB4zfHsbPfuvxluONw==}
     dev: true
@@ -497,6 +485,12 @@ packages:
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
 
+  /@types/react-beautiful-dnd/13.1.2:
+    resolution: {integrity: sha512-+OvPkB8CdE/bGdXKyIhc/Lm2U7UAYCCJgsqmopFmh9gbAudmslkI8eOrPDjg4JhwSE6wytz4a3/wRjKtovHVJg==}
+    dependencies:
+      '@types/react': 18.0.9
+    dev: true
+
   /@types/react-dom/18.0.5:
     resolution: {integrity: sha512-OWPWTUrY/NIrjsAPkAk1wW9LZeIjSvkXRhclsFO8CZcZGCOg2G0YZy4ft+rOyYxy8B7ui5iZzi9OkDebZ7/QSA==}
     dependencies:
@@ -510,6 +504,14 @@ packages:
       '@types/react': 18.0.9
       hoist-non-react-statics: 3.3.2
       redux: 4.2.0
+    dev: false
+
+  /@types/react/16.14.26:
+    resolution: {integrity: sha512-c/5CYyciOO4XdFcNhZW1O2woVx86k4T+DO2RorHZL7EhitkNQgSD/SgpdZJAUJa/qjVgOmTM44gHkAdZSXeQuQ==}
+    dependencies:
+      '@types/prop-types': 15.7.5
+      '@types/scheduler': 0.16.2
+      csstype: 3.1.0
     dev: false
 
   /@types/react/18.0.9:
@@ -1813,6 +1815,15 @@ packages:
       prop-types: 15.8.1
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
+    dev: false
+
+  /react-use-hover/2.0.0_react@18.1.0:
+    resolution: {integrity: sha512-A2OYaC8OnWCD7ZOGbnUX4nJlwr0VEtu1gMnZ5U4w8BoXkwCvBlACgBiUd0Ay+goTqHGq4OSwq4Gxr2x05TQUFA==}
+    peerDependencies:
+      react: ^16.7.0-alpha.0
+    dependencies:
+      '@types/react': 16.14.26
+      react: 18.1.0
     dev: false
 
   /react/18.1.0:

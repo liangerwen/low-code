@@ -4,24 +4,23 @@ import {
   Space,
   Grid,
   Input,
-  Button,
   Trigger,
 } from "@arco-design/web-react";
 import { IconQuestionCircle } from "@arco-design/web-react/icon";
-import { v4 as uuidv4 } from "uuid";
 import chunk from "lodash/chunk";
-import data, { getComponentByName } from "./data";
+import data, { getComponentByName, Menu } from "./data";
 import styles from "./styles/component-tab.module.less";
 import "./styles/component-tab.less";
-import { useContext, useState } from "react";
-import { LcEditorContext } from "..";
+import { useState } from "react";
+import { Draggable, Droppable } from "react-beautiful-dnd";
+import classNames from "classnames";
 
 const { Row, Col } = Grid;
 
-const iconStyle = { fontSize: 16 };
+const iconProps = { style: { fontSize: 16 } };
 
-const renderIcon = (name: string) => {
-  return <IconQuestionCircle style={iconStyle} />;
+const renderIcon = (name: string, props = iconProps) => {
+  return <IconQuestionCircle {...props} />;
 };
 
 const renderDemo = (demo: (IComponent | string)[]) => {
@@ -36,12 +35,31 @@ const renderDemo = (demo: (IComponent | string)[]) => {
   });
 };
 
-export default () => {
-  const { setMoveComponent } = useContext(LcEditorContext);
+export const MENU_TYPE = "menu";
 
-  const onDragStart = (component: IComponent) => {
-    setMoveComponent({ ...component, id: uuidv4() });
-  };
+const renderItem = (col: Menu, isDragging = false) =>
+  isDragging ? (
+    <>{renderIcon(col.icon, { style: { fontSize: 20 } })}</>
+  ) : (
+    <Space className="flex justify-between" align="center">
+      {renderIcon(col.icon)}
+      {col.text}
+      {/* @ts-ignore */}
+      <Trigger
+        position="top"
+        popup={() => (
+          <div className={styles["demo-basic"]}>
+            <h4 className="text-center">{col.demo.title}</h4>
+            <div>{renderDemo(col.demo.components)}</div>
+          </div>
+        )}
+      >
+        <IconQuestionCircle {...iconProps} />
+      </Trigger>
+    </Space>
+  );
+
+export default () => {
   const defaultActiveKeys = data.map((_item, idx) => String(idx));
 
   const [activeKeys, setActiveKeys] = useState(defaultActiveKeys);
@@ -73,37 +91,64 @@ export default () => {
           >
             <Space direction="vertical" className="flex">
               {chunk(d.menus, 2).map((row, rowIdx) => (
-                <Row key={rowIdx} gutter={12}>
-                  {row.map((col, colIdx) => (
-                    <Col span={12} key={colIdx}>
-                      <Button
-                        long
-                        type="dashed"
-                        draggable
-                        onDragStart={() => onDragStart(col.component)}
-                      >
-                        <Space className="flex justify-between" align="center">
-                          {renderIcon(col.icon)}
-                          {col.text}
-                          {/* @ts-ignore */}
-                          <Trigger
-                            position="top"
-                            popup={() => (
-                              <div className={styles["demo-basic"]}>
-                                <h4 className="text-center">
-                                  {col.demo.title}
-                                </h4>
-                                <div>{renderDemo(col.demo.components)}</div>
+                <Droppable
+                  droppableId={`${MENU_TYPE}_${key}_${rowIdx}`}
+                  isDropDisabled
+                  key={rowIdx}
+                >
+                  {(provide, snapshot) => (
+                    <Row
+                      key={rowIdx}
+                      gutter={12}
+                      ref={provide.innerRef}
+                      {...provide.droppableProps}
+                    >
+                      {row.map((col, colIdx) => (
+                        <Draggable
+                          key={colIdx}
+                          draggableId={`${MENU_TYPE}_${col.component.name}`}
+                          index={colIdx}
+                        >
+                          {(p, s) => (
+                            <Col span={12}>
+                              <div
+                                className={classNames(
+                                  styles["lc-menu-item-btn"],
+                                  { [styles["dragging"]]: s.isDragging }
+                                )}
+                                {...p.draggableProps}
+                                {...p.dragHandleProps}
+                                // 防止克隆时附近的元素发生transform
+                                style={
+                                  snapshot.draggingFromThisWith
+                                    ? `${MENU_TYPE}_${col.component.name}` !==
+                                      snapshot.draggingFromThisWith
+                                      ? {
+                                          ...p.draggableProps.style,
+                                          transform: "none !important",
+                                        }
+                                      : p.draggableProps.style
+                                    : {}
+                                }
+                                ref={p.innerRef}
+                              >
+                                {renderItem(col, s.isDragging)}
                               </div>
-                            )}
-                          >
-                            <IconQuestionCircle style={iconStyle} />
-                          </Trigger>
-                        </Space>
-                      </Button>
-                    </Col>
-                  ))}
-                </Row>
+                              {/* 克隆元素 */}
+                              {s.isDragging && (
+                                <div className={styles["lc-menu-item-btn"]}>
+                                  {renderItem(col)}
+                                </div>
+                              )}
+                            </Col>
+                          )}
+                          {/* 防止克隆时会留有空白 所以不需要placeholder */}
+                          {/* {provide.placeholder} */}
+                        </Draggable>
+                      ))}
+                    </Row>
+                  )}
+                </Droppable>
               ))}
             </Space>
           </Collapse.Item>

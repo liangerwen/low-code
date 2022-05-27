@@ -29,12 +29,31 @@ const getExamplesData = (example: Record<string, Module<Menu>>) =>
 
 export const getComponentByName = (name: string) => {
   const mappingArr = Object.values(dataMapping);
-
   const mapping = mappingArr.reduce<Mapping>((acc, cur) => {
     acc = { ...acc, ...cur.default };
     return acc;
   }, {});
   return mapping[name] || ErrorComponent;
+};
+
+export const getJsonByName = (name: string) => {
+  const modules = {
+    ...generalExamples,
+    ...datashowExamples,
+    ...dataInputExamples,
+  };
+  const modulesArr = Object.keys(modules)
+    .filter((key) => !/^.\/\w+\/index.ts$/.test(key))
+    .map((key) => modules[key].default);
+  const mapping = modulesArr.reduce<{ [key: string]: IComponent }>(
+    (acc, cur: Menu) => {
+      const component = cur.component;
+      acc[component.name] = component;
+      return acc;
+    },
+    {}
+  );
+  return mapping[name];
 };
 
 export default [

@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import vitePluginForArco from "@arco-plugins/vite-react";
 import Unocss from "unocss/vite";
-import { presetUno, presetAttributify, presetIcons } from "unocss";
+import { presetUno, presetIcons } from "unocss";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,7 +10,8 @@ export default defineConfig({
     react(),
     vitePluginForArco(),
     Unocss({
-      presets: [presetUno(), presetAttributify(), presetIcons()],
+      presets: [presetUno(), presetIcons()],
+      rules: [[/^min-h-(\w+)$/, ([, d]) => ({ "min-height": d })]],
     }),
   ],
 });
