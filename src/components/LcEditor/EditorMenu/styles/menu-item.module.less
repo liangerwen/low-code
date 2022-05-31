@@ -1,0 +1,27 @@
+.lc-menu-item-btn {
+  color: var(--color-text-2);
+  border: 1px dashed var(--color-neutral-3);
+  padding: 6px 12px;
+  border-radius: 4px;
+  background-color: var(--color-secondary);
+  font-size: 14px;
+  &:hover {
+    border-color: rgb(var(--primary-5));
+    color: rgb(var(--primary-5));
+  }
+  &.dragging {
+    border: 2px solid rgb(var(--primary-6));
+    color: rgb(var(--primary-6));
+    text-align: center;
+    background-color: #fff;
+    padding: 6px;
+    border-radius: 0;
+  }
+}
+.demo-basic {
+  padding: 10px;
+  min-width: 200px;
+  background-color: var(--color-bg-popup);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.15);
+}

@@ -9,19 +9,19 @@
   },
   "dependencies": {
     "@arco-design/web-react": "^2.33.1",
+    "@dnd-kit/core": "^6.0.3",
     "classnames": "^2.3.1",
     "lodash": "^4.17.21",
     "react": "^18.0.0",
-    "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^18.0.0",
     "react-json-view": "^1.21.3",
+    "react-use-hover": "^2.0.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@arco-plugins/vite-react": "^1.1.0",
     "@types/lodash": "^4.14.182",
     "@types/react": "^18.0.0",
-    "@types/react-beautiful-dnd": "^13.1.2",
     "@types/react-dom": "^18.0.0",
     "@types/uuid": "^8.3.4",
     "@unocss/preset-attributify": "^0.31.12",

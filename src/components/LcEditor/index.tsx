@@ -1,37 +1,51 @@
-import { Layout, Message } from "@arco-design/web-react";
+import { Layout } from "@arco-design/web-react";
 import classNames from "classnames";
 import { v4 as uuidv4 } from "uuid";
-import { createContext, useState } from "react";
-import {
-  DragDropContext,
-  DragStart,
-  DragUpdate,
-  DropResult,
-} from "react-beautiful-dnd";
-import { findComponent, updateObject } from "../../utils";
+import { createContext, useCallback, useState } from "react";
 import EditorContainer, { PAGE_FLAG } from "./EditorContainer";
 import EditorMenu from "./EditorMenu";
-import { MENU_TYPE } from "./EditorMenu/ComponentsTab";
-import { getJsonByName } from "./EditorMenu/data";
 import styles from "./styles/index.module.less";
+import {
+  DndContext,
+  DragEndEvent,
+  DragMoveEvent,
+  DragOverlay,
+  DragStartEvent,
+} from "@dnd-kit/core";
+import { createPortal } from "react-dom";
+import { isAdd } from "./EditorMenu/MenuItem";
+import { isEqual } from "lodash";
+import { filterComponent, findComponent, updateObject } from "../../utils";
 
 interface IProps {
   schema: ISchema;
   onChange: (value: ISchema) => void;
 }
 
+export enum Direction {
+  PREV,
+  MIDDLE,
+  NEXT,
+}
+
+type PositionType = {
+  id: string | number; // 当前位置的元素的id
+  direction: Direction; // 是否为上一个元素 反之为下一个
+  height: number; // 当前元素的高度
+  width: number; // 当前元素的宽度
+} | null;
 interface IProvider {
   setActiveComponent: (component: null | IComponent) => void;
   activeComponent: null | IComponent;
   movingComponent: null | IComponent;
-  position: { id: string; index: number };
+  position: PositionType;
 }
 
 export const LcEditorContext = createContext<IProvider>({
   setActiveComponent: () => {},
   activeComponent: null,
   movingComponent: null,
-  position: { id: "-1", index: -1 },
+  position: null,
 });
 
 export default (props: IProps) => {
@@ -41,132 +55,166 @@ export default (props: IProps) => {
   const [movingComponent, setMovingComponent] = useState<IComponent | null>(
     null
   );
-  const [position, setPosition] = useState<{ id: string; index: number }>({
-    id: "-1",
-    index: -1,
-  });
+  const [position, setPosition] = useState<PositionType>(null);
 
-  const onDragEnd = (data: DropResult) => {
-    console.log("onDragEnd", data);
-    setMovingComponent(null);
-    setPosition({ id: "-1", index: -1 });
-    const {
-      source: { droppableId: scoureId, index: scoureIndex },
-      destination,
-      draggableId,
-    } = data;
-    if (!destination) return;
-    const { droppableId: targetId, index: targetIndex } = destination;
-    if (targetId === draggableId) return;
-    // const dragComponent = findComponent(
-    //   props.schema,
-    //   (c) => c.id === draggableId
-    // );
-    // const targetComponent = dragComponent
-    //   ? findComponent(
-    //       dragComponent?.children as ISchema,
-    //       (c) => c.id === targetId
-    //     )
-    //   : null;
-    // console.log(targetComponent);
-    // if (targetComponent) return;
-    if (!movingComponent) {
-      Message.error(`发生意料之外的错误`);
-      return;
-    }
-    // 新增组件
-    let newSchema: ISchema;
-    if (draggableId.startsWith(MENU_TYPE)) {
-      newSchema = updateObject(props.schema, (schema) => {
-        if (targetId === PAGE_FLAG) {
-          schema.splice(targetIndex, 0, movingComponent);
-        } else {
-          const targetComponent = findComponent(
-            schema,
-            (c) => c.id === targetId
-          );
-          if (targetComponent) {
-            if (targetComponent?.children) {
-              targetComponent.children.splice(targetIndex, 0, movingComponent);
-            } else {
-              targetComponent.children = [movingComponent];
-            }
-          }
-        }
-      });
-    } else {
-      // 移动组件
-      newSchema = updateObject(props.schema, (schema) => {
-        if (scoureId === PAGE_FLAG) {
-          schema.splice(scoureIndex, 1);
-        } else {
-          const sourceComponent = findComponent(
-            schema,
-            (c) => c.id === scoureId
-          );
-          if (sourceComponent?.children) {
-            sourceComponent.children.splice(scoureIndex, 1);
-          }
-        }
-        if (targetId === PAGE_FLAG) {
-          schema.splice(targetIndex, 0, movingComponent);
-        } else {
-          const targetComponent = findComponent(
-            schema,
-            (c) => c.id === targetId
-          );
-          if (targetComponent) {
-            if (targetComponent?.children) {
-              targetComponent.children.splice(targetIndex, 0, movingComponent);
-            } else {
-              targetComponent.children = [movingComponent];
-            }
-          }
-        }
-      });
-    }
-    props.onChange(newSchema);
-  };
+  const [active, setActive] = useState<null | string>(null);
 
-  const onDragStart = (data: DragStart) => {
-    const { draggableId } = data;
-    if (draggableId.startsWith(MENU_TYPE)) {
-      const regx = new RegExp(`^${MENU_TYPE}_(.+)$`);
-      const name = draggableId.replace(regx, "$1");
-      const json = getJsonByName(name);
-      if (!json) {
-        Message.error(`找不到名为 ${name} 的组件`);
-        return;
+  const onDragStart = useCallback((e: DragStartEvent) => {
+    const newMovingComponent = {
+      ...(e.active.data.current as IComponent),
+      id: uuidv4(),
+    };
+    setActive(e.active.data.current?.name);
+    setMovingComponent(newMovingComponent);
+  }, []);
+
+  const onDragMove = useCallback(
+    (e: DragMoveEvent) => {
+      const {
+        activatorEvent,
+        delta,
+        over,
+        active: { id: activeId },
+      } = e;
+      const { x, y } = activatorEvent as PointerEvent;
+      // 当前坐标为原始坐标加上拖动的偏移量
+      const currentX = x + delta.x,
+        currentY = y + delta.y;
+      if (over) {
+        const {
+          id: overId,
+          rect: { top, left, height, width },
+          data: { current },
+        } = over;
+
+        // 当前元素是目标元素的祖父
+        const currentComponent = findComponent(
+          props.schema,
+          (c) => c?.id === activeId
+        );
+        if (
+          currentComponent &&
+          findComponent([currentComponent], (c) => c?.id === over?.id)
+        ) {
+          setPosition(null);
+          return;
+        }
+        // 当前元素的中心位置
+        const middleX = left + width / 2,
+          middleY = top + height / 2;
+        // 当前元素y坐标分为三份 为上中下
+        const middleTop = top + height / 3,
+          middleBottom = top + height * (2 / 3);
+        let direction: Direction;
+        if ((current as IComponent)?.inline) {
+          // inline组件以x轴区分方向
+          direction = middleX > currentX ? Direction.PREV : Direction.NEXT;
+        } else if ((current as IComponent)?.container) {
+          // container组件以y轴分为上中下分方向
+          direction =
+            currentY < middleTop
+              ? Direction.PREV
+              : currentY > middleBottom
+              ? Direction.NEXT
+              : Direction.MIDDLE;
+        } else {
+          // 其他组件以y轴分方向
+          direction = middleY > currentY ? Direction.PREV : Direction.NEXT;
+        }
+        const currentPosition = {
+          id: overId,
+          direction,
+          height,
+          width,
+        };
+        if (!isEqual(currentPosition, position)) {
+          setPosition(currentPosition);
+        }
+      } else {
+        setPosition(null);
       }
-      setMovingComponent({ ...json, id: uuidv4() });
-    } else {
-      const changeComponent = findComponent(
-        props.schema,
-        (c) => c.id === draggableId
-      );
-      if (!changeComponent) {
-        Message.error(`找不到id为 ${draggableId} 的组件`);
-        return;
-      }
-      setMovingComponent(changeComponent);
-    }
-  };
+    },
+    [position]
+  );
 
-  const onDragUpdate = (data: DragUpdate) => {
-    const {
-      destination,
-      source: { droppableId: scoureId, index: scoureIndex },
-    } = data;
-    if (!destination) return;
-    const { droppableId: targetId, index: targetIndex } = destination;
-    setPosition({
-      id: targetId,
-      index:
-        scoureId === targetId && targetIndex >= scoureIndex
-          ? targetIndex + 1
-          : targetIndex,
-    });
-  };
+  const onDragEnd = useCallback(
+    (e: DragEndEvent) => {
+      const {
+        active: { id },
+      } = e;
+      if (position && movingComponent) {
+        let newSchema;
+        const targetId = position.id,
+          targetDirection = position.direction;
+        if (targetId === PAGE_FLAG) {
+          newSchema = [...props.schema, movingComponent];
+        } else {
+          newSchema = updateObject(props.schema, (schema) => {
+            const targetComponent = findComponent(
+              schema,
+              (c) => c?.id === targetId
+            );
+            if (targetComponent) {
+              if (targetDirection === Direction.MIDDLE) {
+                targetComponent.children = [
+                  ...(targetComponent.children || []),
+                  movingComponent!,
+                ];
+              } else {
+                const rootIdx = schema.findIndex((c) => c.id === targetId);
+                if (rootIdx >= 0) {
+                  if (targetDirection === Direction.PREV) {
+                    schema.splice(rootIdx, 0, movingComponent);
+                  } else if (targetDirection === Direction.NEXT) {
+                    schema.splice(rootIdx + 1, 0, movingComponent);
+                  }
+                } else {
+                  const warpperComponent = findComponent(schema, (c) => {
+                    if (c.container && c.children) {
+                      return (
+                        (c.children as IComponent[]).find(
+                          (child) => child.id === targetId
+                        ) !== undefined
+                      );
+                    }
+                    return false;
+                  });
+                  if (warpperComponent) {
+                    const warpperIdx =
+                      (warpperComponent.children as IComponent[])!.findIndex(
+                        (c) => c.id === targetId
+                      );
+                    if (targetDirection === Direction.PREV) {
+                      warpperComponent.children!.splice(
+                        warpperIdx,
+                        0,
+                        movingComponent
+                      );
+                    } else if (targetDirection === Direction.NEXT) {
+                      warpperComponent.children!.splice(
+                        warpperIdx + 1,
+                        0,
+                        movingComponent
+                      );
+                    }
+                  }
+                }
+              }
+            }
+          });
+        }
+        if (isAdd(id)) {
+          props.onChange(newSchema);
+        } else {
+          props.onChange(filterComponent(newSchema, (c) => c?.id !== id));
+        }
+      }
+      setActive(null);
+      setPosition(null);
+      setMovingComponent(null);
+    },
+    [props.schema, position, movingComponent]
+  );
 
   return (
     <LcEditorContext.Provider
@@ -177,10 +225,10 @@ export default (props: IProps) => {
         position,
       }}
     >
-      <DragDropContext
-        onDragEnd={onDragEnd}
+      <DndContext
         onDragStart={onDragStart}
-        onDragUpdate={onDragUpdate}
+        onDragEnd={onDragEnd}
+        onDragMove={onDragMove}
       >
         <Layout className={classNames(styles["lc-layout"], "p-2")}>
           <Layout.Sider
@@ -196,7 +244,19 @@ export default (props: IProps) => {
             />
           </Layout.Content>
         </Layout>
-      </DragDropContext>
+        {createPortal(
+          <DragOverlay>
+            {active ? (
+              <div
+                className={classNames(styles["dragging-btn"], "cursor-move")}
+              >
+                {active}
+              </div>
+            ) : null}
+          </DragOverlay>,
+          document.body
+        )}
+      </DndContext>
     </LcEditorContext.Provider>
   );
 };
