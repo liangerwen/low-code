@@ -1,30 +1,107 @@
-.lc-active {
-  border: 1px solid #00a8ff;
-  background-color: #c0dafa;
-}
-.lc-move {
-  background-color: rgb(252, 209, 161);
-}
-
-.lc-child-warp {
+.lc-item {
   padding: 4px;
-  margin: 2px;
   box-sizing: border-box;
   border: 1px dashed transparent;
   cursor: pointer;
   border: 1px dashed rgb(156, 163, 175);
   pointer-events: all;
   position: relative;
+  transition: all 0.3s;
   &:hover {
-    border-color: #00a8ff;
+    border-color: rgb(var(--primary-6));
   }
-  .lc-child-action {
-    background-color: rgb(var(--primary-6));
-    color: #fff;
+  .lc-item-action {
+    color: #919eab;
     padding: 0 4px;
     position: absolute;
     left: 0;
     top: 0;
     z-index: 999;
+    display: none;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+.lc-item__hover:hover {
+  position: relative;
+  padding-top: 24px;
+  & > .lc-item-action {
+    display: block;
+  }
+}
+
+.lc-item__active {
+  border: 1px solid rgb(var(--primary-6));
+  background-color: #c0dafa;
+}
+
+.lc-item__enter {
+  background-color: rgb(252, 209, 161);
+}
+
+.lc-item__dragging {
+  opacity: 0.8;
+  filter: blur(2px);
+  background: rgba(255, 255, 255, 0.5);
+}
+.lc-item-driver {
+  position: relative;
+}
+.lc-item-driver__vertical {
+  margin: 0 5px !important;
+  border-left: 4px solid rgb(var(--primary-6)) !important;
+  &::before {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    left: -9px;
+    top: 0;
+    width: 14px;
+    height: 14px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 3px solid rgb(var(--primary-6));
+  }
+  &::after {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    left: -9px;
+    bottom: 0;
+    width: 14px;
+    height: 14px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 3px solid rgb(var(--primary-6));
+  }
+}
+.lc-item-driver__horizontal {
+  margin: 5px 0 8px 0 !important;
+  border-bottom: 4px solid rgb(var(--primary-6)) !important;
+  &::before {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    top: -5px;
+    width: 14px;
+    height: 14px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 3px solid rgb(var(--primary-6));
+  }
+  &::after {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
+    top: -5px;
+    width: 14px;
+    height: 14px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 3px solid rgb(var(--primary-6));
   }
 }

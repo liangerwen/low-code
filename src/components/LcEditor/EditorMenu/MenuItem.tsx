@@ -32,7 +32,7 @@ export default (props: Menu) => {
       {...listeners}
       {...attributes}
     >
-      <Icon />
+      <Icon style={{ fontSize: 16 }} />
       {props.text}
       {/* @ts-ignore */}
       <Trigger

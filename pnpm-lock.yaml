@@ -18,7 +18,6 @@ specifiers:
   react: ^18.0.0
   react-dom: ^18.0.0
   react-json-view: ^1.21.3
-  react-use-hover: ^2.0.0
   typescript: ^4.6.3
   unocss: ^0.31.12
   uuid: ^8.3.2
@@ -32,7 +31,6 @@ dependencies:
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
   react-json-view: 1.21.3_ohobp6rpsmerwlq5ipwfh5yigy
-  react-use-hover: 2.0.0_react@18.1.0
   uuid: 8.3.2
 
 devDependencies:
@@ -512,14 +510,6 @@ packages:
     dependencies:
       '@types/react': 18.0.9
     dev: true
-
-  /@types/react/16.14.26:
-    resolution: {integrity: sha512-c/5CYyciOO4XdFcNhZW1O2woVx86k4T+DO2RorHZL7EhitkNQgSD/SgpdZJAUJa/qjVgOmTM44gHkAdZSXeQuQ==}
-    dependencies:
-      '@types/prop-types': 15.7.5
-      '@types/scheduler': 0.16.2
-      csstype: 3.1.0
-    dev: false
 
   /@types/react/18.0.9:
     resolution: {integrity: sha512-9bjbg1hJHUm4De19L1cHiW0Jvx3geel6Qczhjd0qY5VKVE2X5+x77YxAepuCwVh4vrgZJdgEJw48zrhRIeF4Nw==}
@@ -1757,15 +1747,6 @@ packages:
       prop-types: 15.8.1
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-    dev: false
-
-  /react-use-hover/2.0.0_react@18.1.0:
-    resolution: {integrity: sha512-A2OYaC8OnWCD7ZOGbnUX4nJlwr0VEtu1gMnZ5U4w8BoXkwCvBlACgBiUd0Ay+goTqHGq4OSwq4Gxr2x05TQUFA==}
-    peerDependencies:
-      react: ^16.7.0-alpha.0
-    dependencies:
-      '@types/react': 16.14.26
-      react: 18.1.0
     dev: false
 
   /react/18.1.0:

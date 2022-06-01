@@ -15,7 +15,8 @@ import {
 import { createPortal } from "react-dom";
 import { isAdd } from "./EditorMenu/MenuItem";
 import { isEqual } from "lodash";
-import { filterComponent, findComponent, updateObject } from "../../utils";
+import { updateObject } from "../../utils";
+import { filterComponent, findComponent, getWarpper } from "./utils";
 
 interface IProps {
   schema: ISchema;
@@ -60,12 +61,18 @@ export default (props: IProps) => {
   const [active, setActive] = useState<null | string>(null);
 
   const onDragStart = useCallback((e: DragStartEvent) => {
-    const newMovingComponent = {
-      ...(e.active.data.current as IComponent),
-      id: uuidv4(),
-    };
+    const {
+      active: { id },
+    } = e;
+    if (isAdd(id)) {
+      setMovingComponent({
+        ...(e.active.data.current as IComponent),
+        id: uuidv4(),
+      });
+    } else {
+      setMovingComponent(e.active.data.current as IComponent);
+    }
     setActive(e.active.data.current?.name);
-    setMovingComponent(newMovingComponent);
   }, []);
 
   const onDragMove = useCallback(
@@ -106,7 +113,7 @@ export default (props: IProps) => {
         const middleTop = top + height / 3,
           middleBottom = top + height * (2 / 3);
         let direction: Direction;
-        if ((current as IComponent)?.inline) {
+        if ((current as IComponent)?.inline && movingComponent?.inline) {
           // inline组件以x轴区分方向
           direction = middleX > currentX ? Direction.PREV : Direction.NEXT;
         } else if ((current as IComponent)?.container) {
@@ -143,70 +150,50 @@ export default (props: IProps) => {
         active: { id },
       } = e;
       if (position && movingComponent) {
-        let newSchema;
+        let newSchema = props.schema;
         const targetId = position.id,
           targetDirection = position.direction;
+        // 如果不是新增就先移除当前组件
+        if (!isAdd(id)) {
+          newSchema = filterComponent(newSchema, (c) => c?.id !== id);
+        }
+        // 根页面直接push
         if (targetId === PAGE_FLAG) {
-          newSchema = [...props.schema, movingComponent];
+          newSchema = [...newSchema, movingComponent];
         } else {
-          newSchema = updateObject(props.schema, (schema) => {
+          newSchema = updateObject(newSchema, (schema) => {
             const targetComponent = findComponent(
               schema,
               (c) => c?.id === targetId
             );
             if (targetComponent) {
+              // 目标组件是容器组件时就放置到此组件中
               if (targetDirection === Direction.MIDDLE) {
                 targetComponent.children = [
                   ...(targetComponent.children || []),
                   movingComponent!,
                 ];
               } else {
-                const rootIdx = schema.findIndex((c) => c.id === targetId);
-                if (rootIdx >= 0) {
+                // 找到目标组件的warpper组件并根据方向进行前插或后插
+                const warpperInfo = getWarpper(schema, targetId);
+                if (warpperInfo) {
+                  const { warpper, index } = warpperInfo;
                   if (targetDirection === Direction.PREV) {
-                    schema.splice(rootIdx, 0, movingComponent);
+                    warpper.splice(index, 0, movingComponent);
+                    // 放置到目标组件的后一个
                   } else if (targetDirection === Direction.NEXT) {
-                    schema.splice(rootIdx + 1, 0, movingComponent);
-                  }
-                } else {
-                  const warpperComponent = findComponent(schema, (c) => {
-                    if (c.container && c.children) {
-                      return (
-                        (c.children as IComponent[]).find(
-                          (child) => child.id === targetId
-                        ) !== undefined
-                      );
-                    }
-                    return false;
-                  });
-                  if (warpperComponent) {
-                    const warpperIdx =
-                      (warpperComponent.children as IComponent[])!.findIndex(
-                        (c) => c.id === targetId
-                      );
-                    if (targetDirection === Direction.PREV) {
-                      warpperComponent.children!.splice(
-                        warpperIdx,
-                        0,
-                        movingComponent
-                      );
-                    } else if (targetDirection === Direction.NEXT) {
-                      warpperComponent.children!.splice(
-                        warpperIdx + 1,
-                        0,
-                        movingComponent
-                      );
-                    }
+                    warpper.splice(index + 1, 0, movingComponent);
                   }
                 }
               }
             }
           });
         }
-        if (isAdd(id)) {
+        if (!isEqual(props.schema, newSchema)) {
           props.onChange(newSchema);
-        } else {
-          props.onChange(filterComponent(newSchema, (c) => c?.id !== id));
+          if (isAdd(id)) {
+            setActiveComponent(movingComponent);
+          }
         }
       }
       setActive(null);

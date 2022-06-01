@@ -1,9 +1,8 @@
 import { Divider, Grid, Space } from "@arco-design/web-react";
-import { IconDragArrow } from "@arco-design/web-react/icon";
+import { IconDragDot } from "@arco-design/web-react/icon";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import classNames from "classnames";
 import { forwardRef, ReactNode, useCallback, useContext } from "react";
-import useHover from "react-use-hover";
 import styles from "./styles/item.module.less";
 import { Direction, LcEditorContext } from ".";
 import { getComponentByName } from "./EditorMenu/data";
@@ -27,7 +26,7 @@ export const renderCommonComponents = (
         {...component.props}
         key={idx}
         className={classNames(component.props?.className, {
-          "pointer-events-none": disabled,
+          "pointer-events-none select-none": disabled,
         })}
       >
         {component?.children?.length &&
@@ -43,7 +42,6 @@ const ItemWarp = forwardRef<
     inline?: boolean;
     span: number;
     children?: ReactNode;
-    className?: string;
     [key: string]: any;
   }
 >(
@@ -54,22 +52,13 @@ const ItemWarp = forwardRef<
     },
     ref
   ) => {
-    const { inline, span, children, className, ...resetProps } = props;
+    const { inline, span, children, ...resetProps } = props;
     return inline ? (
-      <div
-        ref={ref}
-        className={classNames(styles["lc-child-warp"], className)}
-        {...resetProps}
-      >
+      <div ref={ref} {...resetProps}>
         {children}
       </div>
     ) : (
-      <Col
-        ref={ref}
-        span={span}
-        className={classNames(styles["lc-child-warp"], className)}
-        {...resetProps}
-      >
+      <Col ref={ref} span={span} {...resetProps}>
         {children}
       </Col>
     );
@@ -95,25 +84,27 @@ const Item = (props: IProps) => {
     data: item,
   });
   const Common = getComponentByName(name);
-  const [isHovering, hoverProps] = useHover();
   const { activeComponent, setActiveComponent, movingComponent, position } =
     useContext(LcEditorContext);
 
   const renderDivider = useCallback(() => {
+    const isVertical = inline && movingComponent?.inline;
     return (
       <Divider
         className={classNames(
-          "border-blue-600",
-          inline ? "border-l-2 mx-2" : "border-b-2 my-2"
+          styles["lc-item-driver"],
+          isVertical
+            ? styles["lc-item-driver__vertical"]
+            : styles["lc-item-driver__horizontal"]
         )}
         style={
-          inline
+          isVertical
             ? {
                 height: position!.height + 10,
               }
             : { width: position!.width }
         }
-        type={inline ? "vertical" : "horizontal"}
+        type={isVertical ? "vertical" : "horizontal"}
       />
     );
   }, [position, inline]);
@@ -126,11 +117,12 @@ const Item = (props: IProps) => {
         renderDivider()}
       <ItemWarp
         {...attributes}
-        className={classNames({
-          "opacity-50": isDragging,
-          relative: isHovering && !movingComponent,
-          [styles["lc-active"]]: activeComponent?.id === id,
-          [styles["lc-move"]]:
+        className={classNames(styles["lc-item"], "mb-0.5", {
+          "mr-0.5": inline,
+          [styles["lc-item__dragging"]]: isDragging,
+          [styles["lc-item__hover"]]: !movingComponent,
+          [styles["lc-item__active"]]: activeComponent?.id === id,
+          [styles["lc-item__enter"]]:
             container &&
             position &&
             position.id === id &&
@@ -139,19 +131,15 @@ const Item = (props: IProps) => {
         inline={inline}
         span={24}
         ref={setDragRef}
-        {...hoverProps}
         onClick={(e: Event) => {
           e.stopPropagation();
           setActiveComponent(item);
         }}
       >
-        {isHovering && !movingComponent && (
-          <div
-            {...listeners}
-            className={classNames(styles["lc-child-action"], "cursor-move")}
-          >
+        {!movingComponent && (
+          <div className={classNames(styles["lc-item-action"], "cursor-move")}>
             <Space>
-              <IconDragArrow />
+              <IconDragDot {...listeners} />
             </Space>
           </div>
         )}
@@ -161,7 +149,7 @@ const Item = (props: IProps) => {
         >
           {container ? (
             <>
-              <Common {...p} className={classNames("min-h-50px", p?.className)}>
+              <Common {...p} className={classNames("min-h-60px", p?.className)}>
                 {children.length > 0 &&
                   (children as IComponent[]).map((c, idx) => (
                     <Item item={c} key={idx} index={idx} />

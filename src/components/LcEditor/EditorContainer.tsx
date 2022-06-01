@@ -17,12 +17,14 @@ import {
   IconUndo,
 } from "@arco-design/web-react/icon";
 import ReactJson from "react-json-view";
+import classNames from "classnames";
 import { useContext, useState } from "react";
-import { LcEditorContext } from ".";
-import { filterComponent } from "../../utils";
-import styles from "./styles/editor-container.module.less";
 import { useDroppable } from "@dnd-kit/core";
+import { LcEditorContext } from ".";
 import Item from "./Item";
+import { filterComponent } from "./utils";
+import styles from "./styles/editor-container.module.less";
+import itemStyles from "./styles/item.module.less";
 
 const { Row } = Grid;
 
@@ -123,7 +125,12 @@ export default (props: IProps) => {
             <Item key={idx} item={component} index={idx} />
           ))}
           {position && position.id === PAGE_FLAG && (
-            <Divider className="border-blue-600 border-b-2 my-2" />
+            <Divider
+              className={classNames(
+                itemStyles["lc-item-driver"],
+                itemStyles["lc-item-driver__horizontal"]
+              )}
+            />
           )}
         </Row>
       </Layout.Content>

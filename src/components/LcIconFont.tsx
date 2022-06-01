@@ -1,5 +1,6 @@
 import { Icon } from "@arco-design/web-react";
-import React, { createContext, ReactNode, useContext } from "react";
+import { IconProps } from "@arco-design/web-react/icon";
+import React, { createContext, FC, ReactNode, useContext } from "react";
 
 const LcIconFontContext = createContext<string[]>([]);
 
@@ -24,9 +25,10 @@ export default (props: {
     console.error("LcIconFont: no icon font provider found");
     return null;
   }
-  let IconFont: any;
+  let IconFont: FC<IconProps>;
   urls.forEach((u) => {
     IconFont = Icon.addFromIconFontCn({ src: u });
   });
+  // @ts-ignore
   return <IconFont {...props} />;
 };
