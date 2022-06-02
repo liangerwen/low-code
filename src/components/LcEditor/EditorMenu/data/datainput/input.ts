@@ -1,5 +1,11 @@
-const component = {
-  name: "a-input",
+import { Input } from "@arco-design/web-react";
+import { IconCheckCircleFill } from "@arco-design/web-react/icon";
+
+const name = "a-input";
+
+const defaultSchema = {
+  name,
+  title: "输入框",
   props: {
     placeholder: "Please enter something",
     allowClear: true,
@@ -8,11 +14,9 @@ const component = {
 };
 
 export default {
-  icon: "icon-check-circle-fill",
-  text: "输入框",
-  demo: {
-    title: "输入框",
-    components: [component],
-  },
-  component,
+  name,
+  componentMap: { [name]: Input },
+  icon: IconCheckCircleFill,
+  demo: [defaultSchema],
+  defaultSchema,
 };

@@ -4,7 +4,7 @@ import { useDraggable } from "@dnd-kit/core";
 import classNames from "classnames";
 import { v1 as uuidv1 } from "uuid";
 import { renderCommonComponents } from "../Item";
-import { getComponentByName, Menu } from "./data";
+import { Menu } from "./data";
 import styles from "./styles/menu-item.module.less";
 
 const MENUTYPE = "MENU_ITEM";
@@ -14,9 +14,9 @@ export const isAdd = (id: string | number) => String(id).startsWith(MENUTYPE);
 export default (props: Menu) => {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `${MENUTYPE}_${uuidv1()}`,
-    data: props.component,
+    data: props.defaultSchema,
   });
-  const Icon = getComponentByName(props.icon);
+  const Icon = props.icon;
 
   return (
     <Space
@@ -33,14 +33,14 @@ export default (props: Menu) => {
       {...attributes}
     >
       <Icon style={{ fontSize: 16 }} />
-      {props.text}
+      {props.defaultSchema.title}
       {/* @ts-ignore */}
       <Trigger
         position="top"
         popup={() => (
           <div className={styles["demo-basic"]}>
-            <h4 className="text-center">{props.demo.title}</h4>
-            <div>{renderCommonComponents(props.demo.components)}</div>
+            <h4 className="text-center">{props.defaultSchema.title}</h4>
+            <div>{renderCommonComponents(props.demo)}</div>
           </div>
         )}
       >

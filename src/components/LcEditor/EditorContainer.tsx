@@ -18,13 +18,14 @@ import {
 } from "@arco-design/web-react/icon";
 import ReactJson from "react-json-view";
 import classNames from "classnames";
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { LcEditorContext } from ".";
 import Item from "./Item";
 import { filterComponent } from "./utils";
 import styles from "./styles/editor-container.module.less";
 import itemStyles from "./styles/item.module.less";
+import { getRenderActionByName } from "./EditorMenu/data";
 
 const { Row } = Grid;
 
@@ -93,6 +94,17 @@ export default (props: IProps) => {
     id: "page",
   });
 
+  const renderAction = useCallback(() => {
+    if (!activeComponent) return null;
+    const ComponentAction = getRenderActionByName(activeComponent.name);
+    if (!ComponentAction) return null;
+    return (
+      <div className="bg-white">
+        <ComponentAction schema={activeComponent} />
+      </div>
+    );
+  }, [activeComponent]);
+
   return (
     <Layout className="h-full">
       <Layout.Content className="flex flex-col">
@@ -135,9 +147,15 @@ export default (props: IProps) => {
         </Row>
       </Layout.Content>
       <Layout.Sider
-        className={[styles["lc-content"], "border-none ml-2 shadow-none"]}
+        className={classNames(
+          styles["lc-content-action"],
+          { "border-none": !activeComponent },
+          "ml-2 shadow-none"
+        )}
         width={activeComponent ? 300 : 0}
-      ></Layout.Sider>
+      >
+        {renderAction()}
+      </Layout.Sider>
       <Drawer
         title="JSON总览"
         visible={visible}

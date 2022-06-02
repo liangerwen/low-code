@@ -145,7 +145,10 @@ const Item = (props: IProps) => {
         )}
         <div
           ref={setDropRef}
-          className={classNames({ "min-h-80px relative": container })}
+          className={classNames(
+            { "min-h-80px relative": container },
+            "rounded bg-white"
+          )}
         >
           {container ? (
             <>

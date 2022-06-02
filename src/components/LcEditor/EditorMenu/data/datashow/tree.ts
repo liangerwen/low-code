@@ -1,5 +1,11 @@
-const component = {
-  name: "a-tree",
+import { Tree } from "@arco-design/web-react";
+import { IconCheckCircleFill } from "@arco-design/web-react/icon";
+
+const name = "a-tree";
+
+const defaultSchema = {
+  name,
+  title: "树",
   props: {
     treeData: [
       {
@@ -40,11 +46,9 @@ const component = {
 };
 
 export default {
-  icon: "icon-check-circle-fill",
-  text: "树",
-  demo: {
-    title: "树",
-    components: [component],
-  },
-  component,
+  name,
+  componentMap: { [name]: Tree },
+  icon: IconCheckCircleFill,
+  demo: [defaultSchema],
+  defaultSchema,
 };

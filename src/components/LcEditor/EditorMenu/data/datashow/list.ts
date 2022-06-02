@@ -1,5 +1,11 @@
-const component = {
-  name: "a-list",
+import { List } from "@arco-design/web-react";
+import { IconCheckCircleFill } from "@arco-design/web-react/icon";
+
+const name = "a-list";
+
+const defaultSchema = {
+  name,
+  title: "列表",
   props: {
     type: "primary",
   },
@@ -20,11 +26,9 @@ const component = {
 };
 
 export default {
-  icon: "icon-check-circle-fill",
-  text: "列表",
-  demo: {
-    title: "列表",
-    components: [component],
-  },
-  component,
+  name,
+  componentMap: { [name]: List, "a-list-item": List.Item },
+  icon: IconCheckCircleFill,
+  demo: [defaultSchema],
+  defaultSchema,
 };

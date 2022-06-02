@@ -72,7 +72,7 @@ export default (props: IProps) => {
     } else {
       setMovingComponent(e.active.data.current as IComponent);
     }
-    setActive(e.active.data.current?.name);
+    setActive(e.active.data.current?.title);
   }, []);
 
   const onDragMove = useCallback(
@@ -109,9 +109,9 @@ export default (props: IProps) => {
         // 当前元素的中心位置
         const middleX = left + width / 2,
           middleY = top + height / 2;
-        // 当前元素y坐标分为三份 为上中下
-        const middleTop = top + height / 3,
-          middleBottom = top + height * (2 / 3);
+        // 当前元素y坐标分为上中下 上1/4 中1/2 下1/4
+        const middleTop = top + height / 4,
+          middleBottom = top + height * (3 / 4);
         let direction: Direction;
         if ((current as IComponent)?.inline && movingComponent?.inline) {
           // inline组件以x轴区分方向

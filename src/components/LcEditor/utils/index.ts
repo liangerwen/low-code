@@ -20,16 +20,16 @@ export const findComponent = (
   schema: ISchema,
   condition: ICondition
 ): IComponent | null => {
-  let ret: IComponent | null = null;
   for (const component of schema) {
     if (condition(component)) {
       return component;
     }
     if (component.container && component.children) {
-      ret = findComponent(component.children as ISchema, condition);
+      const ret = findComponent(component.children as ISchema, condition);
+      if (ret) return ret;
     }
   }
-  return ret;
+  return null;
 };
 
 export const diffSchema = (schema: ISchema, callback: ICallback) => {

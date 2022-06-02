@@ -1,5 +1,11 @@
-const component = {
-  name: "a-table",
+import { Table } from "@arco-design/web-react";
+import { IconCheckCircleFill } from "@arco-design/web-react/icon";
+
+const name = "a-table";
+
+const defaultSchema = {
+  name,
+  title: "表格",
   props: {
     columns: [
       {
@@ -24,11 +30,9 @@ const component = {
 };
 
 export default {
-  icon: "icon-check-circle-fill",
-  text: "表格",
-  demo: {
-    title: "表格",
-    components: [component],
-  },
-  component,
+  name,
+  componentMap: { [name]: Table },
+  icon: IconCheckCircleFill,
+  demo: [defaultSchema],
+  defaultSchema,
 };
