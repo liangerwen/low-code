@@ -16,7 +16,7 @@ import { createPortal } from "react-dom";
 import { isAdd } from "./EditorMenu/MenuItem";
 import { isEqual } from "lodash";
 import { updateObject } from "../../utils";
-import { filterComponent, findComponent, getWarpper } from "./utils";
+import { filterComponent, findComponent, findWarpper } from "./utils";
 
 interface IProps {
   schema: ISchema;
@@ -175,7 +175,7 @@ export default (props: IProps) => {
                 ];
               } else {
                 // 找到目标组件的warpper组件并根据方向进行前插或后插
-                const warpperInfo = getWarpper(schema, targetId);
+                const warpperInfo = findWarpper(schema, targetId);
                 if (warpperInfo) {
                   const { warpper, index } = warpperInfo;
                   if (targetDirection === Direction.PREV) {
@@ -217,7 +217,7 @@ export default (props: IProps) => {
         onDragEnd={onDragEnd}
         onDragMove={onDragMove}
       >
-        <Layout className={classNames(styles["lc-layout"], "p-2")}>
+        <Layout className={styles["lc-layout"]}>
           <Layout.Sider
             width={300}
             className={classNames(styles["lc-container"], "p-0 mr-2")}

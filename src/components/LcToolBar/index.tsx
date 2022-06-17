@@ -1,15 +1,28 @@
 import { Grid, Space } from "@arco-design/web-react";
-import classNames from "classnames";
+import { Link } from "react-router-dom";
 import styles from "./style.module.less";
 
 const Row = Grid.Row;
-export default function () {
+
+interface IProps {
+  userMenus?: Boolean;
+}
+
+export default function (props: IProps) {
+  const { userMenus = true } = props;
+
   return (
-    <Row className={classNames(styles["lc-body"], "overflow-hidden")}>
-      <Space>
-        <img src="/favicon.ico" alt="logo" className="h-8" />
-        <span className={styles["lc-title"]}>liangerwen's lower code</span>
-      </Space>
+    <Row className={styles["toolbar-warpper"]}>
+      <Link to="/" className="no-underline">
+        <Space>
+          <img
+            src="/favicon.ico"
+            alt="logo"
+            className={styles["toolbar-logo"]}
+          />
+          <span className={styles["toolbar-title"]}>liangerwen's low code</span>
+        </Space>
+      </Link>
     </Row>
   );
 }

@@ -6,3 +6,24 @@
   font-family: Titillium Web, PingFang SC, Hiragino Sans GB, "Microsoft YaHei",
     Helvetica Neue, Helvetica, Arial, sans-serif !important;
 }
+.titillium {
+  font-family: Titillium Web, PingFang SC, Hiragino Sans GB, "Microsoft YaHei",
+    Helvetica Neue, Helvetica, Arial, sans-serif !important;
+}
+.frosted-glass {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 3px 3px 6px 3px rgba(0, 0, 0, 0.5);
+  &::before {
+    content: "";
+    background-attachment: fixed;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    filter: blur(8px);
+    margin:-30px;  
+  }
+}

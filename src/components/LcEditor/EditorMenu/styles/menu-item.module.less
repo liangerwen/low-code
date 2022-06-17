@@ -1,4 +1,6 @@
 .lc-menu-item-btn {
+  display: flex !important;
+  justify-content: space-between;
   color: var(--color-text-2);
   border: 1px dashed var(--color-neutral-3);
   padding: 6px 12px;
@@ -6,11 +8,12 @@
   background-color: var(--color-secondary);
   font-size: 14px;
   word-break: keep-all;
+  cursor: pointer;
   &:hover {
     border-color: rgb(var(--primary-5));
     color: rgb(var(--primary-5));
   }
-  &.dragging {
+  &.lc-menu-item-btn__dragging {
     border: 2px solid rgb(var(--primary-6));
     color: rgb(var(--primary-6));
     text-align: center;
@@ -19,10 +22,13 @@
     border-radius: 0;
   }
 }
-.demo-basic {
+.demo-warpper {
   padding: 10px;
   min-width: 200px;
   background-color: var(--color-bg-popup);
   border-radius: 4px;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.15);
+  .demo-title {
+    text-align: center;
+  }
 }

@@ -1,5 +1,3 @@
-import cloneDeep from "lodash/cloneDeep";
-
 type ICondition = (component: IComponent) => boolean;
 type ICallback = (component: IComponent) => void;
 
@@ -55,7 +53,7 @@ export const filterComponent = (
     return s;
   });
 
-export const getWarpper = (schema: ISchema, id: string | number) => {
+export const findWarpper = (schema: ISchema, id: string | number) => {
   const rootIdx = schema.findIndex((component) => component.id === id);
   if (rootIdx >= 0) {
     return { warpper: schema, index: rootIdx };

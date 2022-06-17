@@ -1,4 +1,5 @@
-import { FC, ReactNode } from "react";
+import { IconProps } from "@arco-design/web-react/icon";
+import { FC } from "react";
 import ErrorComponent from "../../ErrorComponent";
 
 const generalExamples = import.meta.globEager<Module<Menu>>(
@@ -24,7 +25,7 @@ type Mapping = {
 export type Menu = {
   name: string;
   componentMap: { [name: string]: FC<any> };
-  icon: FC<any>;
+  icon: FC<IconProps>;
   demo: IComponent[];
   defaultSchema: IComponent;
   action?: FC<{ schema: IComponent }>;

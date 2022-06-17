@@ -7,6 +7,7 @@
   pointer-events: all;
   position: relative;
   transition: all 0.3s;
+  margin-bottom: 5px;
   &:hover {
     border-color: rgb(var(--primary-6));
   }
@@ -18,33 +19,50 @@
     top: 0;
     z-index: 999;
     display: none;
+    cursor: move;
     &:hover {
       background-color: rgba(0, 0, 0, 0.05);
     }
   }
-}
-
-.lc-item__hover:hover {
-  position: relative;
-  padding-top: 24px;
-  & > .lc-item-action {
-    display: block;
+  &.lc-item__inline {
+    margin-right: 5px;
   }
-}
-
-.lc-item__active {
-  border: 1px solid rgb(var(--primary-6));
-  background-color: #c0dafa;
-}
-
-.lc-item__enter {
-  background-color: rgb(252, 209, 161);
-}
-
-.lc-item__dragging {
-  opacity: 0.8;
-  filter: blur(2px);
-  background: rgba(255, 255, 255, 0.5);
+  &.lc-item__hover:hover {
+    position: relative;
+    padding-top: 24px;
+    & > .lc-item-action {
+      display: block;
+    }
+  }
+  &.lc-item__active {
+    border: 1px solid rgb(var(--primary-6));
+    background-color: #c0dafa;
+  }
+  &.lc-item__enter {
+    background-color: rgb(252, 209, 161);
+  }
+  &.lc-item__dragging {
+    opacity: 0.8;
+    filter: blur(2px);
+    background: rgba(255, 255, 255, 0.5);
+  }
+  .lc-item-content {
+    border-radius: 4px;
+    background-color: #ffffff;
+    .lc-item-content-main {
+      min-height: 60px;
+    }
+    .lc-item-content-tip {
+      color: #9ca3af;
+      margin: 0;
+      text-align: center;
+      user-select: none;
+    }
+    &.lc-item-content__drop {
+      min-height: 80px;
+      position: relative;
+    }
+  }
 }
 .lc-item-driver {
   position: relative;

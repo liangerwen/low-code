@@ -22,9 +22,8 @@ export default (props: Menu) => {
     <Space
       className={classNames(
         styles["lc-menu-item-btn"],
-        "cursor-pointer flex justify-between text-sm",
         {
-          "opacity-80": isDragging,
+          [styles["lc-menu-item-btn__dragging"]]: isDragging,
         }
       )}
       align="center"
@@ -38,8 +37,8 @@ export default (props: Menu) => {
       <Trigger
         position="top"
         popup={() => (
-          <div className={styles["demo-basic"]}>
-            <h4 className="text-center">{props.defaultSchema.title}</h4>
+          <div className={styles["demo-warpper"]}>
+            <h4 className={styles["demo-title"]}>{props.defaultSchema.title}</h4>
             <div>{renderCommonComponents(props.demo)}</div>
           </div>
         )}

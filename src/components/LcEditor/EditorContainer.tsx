@@ -147,11 +147,9 @@ export default (props: IProps) => {
         </Row>
       </Layout.Content>
       <Layout.Sider
-        className={classNames(
-          styles["lc-content-action"],
-          { "border-none": !activeComponent },
-          "ml-2 shadow-none"
-        )}
+        className={classNames(styles["lc-content-action"], {
+          "border-none": !activeComponent,
+        })}
         width={activeComponent ? 300 : 0}
       >
         {renderAction()}

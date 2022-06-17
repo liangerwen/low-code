@@ -117,8 +117,8 @@ const Item = (props: IProps) => {
         renderDivider()}
       <ItemWarp
         {...attributes}
-        className={classNames(styles["lc-item"], "mb-0.5", {
-          "mr-0.5": inline,
+        className={classNames(styles["lc-item"], {
+          [styles["lc-item__inline"]]: inline,
           [styles["lc-item__dragging"]]: isDragging,
           [styles["lc-item__hover"]]: !movingComponent,
           [styles["lc-item__active"]]: activeComponent?.id === id,
@@ -137,7 +137,7 @@ const Item = (props: IProps) => {
         }}
       >
         {!movingComponent && (
-          <div className={classNames(styles["lc-item-action"], "cursor-move")}>
+          <div className={styles["lc-item-action"]}>
             <Space>
               <IconDragDot {...listeners} />
             </Space>
@@ -145,14 +145,13 @@ const Item = (props: IProps) => {
         )}
         <div
           ref={setDropRef}
-          className={classNames(
-            { "min-h-80px relative": container },
-            "rounded bg-white"
-          )}
+          className={classNames(styles["lc-item-content"], {
+            [styles["lc-item-content__drop"]]: container,
+          })}
         >
           {container ? (
             <>
-              <Common {...p} className={classNames("min-h-60px", p?.className)}>
+              <Common {...p} className={classNames(styles["lc-item-content-main"], p?.className)}>
                 {children.length > 0 &&
                   (children as IComponent[]).map((c, idx) => (
                     <Item item={c} key={idx} index={idx} />
@@ -162,13 +161,7 @@ const Item = (props: IProps) => {
                 position.id === id &&
                 position.direction === Direction.MIDDLE &&
                 renderDivider()}
-              <p
-                className={classNames(
-                  "color-#9ca3af m-0 text-center select-none"
-                )}
-              >
-                拖动组件到此处
-              </p>
+              <p className={styles["lc-item-content-tip"]}>拖动组件到此处</p>
             </>
           ) : (
             renderCommonComponents([item], true)
