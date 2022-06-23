@@ -1,6 +1,6 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Layout as ArcoLayout } from "@arco-design/web-react";
-import LcToolBar from "../components/LcToolBar";
+import { Layout as ArcoLayout, Message } from "@arco-design/web-react";
+import NavBar from "../components/NavBar";
 import { useEffect } from "react";
 import { isLogin } from "../utils/auth";
 
@@ -11,6 +11,7 @@ export default function Layout() {
   useEffect(() => {
     const path = location.pathname;
     if (!isLogin()) {
+      Message.error("请先登录");
       navigate(`/login?redirect=${path}`, { replace: true });
       return;
     }
@@ -21,8 +22,8 @@ export default function Layout() {
 
   return (
     <ArcoLayout className="overflow-hidden bg-[#f5f9fe] h-[100vh]">
-      <ArcoLayout.Header className="bg-white h-14 box-border p-2 border-gray-200 border-b ">
-        <LcToolBar />
+      <ArcoLayout.Header>
+        <NavBar />
       </ArcoLayout.Header>
       <Outlet />
     </ArcoLayout>

@@ -20,7 +20,7 @@ import ReactJson from "react-json-view";
 import classNames from "classnames";
 import { useCallback, useContext, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
-import { LcEditorContext } from ".";
+import { EditorContext } from ".";
 import Item from "./Item";
 import { filterComponent } from "./utils";
 import styles from "./styles/editor-container.module.less";
@@ -38,7 +38,7 @@ export const PAGE_FLAG = "page";
 
 export default (props: IProps) => {
   const { activeComponent, setActiveComponent, position } =
-    useContext(LcEditorContext);
+    useContext(EditorContext);
 
   const onClear = () => {
     props.onChange([]);

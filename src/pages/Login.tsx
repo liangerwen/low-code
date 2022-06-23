@@ -4,9 +4,11 @@ import {
   Form,
   Input,
   Layout,
+  Space,
+  Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import useMouse from "../hooks/useMouse";
+import useMouse from "@/hooks/useMouse";
 import { useEffect, useMemo, useState } from "react";
 import { throttle } from "lodash";
 
@@ -16,9 +18,19 @@ import Man from "@/assets/man.png";
 import Planet1 from "@/assets/planet1.png";
 import Planet3 from "@/assets/planet3.png";
 import Planet4 from "@/assets/planet4.png";
-import { IconLock, IconUser } from "@arco-design/web-react/icon";
-import { login } from "../utils/auth";
+import {
+  IconLanguage,
+  IconLock,
+  IconSkin,
+  IconUser,
+} from "@arco-design/web-react/icon";
+import { login } from "@/utils/auth";
 import { useNavigate } from "react-router-dom";
+import LangSetting, { useLocale } from "@/components/Locale";
+import useMode from "@/components/ModeSetting/useMode";
+import Locale from "@/components/OnlineTheme/locale";
+import ModeSetting from "@/components/ModeSetting";
+import OnlineTheme from "@/components/OnlineTheme";
 
 const FormItem = Form.Item;
 const { Title } = Typography;
@@ -42,6 +54,8 @@ export default function Login() {
     });
   };
   const navigator = useNavigate();
+  const { t, lang, setLang } = useLocale();
+  const { mode, setMode } = useMode();
 
   const [form] = Form.useForm<LoginFormProps>();
 
@@ -81,10 +95,10 @@ export default function Login() {
   );
 
   return (
-    <Layout className="overflow-hidden bg-[#f5f9fe] h-[100vh]">
+    <Layout className="overflow-hidden h-[100vh]">
       <img
         src={Background}
-        className="absolute w-full h-full top-0 left-0 object-cover pointer-events-none"
+        className="absolute w-full h-full top-0 left-0 object-cover pointer-events-none z-[-1]"
       />
       <ul className="absolute w-full h-full m-0 p-0 overflow-hidden backface-hidden pointer-events-none transform preserve-3d">
         {animationItemListConfig.map((i) => (
@@ -101,9 +115,29 @@ export default function Login() {
           </li>
         ))}
       </ul>
-      <Layout.Content className="flex justify-center items-center color-[#fff]">
+      <Layout.Header>
+        <Space className="px-6 py-8 absolute right-0" align="center" size={20}>
+          <Tooltip content={t("navbar.lang.change")}>
+            <LangSetting
+              iconOnly
+              className="text-2xl cursor-pointer important-color-white"
+            />
+          </Tooltip>
+          <ModeSetting
+            iconOnly
+            className="text-2xl cursor-pointer important-color-white"
+          />
+          <Tooltip content="安装主题">
+            <OnlineTheme
+              iconOnly
+              className="text-2xl cursor-pointer important-color-white"
+            />
+          </Tooltip>
+        </Space>
+      </Layout.Header>
+      <Layout.Content className="flex justify-center items-center">
         <Form<LoginFormProps>
-          className="w-[350px] frosted-glass p-6 rounded"
+          className="important-w-[350px] frosted-glass-warpper-[rgba(var(--gray-2),0.8)] before-frosted-glass-mask-[rgba(var(--gray-2),0.3)] p-6 rounded"
           layout="vertical"
           form={form}
           onSubmit={(form) => {
@@ -115,7 +149,7 @@ export default function Login() {
             <img
               src="/favicon.ico"
               alt="logo"
-              className="absolute top-0 left-0 w-8 h-8"
+              className="absolute top-0 left-0 w-8 h-8 pointer-events-none"
             />
             <Title
               heading={3}
@@ -126,20 +160,28 @@ export default function Login() {
             <img
               src="/favicon.ico"
               alt="logo"
-              className="absolute top-0 right-0 w-8 h-8"
+              className="absolute top-0 right-0 w-8 h-8 pointer-events-none"
             />
           </Typography>
           <FormItem
             rules={[{ required: true, message: "请输入用户名" }]}
             field="username"
           >
-            <Input prefix={<IconUser />} placeholder="请输入用户名" />
+            <Input
+              prefix={<IconUser />}
+              placeholder="请输入用户名"
+              autoComplete="off"
+            />
           </FormItem>
           <FormItem
             rules={[{ required: true, message: "请输入密码" }]}
             field="paddword"
           >
-            <Input.Password prefix={<IconLock />} placeholder="请输入密码" />
+            <Input.Password
+              prefix={<IconLock />}
+              placeholder="请输入密码"
+              autoComplete="new-password"
+            />
           </FormItem>
           <FormItem field="remember">
             <Checkbox>自动登录</Checkbox>

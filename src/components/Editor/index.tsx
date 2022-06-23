@@ -15,7 +15,7 @@ import {
 import { createPortal } from "react-dom";
 import { isAdd } from "./EditorMenu/MenuItem";
 import { isEqual } from "lodash";
-import { updateObject } from "../../utils";
+import { updateObject } from "@/utils";
 import { filterComponent, findComponent, findWarpper } from "./utils";
 
 interface IProps {
@@ -42,7 +42,7 @@ interface IProvider {
   position: PositionType;
 }
 
-export const LcEditorContext = createContext<IProvider>({
+export const EditorContext = createContext<IProvider>({
   setActiveComponent: () => {},
   activeComponent: null,
   movingComponent: null,
@@ -204,7 +204,7 @@ export default (props: IProps) => {
   );
 
   return (
-    <LcEditorContext.Provider
+    <EditorContext.Provider
       value={{
         setActiveComponent: (component) => setActiveComponent(component),
         activeComponent,
@@ -244,6 +244,6 @@ export default (props: IProps) => {
           document.body
         )}
       </DndContext>
-    </LcEditorContext.Provider>
+    </EditorContext.Provider>
   );
 };

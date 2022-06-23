@@ -4,7 +4,7 @@ import { useDraggable, useDroppable } from "@dnd-kit/core";
 import classNames from "classnames";
 import { forwardRef, ReactNode, useCallback, useContext } from "react";
 import styles from "./styles/item.module.less";
-import { Direction, LcEditorContext } from ".";
+import { Direction, EditorContext } from ".";
 import { getComponentByName } from "./EditorMenu/data";
 
 const { Col } = Grid;
@@ -85,7 +85,7 @@ const Item = (props: IProps) => {
   });
   const Common = getComponentByName(name);
   const { activeComponent, setActiveComponent, movingComponent, position } =
-    useContext(LcEditorContext);
+    useContext(EditorContext);
 
   const renderDivider = useCallback(() => {
     const isVertical = inline && movingComponent?.inline;
@@ -151,7 +151,13 @@ const Item = (props: IProps) => {
         >
           {container ? (
             <>
-              <Common {...p} className={classNames(styles["lc-item-content-main"], p?.className)}>
+              <Common
+                {...p}
+                className={classNames(
+                  styles["lc-item-content-main"],
+                  p?.className
+                )}
+              >
                 {children.length > 0 &&
                   (children as IComponent[]).map((c, idx) => (
                     <Item item={c} key={idx} index={idx} />

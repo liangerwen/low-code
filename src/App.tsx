@@ -7,7 +7,11 @@ import Layout from "./pages/Layout";
 import Projects from "./pages/Home/Projects";
 import Templates from "./pages/Home/Templates";
 import { filterFlatDeep } from "./utils";
-import { IconApps, IconSelectAll } from "@arco-design/web-react/icon";
+import { IconApps } from "@arco-design/web-react/icon";
+import useTheme from "./components/OnlineTheme/useTheme";
+import { SettingProvider } from "./components/PageSetting";
+import useMode from "./components/ModeSetting/useMode";
+import { LocaleProvider } from "./components/Locale";
 
 export interface CustomRoutes {
   name: string;
@@ -47,6 +51,11 @@ const filterMenuRoutes = filterFlatDeep(
 );
 
 export default function App() {
+  // 初始化模式
+  useMode();
+  // 初始化主题
+  useTheme();
+
   const element = useRoutes([
     {
       path: "/",
@@ -73,5 +82,9 @@ export default function App() {
     },
   ]);
 
-  return element;
+  return (
+    <LocaleProvider>
+      <SettingProvider>{element}</SettingProvider>
+    </LocaleProvider>
+  );
 }

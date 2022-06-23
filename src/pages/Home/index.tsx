@@ -2,8 +2,9 @@ import { Button, Divider, Grid, Layout, Menu } from "@arco-design/web-react";
 import { IconFolderAdd } from "@arco-design/web-react/icon";
 import { useCallback } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { CustomRoutes, MenuRoutes } from "../../App";
-import { concatPath } from "../../utils";
+import { CustomRoutes, MenuRoutes } from "@/App";
+import { concatPath } from "@/utils";
+import { useSettings } from "@/components/PageSetting";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -14,6 +15,8 @@ const path = "/home";
 export default function Home() {
   const location = useLocation();
   const navigator = useNavigate();
+
+  const [setting] = useSettings();
 
   const renderMenus = useCallback((routes: CustomRoutes[], basePath = path) => {
     return routes.map((item) => {
@@ -44,7 +47,7 @@ export default function Home() {
 
   return (
     <Layout>
-      <Layout.Sider width={250}>
+      <Layout.Sider width={setting.menuWidth}>
         <Menu
           className="w-full h-full"
           autoOpen
@@ -65,7 +68,7 @@ export default function Home() {
           {renderMenus(MenuRoutes)}
         </Menu>
       </Layout.Sider>
-      <Layout.Content>
+      <Layout.Content className="bg-[var(--color-bg-3)] p-2">
         <Outlet />
       </Layout.Content>
     </Layout>

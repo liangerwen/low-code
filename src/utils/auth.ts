@@ -1,4 +1,4 @@
-export const TOKEN_KEY = "token";
+import { TOKEN_KEY } from "./const";
 
 export function isLogin() {
   return !!localStorage.getItem(TOKEN_KEY);
