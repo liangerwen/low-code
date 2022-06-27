@@ -38,14 +38,16 @@ export default () => {
   };
 
   return (
-    <Space direction="vertical" className="flex">
+    <Space direction="vertical" className="important-flex px-2">
       <Input.Search
         placeholder="输入关键字过滤组件"
         value={keyWords}
         onChange={(value) => setKeyWords(value)}
       />
       <Alert
-        content={<span className="text-blue-500">请选择组件拖入容器中</span>}
+        content={
+          <span className="color-[var(--primary-6)]">请选择组件拖入容器中</span>
+        }
         closable
       />
       <Collapse
@@ -62,7 +64,7 @@ export default () => {
             header={d.type}
             className={styles["lc-menu-item"]}
           >
-            <Space direction="vertical" className="flex">
+            <Space direction="vertical" className="important-flex">
               {chunk(d.menus, 2).map((row, rowIdx) => (
                 <Row key={rowIdx} gutter={12}>
                   {row.map((col, colIdx) => (

@@ -1,16 +1,16 @@
 import { Trigger, Typography } from "@arco-design/web-react";
 import { SketchPicker } from "react-color";
 import { generate, getRgbStr } from "@arco-design/color";
-import { useSettings } from ".";
 import { setPrimaryColors } from "@/utils/theme";
-import { useLocale } from "../Locale";
+import useLocale from "@/hooks/useLocale";
+import { useSettings } from "..";
 
 function ColorPanel() {
   const theme =
     document.querySelector("body").getAttribute("arco-theme") || "light";
-  const [settings, setSettings] = useSettings();
+  const { pageSetting, setPageSetting } = useSettings();
   const { t } = useLocale();
-  const themeColor = settings.themeColor;
+  const themeColor = pageSetting.themeColor;
   const list = generate(themeColor, { list: true });
 
   return (
@@ -24,7 +24,7 @@ function ColorPanel() {
             color={themeColor}
             onChangeComplete={(color) => {
               const newColor = color.hex;
-              setSettings({ ...settings, themeColor: newColor });
+              setPageSetting({ ...pageSetting, themeColor: newColor });
               const newList = generate(newColor, {
                 list: true,
                 dark: theme === "dark",
@@ -52,7 +52,7 @@ function ColorPanel() {
         ))}
       </ul>
       <Typography.Paragraph style={{ fontSize: 12 }}>
-        {t("settings.color.tooltip")}
+        {t("settings.page.color.tooltip")}
       </Typography.Paragraph>
     </div>
   );

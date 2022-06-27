@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Switch, Divider, InputNumber } from "@arco-design/web-react";
-import { useSettings } from ".";
-import { useLocale } from "../Locale";
+import useLocale from "@/hooks/useLocale";
+import { useSettings } from "..";
 
 export interface BlockProps {
   title?: ReactNode;
@@ -12,7 +12,7 @@ export interface BlockProps {
 
 export default function Block(props: BlockProps) {
   const { title, options, children, withDivider = true } = props;
-  const [settings, setSettings] = useSettings();
+  const { pageSetting, setPageSetting } = useSettings();
   const { t } = useLocale();
 
   return (
@@ -31,13 +31,13 @@ export default function Block(props: BlockProps) {
               {type === "switch" && (
                 <Switch
                   size="small"
-                  checked={!!settings[option.value]}
+                  checked={!!pageSetting[option.value]}
                   onChange={(checked) => {
                     const newSetting = {
-                      ...settings,
+                      ...pageSetting,
                       [option.value]: checked,
                     };
-                    setSettings(newSetting);
+                    setPageSetting(newSetting);
                     // set color week
                     if (checked && option.value === "colorWeek") {
                       document.body.style.filter = "invert(80%)";
@@ -52,15 +52,15 @@ export default function Block(props: BlockProps) {
                 <InputNumber
                   style={{ width: 80 }}
                   size="small"
-                  value={settings.menuWidth}
+                  value={pageSetting.menuWidth}
                   max={500}
                   min={150}
                   onChange={(value) => {
                     const newSetting = {
-                      ...settings,
+                      ...pageSetting,
                       [option.value]: value,
                     };
-                    setSettings(newSetting);
+                    setPageSetting(newSetting);
                   }}
                 />
               )}

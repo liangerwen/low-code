@@ -1,4 +1,4 @@
-import { Space, Trigger } from "@arco-design/web-react";
+import { Space, Trigger, Typography } from "@arco-design/web-react";
 import { IconQuestionCircle } from "@arco-design/web-react/icon";
 import { useDraggable } from "@dnd-kit/core";
 import classNames from "classnames";
@@ -20,12 +20,9 @@ export default (props: Menu) => {
 
   return (
     <Space
-      className={classNames(
-        styles["lc-menu-item-btn"],
-        {
-          [styles["lc-menu-item-btn__dragging"]]: isDragging,
-        }
-      )}
+      className={classNames(styles["lc-menu-item-btn"], {
+        [styles["lc-menu-item-btn__dragging"]]: isDragging,
+      })}
       align="center"
       ref={setNodeRef}
       {...listeners}
@@ -38,8 +35,10 @@ export default (props: Menu) => {
         position="top"
         popup={() => (
           <div className={styles["demo-warpper"]}>
-            <h4 className={styles["demo-title"]}>{props.defaultSchema.title}</h4>
-            <div>{renderCommonComponents(props.demo)}</div>
+            <Typography.Title heading={6}>
+              {props.defaultSchema.title}
+            </Typography.Title>
+            {renderCommonComponents(props.demo)}
           </div>
         )}
       >

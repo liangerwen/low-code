@@ -18,7 +18,7 @@ import {
 } from "@arco-design/web-react/icon";
 import ReactJson from "react-json-view";
 import classNames from "classnames";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { EditorContext } from ".";
 import Item from "./Item";
@@ -26,6 +26,7 @@ import { filterComponent } from "./utils";
 import styles from "./styles/editor-container.module.less";
 import itemStyles from "./styles/item.module.less";
 import { getRenderActionByName } from "./EditorMenu/data";
+import { ModeType, useSettings } from "../Settings";
 
 const { Row } = Grid;
 
@@ -36,7 +37,7 @@ interface IProps {
 
 export const PAGE_FLAG = "page";
 
-export default (props: IProps) => {
+export default function EditorContainer(props: IProps) {
   const { activeComponent, setActiveComponent, position } =
     useContext(EditorContext);
 
@@ -105,13 +106,15 @@ export default (props: IProps) => {
     );
   }, [activeComponent]);
 
+  const { elementMode } = useSettings();
+
   return (
     <Layout className="h-full">
       <Layout.Content className="flex flex-col">
         <Row className={styles["lc-content"]} justify="center">
           <Space className="flex">
             {toolbar.map((tb, idx) => (
-              <Tooltip content={tb.content} color="#9FD4FD" key={idx}>
+              <Tooltip content={tb.content} key={idx}>
                 <Button
                   type="text"
                   icon={tb.icon}
@@ -147,9 +150,10 @@ export default (props: IProps) => {
         </Row>
       </Layout.Content>
       <Layout.Sider
-        className={classNames(styles["lc-content-action"], {
-          "border-none": !activeComponent,
-        })}
+        className={classNames(
+          styles["lc-content-action"],
+          !activeComponent ? "ml-0" : "important-ml-[6px]"
+        )}
         width={activeComponent ? 300 : 0}
       >
         {renderAction()}
@@ -167,8 +171,9 @@ export default (props: IProps) => {
           indentWidth={2}
           iconStyle="square"
           displayDataTypes={false}
+          theme={elementMode === ModeType.DARK ? "mocha" : undefined}
         />
       </Drawer>
     </Layout>
   );
-};
+}

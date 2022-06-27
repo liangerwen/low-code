@@ -16,10 +16,11 @@ import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "@/utils/auth";
 import styles from "./styles/index.module.less";
-import LangSetting, { useLocale } from "../Locale";
-import ModeSetting from "../ModeSetting";
-import OnlineTheme from "../OnlineTheme";
-import PageSetting from "../PageSetting";
+import useLocale from "@/hooks/useLocale";
+import LangSetting from "../Settings/LocaleSetting";
+import ModeSetting from "../Settings/ModeSetting";
+import PageSetting from "../Settings/PageSetting";
+import OnlineTheme from "../Settings/ThemeSetting";
 
 const Row = Grid.Row;
 
@@ -105,7 +106,7 @@ export default function () {
         </Space>
       </Link>
       <Space className="px-2" align="center" size={20}>
-        <Tooltip content={t("navbar.lang.change")}>
+        <Tooltip content="切换语言">
           <LangSetting />
         </Tooltip>
         <ModeSetting />

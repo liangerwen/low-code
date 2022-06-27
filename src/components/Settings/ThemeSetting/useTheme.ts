@@ -1,12 +1,8 @@
 import { Message } from "@arco-design/web-react";
 import { useCallback, useEffect } from "react";
-import { useLocalStorage } from "react-use";
-import { ThemeType } from "@/https/api/theme";
-import { useSettings } from "../PageSetting";
 import { clearPrimaryColors, getCustomOrRgb } from "@/utils/theme";
-import { useLocale } from "../Locale";
-
-export const THEME_KEY = "theme";
+import { ThemeType, useSettings } from "@/components/Settings";
+import useLocale from "@/hooks/useLocale";
 
 const getThemeLinkElement = () =>
   document.getElementById("arco-custom-theme") as HTMLLinkElement;
@@ -17,8 +13,12 @@ const getThemeHref = (theme: ThemeType | null) =>
     : "";
 
 export default function useTheme() {
-  const [theme, _setTheme] = useLocalStorage<ThemeType | null>(THEME_KEY, null);
-  const [settings, setSettings] = useSettings();
+  const {
+    pageSetting,
+    setPageSetting,
+    theme,
+    setTheme: _setTheme,
+  } = useSettings();
 
   const { t } = useLocale();
 
@@ -47,8 +47,8 @@ export default function useTheme() {
       link.onload = () => {
         oldLink && document.body.removeChild(oldLink);
         clearPrimaryColors();
-        setSettings({
-          ...settings,
+        setPageSetting({
+          ...pageSetting,
           themeColor: getCustomOrRgb(),
         });
         resolve(true);
@@ -76,9 +76,11 @@ export default function useTheme() {
       installTheme(theme).then((res) => {
         if (theme) {
           if (res) {
-            Message.success(t("theme.current", { params: [theme.themeName] }));
+            Message.success(
+              t("settings.theme.current", { params: [theme.themeName] })
+            );
           } else {
-            Message.error(t("theme.init-failed"));
+            Message.error(t("settings.theme.init.failed"));
           }
         }
       });

@@ -220,7 +220,7 @@ export default (props: IProps) => {
         <Layout className={styles["lc-layout"]}>
           <Layout.Sider
             width={300}
-            className={classNames(styles["lc-container"], "p-0 mr-2")}
+            className={classNames(styles["lc-container"], "p-0 important-mr-2")}
           >
             <EditorMenu />
           </Layout.Sider>

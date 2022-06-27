@@ -18,19 +18,13 @@ import Man from "@/assets/man.png";
 import Planet1 from "@/assets/planet1.png";
 import Planet3 from "@/assets/planet3.png";
 import Planet4 from "@/assets/planet4.png";
-import {
-  IconLanguage,
-  IconLock,
-  IconSkin,
-  IconUser,
-} from "@arco-design/web-react/icon";
+import { IconLock, IconUser } from "@arco-design/web-react/icon";
 import { login } from "@/utils/auth";
 import { useNavigate } from "react-router-dom";
-import LangSetting, { useLocale } from "@/components/Locale";
-import useMode from "@/components/ModeSetting/useMode";
-import Locale from "@/components/OnlineTheme/locale";
-import ModeSetting from "@/components/ModeSetting";
-import OnlineTheme from "@/components/OnlineTheme";
+import useLocale from "@/hooks/useLocale";
+import LangSetting from "@/components/Settings/LocaleSetting";
+import ModeSetting from "@/components/Settings/ModeSetting";
+import OnlineTheme from "@/components/Settings/ThemeSetting";
 
 const FormItem = Form.Item;
 const { Title } = Typography;
@@ -54,8 +48,7 @@ export default function Login() {
     });
   };
   const navigator = useNavigate();
-  const { t, lang, setLang } = useLocale();
-  const { mode, setMode } = useMode();
+  const { t } = useLocale();
 
   const [form] = Form.useForm<LoginFormProps>();
 
@@ -116,7 +109,7 @@ export default function Login() {
         ))}
       </ul>
       <Layout.Header>
-        <Space className="px-6 py-8 absolute right-0" align="center" size={20}>
+        <Space className="p-8 absolute right-0" align="center" size={20}>
           <Tooltip content={t("navbar.lang.change")}>
             <LangSetting
               iconOnly

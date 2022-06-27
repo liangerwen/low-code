@@ -1,13 +1,13 @@
-import { TOKEN_KEY } from "./const";
+import { getLocal, LocalKeys, removeLocal, setLocal } from "./storage";
 
 export function isLogin() {
-  return !!localStorage.getItem(TOKEN_KEY);
+  return !!getLocal(LocalKeys.TOKEN_KEY);
 }
 
 export function login(token: string) {
-  localStorage.setItem(TOKEN_KEY, token);
+  setLocal(LocalKeys.TOKEN_KEY, token);
 }
 
 export function logout() {
-  localStorage.removeItem(TOKEN_KEY);
+  removeLocal(LocalKeys.TOKEN_KEY);
 }

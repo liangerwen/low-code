@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { CustomRoutes, MenuRoutes } from "@/App";
 import { concatPath } from "@/utils";
-import { useSettings } from "@/components/PageSetting";
+import { useSettings } from "@/components/Settings";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -16,7 +16,7 @@ export default function Home() {
   const location = useLocation();
   const navigator = useNavigate();
 
-  const [setting] = useSettings();
+  const { pageSetting } = useSettings();
 
   const renderMenus = useCallback((routes: CustomRoutes[], basePath = path) => {
     return routes.map((item) => {
@@ -47,7 +47,7 @@ export default function Home() {
 
   return (
     <Layout>
-      <Layout.Sider width={setting.menuWidth}>
+      <Layout.Sider width={pageSetting.menuWidth}>
         <Menu
           className="w-full h-full"
           autoOpen

@@ -15,9 +15,10 @@ import {
   Link,
 } from "@arco-design/web-react";
 import { IconLink, IconRefresh } from "@arco-design/web-react/icon";
-import { getTheme, ThemeType } from "@/https/api/theme";
+import useLocale from "@/hooks/useLocale";
+import { getTheme } from "@/https/api/theme";
+import { ThemeType } from "..";
 import useTheme from "./useTheme";
-import { useLocale } from "../Locale";
 
 const Row = Grid.Row;
 const Col = Grid.Col;
@@ -63,12 +64,12 @@ export default function ({ onClose, onConfirm, visible }: IProps) {
     <Modal
       title={
         <Row justify="space-between" className="mr-[30px]">
-          <span>{t("theme-install")}</span>
+          <span>{t("settings.theme.install")}</span>
           <Input.Search
             readOnly={loading}
             value={keyword}
             loading={loading}
-            placeholder={t("theme-search")}
+            placeholder={t("settings.theme.search")}
             style={{ width: 300 }}
             onChange={setKeyword}
             onSearch={(val) => {
@@ -90,7 +91,7 @@ export default function ({ onClose, onConfirm, visible }: IProps) {
               style={{ float: "left", lineHeight: "32px" }}
               type="secondary"
             >
-              {t("theme.current", { params: [theme.themeName] })}
+              {t("settings.theme.current", { params: [theme.themeName] })}
             </Typography.Text>
             <Button
               type="primary"

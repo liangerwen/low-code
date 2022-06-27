@@ -8,10 +8,9 @@ import Projects from "./pages/Home/Projects";
 import Templates from "./pages/Home/Templates";
 import { filterFlatDeep } from "./utils";
 import { IconApps } from "@arco-design/web-react/icon";
-import useTheme from "./components/OnlineTheme/useTheme";
-import { SettingProvider } from "./components/PageSetting";
-import useMode from "./components/ModeSetting/useMode";
-import { LocaleProvider } from "./components/Locale";
+import { SettingProvider } from "./components/Settings";
+import useMode from "./components/Settings/ModeSetting/useMode";
+import useTheme from "./components/Settings/ThemeSetting/useTheme";
 
 export interface CustomRoutes {
   name: string;
@@ -82,9 +81,5 @@ export default function App() {
     },
   ]);
 
-  return (
-    <LocaleProvider>
-      <SettingProvider>{element}</SettingProvider>
-    </LocaleProvider>
-  );
+  return <SettingProvider>{element}</SettingProvider>;
 }

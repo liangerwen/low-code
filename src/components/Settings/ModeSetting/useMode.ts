@@ -1,23 +1,17 @@
-import { useCallback, useEffect } from "react";
-import { useLocalStorage } from "react-use";
+import { ModeType, useSettings } from "@/components/Settings";
+import { useCallback, useEffect, useState } from "react";
 
-export const THEME_KEY = "mode";
+export const getElementMode = () =>
+  document.body.getAttribute("arco-theme") === ModeType.DARK
+    ? ModeType.DARK
+    : ModeType.LGIHT;
 
-export const enum ModeType {
-  LGIHT = "light",
-  DARK = "dark",
-  AUTO = "auto",
-}
+export const setElementMode = (mode: ModeType.LGIHT | ModeType.DARK) => {
+  document.body.setAttribute("arco-theme", mode);
+};
 
 export default function useMode() {
-  const [mode, _setMode] = useLocalStorage<ModeType>(THEME_KEY, ModeType.LGIHT);
-
-  const setElementMode = useCallback(
-    (mode: ModeType.LGIHT | ModeType.DARK) => {
-      document.body.setAttribute("arco-theme", mode);
-    },
-    [mode, _setMode]
-  );
+  const { mode, setMode: _setMode } = useSettings();
 
   const setMode = useCallback(
     (mode: ModeType) => {
@@ -41,7 +35,7 @@ export default function useMode() {
         setElementMode(ModeType.LGIHT);
       }
     },
-    [mode, _setMode]
+    []
   );
 
   useEffect(() => {
@@ -51,12 +45,12 @@ export default function useMode() {
       media.addEventListener("change", modeChangeListener);
     }
     return () => media.removeEventListener("change", modeChangeListener);
-  }, [modeChangeListener]);
+  }, [modeChangeListener, mode]);
 
   useEffect(() => {
-    const currentMode = document.body.getAttribute("arco-theme");
+    const currentMode = getElementMode();
     if (currentMode !== mode && mode !== ModeType.AUTO) {
-      document.body.setAttribute("arco-theme", mode);
+      setElementMode(mode);
     }
   }, []);
 

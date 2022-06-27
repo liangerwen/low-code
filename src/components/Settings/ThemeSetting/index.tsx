@@ -2,6 +2,7 @@ import { useState } from "react";
 import { IconProps, IconSkin } from "@arco-design/web-react/icon";
 import { Button, ButtonProps } from "@arco-design/web-react";
 import ThemeModal from "./ThemeModal";
+import IconButton from "@/components/IconButton";
 
 export default function OnlineTheme(
   props: { iconOnly?: boolean } & ButtonProps & IconProps
@@ -13,11 +14,9 @@ export default function OnlineTheme(
       {iconOnly ? (
         <IconSkin {...rest} onClick={() => setThemeModalVisible(true)} />
       ) : (
-        <Button
+        <IconButton
           {...rest}
           icon={<IconSkin />}
-          shape="circle"
-          type="secondary"
           onClick={() => setThemeModalVisible(true)}
         />
       )}
