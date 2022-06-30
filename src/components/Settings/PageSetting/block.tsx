@@ -54,7 +54,7 @@ export default function Block(props: BlockProps) {
                   size="small"
                   value={pageSetting.menuWidth}
                   max={500}
-                  min={150}
+                  min={200}
                   onChange={(value) => {
                     const newSetting = {
                       ...pageSetting,

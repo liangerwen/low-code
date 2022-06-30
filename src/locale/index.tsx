@@ -1,6 +1,3 @@
-import React, { createContext, useCallback, useContext } from "react";
-import { useLocalStorage } from "react-use";
-
 const componentsLocale = import.meta.globEager<Module<ILocale>>(
   "../components/**/locale/index.(js|ts)"
 );

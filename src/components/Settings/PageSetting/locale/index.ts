@@ -13,7 +13,7 @@ export default {
     "settings.page.color.tooltip": "根据主题颜色生成的 10 个梯度色",
   },
   "en-US": {
-    "settings.page.title": "Settings",
+    "settings.page.title": "Page Settings",
     "settings.page.themeColor": "Theme Color",
     "settings.page.content": "Content Setting",
     "settings.page.navbar": "Navbar",

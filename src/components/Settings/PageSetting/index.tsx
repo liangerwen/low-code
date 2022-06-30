@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, Drawer } from "@arco-design/web-react";
+import { cloneElement, useState } from "react";
+import { Drawer } from "@arco-design/web-react";
 import { IconSettings } from "@arco-design/web-react/icon";
 import Block from "./block";
 import ColorPanel from "./color";
@@ -18,7 +18,7 @@ export default function PageSetting(props: SettingProps) {
   return (
     <>
       {trigger ? (
-        React.cloneElement(trigger as React.ReactElement, {
+        cloneElement(trigger as React.ReactElement, {
           onClick: () => {
             setVisible(true);
           },

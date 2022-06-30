@@ -11,3 +11,7 @@ export function login(token: string) {
 export function logout() {
   removeLocal(LocalKeys.TOKEN_KEY);
 }
+
+export function getToken() {
+  return getLocal(LocalKeys.TOKEN_KEY);
+}

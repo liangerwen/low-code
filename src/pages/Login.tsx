@@ -11,6 +11,12 @@ import {
 import useMouse from "@/hooks/useMouse";
 import { useEffect, useMemo, useState } from "react";
 import { throttle } from "lodash";
+import { login } from "@/utils/auth";
+import { useLocation, useNavigate } from "react-router-dom";
+import useLocale from "@/hooks/useLocale";
+import LangSetting from "@/components/Settings/LocaleSetting";
+import ModeSetting from "@/components/Settings/ModeSetting";
+import OnlineTheme from "@/components/Settings/ThemeSetting";
 
 import Background from "@/assets/background.jpg";
 import Earth from "@/assets/earth.png";
@@ -19,12 +25,6 @@ import Planet1 from "@/assets/planet1.png";
 import Planet3 from "@/assets/planet3.png";
 import Planet4 from "@/assets/planet4.png";
 import { IconLock, IconUser } from "@arco-design/web-react/icon";
-import { login } from "@/utils/auth";
-import { useNavigate } from "react-router-dom";
-import useLocale from "@/hooks/useLocale";
-import LangSetting from "@/components/Settings/LocaleSetting";
-import ModeSetting from "@/components/Settings/ModeSetting";
-import OnlineTheme from "@/components/Settings/ThemeSetting";
 
 const FormItem = Form.Item;
 const { Title } = Typography;
@@ -48,6 +48,7 @@ export default function Login() {
     });
   };
   const navigator = useNavigate();
+  const location = useLocation();
   const { t } = useLocale();
 
   const [form] = Form.useForm<LoginFormProps>();
@@ -110,7 +111,7 @@ export default function Login() {
       </ul>
       <Layout.Header>
         <Space className="p-8 absolute right-0" align="center" size={20}>
-          <Tooltip content={t("navbar.lang.change")}>
+          <Tooltip content={t("navbar.lang")}>
             <LangSetting
               iconOnly
               className="text-2xl cursor-pointer important-color-white"
@@ -135,6 +136,7 @@ export default function Login() {
           form={form}
           onSubmit={(form) => {
             login(JSON.stringify(form));
+            console.log(location);
             navigator("/");
           }}
         >

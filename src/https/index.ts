@@ -1,31 +1,63 @@
-import { IParams, parseUrlParams } from "../utils/query";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { getToken } from "@/utils/auth";
+import { Message } from "@arco-design/web-react";
 
-interface GetConfig {
-  params: IParams;
-  headers?: HeadersInit;
+export interface HttpResponse<T = unknown> {
+  status: number;
+  msg: string;
+  code: number;
+  data: T;
 }
 
-interface PostConfig {
-  body: BodyInit;
-  headers?: HeadersInit;
-}
+const service = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  timeout: 30000,
+});
 
-export default {
-  get<T>(url: string, { params, headers }: GetConfig) {
-    return fetch(parseUrlParams(url, params), {
-      headers: {
-        "Content-Type": "application/json",
-        ...headers,
-      },
-    }).then<T>((res) => res.json());
+service.interceptors.request.use(
+  (config: AxiosRequestConfig) => {
+    const token = getToken();
+    if (token) {
+      if (!config.headers) {
+        config.headers = {};
+      }
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
   },
-  post<T>(url: string, { body, headers }: PostConfig) {
-    return fetch(url, {
-      body,
-      headers: {
-        "Content-Type": "application/json",
-        ...headers,
-      },
-    }).then<T>((res) => res.json());
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+service.interceptors.response.use(
+  (response: AxiosResponse<HttpResponse>) => {
+    const {
+      data: res,
+      config: { baseURL },
+      request: { responseURL },
+    } = response;
+    // 第三方公共api
+    if (responseURL && !responseURL.startsWith(baseURL)) {
+      return response;
+    }
+    // 自己的api
+    if (res.code !== 20000) {
+      Message.error({
+        content: res.msg || "Error",
+        duration: 5 * 1000,
+      });
+      return Promise.reject(new Error(res.msg || "Error"));
+    }
+    return response;
   },
-};
+  (error) => {
+    Message.error({
+      content: error.msg || "Request Error",
+      duration: 5 * 1000,
+    });
+    return Promise.reject(error);
+  }
+);
+
+export default service;
