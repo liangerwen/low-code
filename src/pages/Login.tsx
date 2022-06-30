@@ -17,6 +17,7 @@ import useLocale from "@/hooks/useLocale";
 import LangSetting from "@/components/Settings/LocaleSetting";
 import ModeSetting from "@/components/Settings/ModeSetting";
 import OnlineTheme from "@/components/Settings/ThemeSetting";
+import { parseSearch } from "@/utils/query";
 
 import Background from "@/assets/background.jpg";
 import Earth from "@/assets/earth.png";
@@ -137,7 +138,8 @@ export default function Login() {
           onSubmit={(form) => {
             login(JSON.stringify(form));
             console.log(location);
-            navigator("/");
+            const query = parseSearch<{ redirect: string }>(location.search);
+            navigator(query.redirect || "/");
           }}
         >
           <Typography className="relative">
