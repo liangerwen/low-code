@@ -2,7 +2,7 @@ import { Divider, Grid, Space } from "@arco-design/web-react";
 import { IconDragDot } from "@arco-design/web-react/icon";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import classNames from "classnames";
-import { forwardRef, ReactNode, useCallback, useContext } from "react";
+import { forwardRef, ReactNode, useCallback, useContext, useMemo } from "react";
 import styles from "./styles/item.module.less";
 import { Direction, EditorContext } from ".";
 import { getComponentByName } from "./EditorMenu/data";
@@ -75,12 +75,12 @@ const Item = (props: IProps) => {
     setNodeRef: setDragRef,
     isDragging,
   } = useDraggable({
-    id: id!,
+    id,
     data: item,
     attributes: { tabIndex: index },
   });
   const { setNodeRef: setDropRef } = useDroppable({
-    id: id!,
+    id,
     data: item,
   });
   const Common = getComponentByName(name);
@@ -109,6 +109,16 @@ const Item = (props: IProps) => {
     );
   }, [position, inline]);
 
+  const isActive = useMemo(() => activeComponent?.id === id, [activeComponent]);
+  const isEnter = useMemo(
+    () =>
+      container &&
+      position &&
+      position.id === id &&
+      position.direction === Direction.MIDDLE,
+    [position]
+  );
+
   return (
     <>
       {position &&
@@ -121,12 +131,8 @@ const Item = (props: IProps) => {
           [styles["lc-item__inline"]]: inline,
           [styles["lc-item__dragging"]]: isDragging,
           [styles["lc-item__hover"]]: !movingComponent,
-          [styles["lc-item__active"]]: activeComponent?.id === id,
-          [styles["lc-item__enter"]]:
-            container &&
-            position &&
-            position.id === id &&
-            position.direction === Direction.MIDDLE,
+          [styles["lc-item__active"]]: isActive,
+          [styles["lc-item__enter"]]: isEnter,
         })}
         inline={inline}
         span={24}

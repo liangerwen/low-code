@@ -1,6 +1,6 @@
 import { Button, Tabs } from "@arco-design/web-react";
 import { IconCheckCircleFill } from "@arco-design/web-react/icon";
-import { useState } from "react";
+import PropForm from "./PropForm";
 
 const name = "a-button";
 
@@ -14,13 +14,17 @@ const defaultSchema = {
   inline: true,
 };
 
-const action = (props: { schema: IComponent }) => {
-  const [color, setColor] = useState("rgb(22,93,255)");
+const action = (props: {
+  schema: IComponent;
+  onChange: (schema: IComponent) => void;
+}) => {
+
   return (
-    <Tabs>
-      <Tabs.TabPane title="属性" key="1"></Tabs.TabPane>
-      <Tabs.TabPane title="样式" key="2"></Tabs.TabPane>
-      <Tabs.TabPane title="数据源" key="3"></Tabs.TabPane>
+    <Tabs justify>
+      <Tabs.TabPane title="属性" key="1" className="px-4 overflow-auto">
+        <PropForm {...props} />
+      </Tabs.TabPane>
+      <Tabs.TabPane title="事件" key="2"></Tabs.TabPane>
     </Tabs>
   );
 };

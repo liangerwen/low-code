@@ -32,16 +32,3 @@ export const deepArrayPick = (arr, deepKeys, pickKeys) => {
     return ret;
   });
 };
-
-export const concatPath = (path: string, ...paths: string[]) => {
-  let ret = paths.reduce((pre, cur) => {
-    if (cur) {
-      return (
-        (pre ? (pre.endsWith("/") ? pre : pre + "/") : pre) +
-        (cur.startsWith("/") ? cur.slice(1) : cur)
-      );
-    }
-    return pre;
-  }, path);
-  return ret.startsWith("/") ? ret || "/" : "/" + ret;
-};

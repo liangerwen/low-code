@@ -1,7 +1,13 @@
 import { Layout } from "@arco-design/web-react";
 import classNames from "classnames";
 import { v4 as uuidv4 } from "uuid";
-import { createContext, useCallback, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import EditorContainer, { PAGE_FLAG } from "./EditorContainer";
 import EditorMenu from "./EditorMenu";
 import styles from "./styles/index.module.less";
@@ -16,7 +22,12 @@ import { createPortal } from "react-dom";
 import { isAdd } from "./EditorMenu/MenuItem";
 import { isEqual } from "lodash";
 import { updateObject } from "@/utils";
-import { filterComponent, findComponent, findWarpper } from "./utils";
+import {
+  filterComponent,
+  findComponent,
+  findWarpper,
+  formatSchemaIcon,
+} from "./utils";
 
 interface IProps {
   schema: ISchema;
@@ -203,6 +214,11 @@ export default (props: IProps) => {
     [props.schema, position, movingComponent]
   );
 
+  const schema = useMemo(
+    () => formatSchemaIcon(props.schema, "from"),
+    [props.schema]
+  );
+
   return (
     <EditorContext.Provider
       value={{
@@ -226,8 +242,10 @@ export default (props: IProps) => {
           </Layout.Sider>
           <Layout.Content className={styles["lc-container"]}>
             <EditorContainer
-              schema={props.schema}
-              onChange={(schema) => props.onChange(schema)}
+              schema={schema}
+              onChange={(schema) =>
+                props.onChange(formatSchemaIcon(schema, "to"))
+              }
             />
           </Layout.Content>
         </Layout>

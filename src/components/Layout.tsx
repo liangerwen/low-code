@@ -1,9 +1,11 @@
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   Breadcrumb,
+  Button,
   Layout as ArcoLayout,
   Menu,
   Message,
+  Grid,
 } from "@arco-design/web-react";
 import NavBar from "../components/NavBar";
 import {
@@ -19,12 +21,14 @@ import routes, { CustomRoutes } from "@/Router";
 import Footer from "./Footer";
 import useLocale from "@/hooks/useLocale";
 import { useSettings } from "./Settings";
-import { concatPath } from "@/utils";
 import classNames from "classnames";
 import { getParentRoute } from "@/utils/route";
+import { concatPath } from "@/utils/url";
+import { IconPlus, IconPlusCircle } from "@arco-design/web-react/icon";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
+const Row = Grid.Row;
 
 interface IProps {
   widthRouter?: boolean;
@@ -123,7 +127,7 @@ export default function Layout(props: IProps) {
           <NavBar />
         </ArcoLayout.Header>
       )}
-      <ArcoLayout.Content>
+      <ArcoLayout.Content className="h-[calc(100vh-56px)]">
         {menu ? (
           <ArcoLayout className="h-full">
             {pageSetting.menu && (
@@ -143,6 +147,13 @@ export default function Layout(props: IProps) {
                   }}
                   hasCollapseButton
                 >
+                  <Row justify="center" className="py-8">
+                    <Button type="outline" icon={<IconPlus />} onClick={()=>{
+                      navigate('/new')
+                    }}>
+                      新建
+                    </Button>
+                  </Row>
                   {renderMenus(routes)}
                 </Menu>
               </ArcoLayout.Sider>

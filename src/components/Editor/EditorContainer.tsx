@@ -22,11 +22,12 @@ import { useCallback, useContext, useMemo, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { EditorContext } from ".";
 import Item from "./Item";
-import { filterComponent } from "./utils";
+import { filterComponent, findComponent, formatSchemaIcon } from "./utils";
 import styles from "./styles/editor-container.module.less";
 import itemStyles from "./styles/item.module.less";
 import { getRenderActionByName } from "./EditorMenu/data";
 import { ModeType, useSettings } from "../Settings";
+import { updateObject } from "@/utils";
 
 const { Row } = Grid;
 
@@ -99,14 +100,35 @@ export default function EditorContainer(props: IProps) {
     if (!activeComponent) return null;
     const ComponentAction = getRenderActionByName(activeComponent.name);
     if (!ComponentAction) return null;
+    const schema = findComponent(
+      props.schema,
+      (c) => c.id === activeComponent.id
+    );
     return (
-      <div className="bg-white">
-        <ComponentAction schema={activeComponent} />
+      <div className="h-full relative">
+        <ComponentAction
+          schema={schema}
+          onChange={(component) => {
+            const newSchema = updateObject(props.schema, (schema) => {
+              const currentComponent = findComponent(
+                schema,
+                (c) => c.id === component.id
+              );
+              Object.assign(currentComponent, component);
+            });
+            props.onChange(newSchema);
+          }}
+        />
       </div>
     );
-  }, [activeComponent]);
+  }, [activeComponent, props.schema]);
 
   const { elementMode } = useSettings();
+
+  const schema = useMemo(
+    () => formatSchemaIcon(props.schema, "to"),
+    [props.schema]
+  );
 
   return (
     <Layout className="h-full">
@@ -167,7 +189,7 @@ export default function EditorContainer(props: IProps) {
         placement="left"
       >
         <ReactJson
-          src={props.schema as object}
+          src={schema as object}
           indentWidth={2}
           iconStyle="square"
           displayDataTypes={false}

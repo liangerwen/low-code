@@ -2,21 +2,13 @@ import { IconProps } from "@arco-design/web-react/icon";
 import { FC } from "react";
 import ErrorComponent from "../../ErrorComponent";
 
-const generalExamples = import.meta.globEager<Module<Menu>>(
-  "./general/*.ts(x)?"
-);
-const datashowExamples = import.meta.globEager<Module<Menu>>(
-  "./datashow/*.ts(x)?"
-);
-const dataInputExamples = import.meta.globEager<Module<Menu>>(
-  "./datainput/*.ts(x)?"
-);
+const examples = import.meta.globEager<
+  Module<{ type: string; menus: Menu[]; idx: number }>
+>("./*/index.ts(x)?");
 
-const modules = {
-  ...generalExamples,
-  ...datashowExamples,
-  ...dataInputExamples,
-};
+const components = Object.values(examples)
+  .map((e) => e.default.menus)
+  .flat();
 
 type Mapping = {
   [key: string]: React.FC<any>;
@@ -28,23 +20,22 @@ export type Menu = {
   icon: FC<IconProps>;
   demo: IComponent[];
   defaultSchema: IComponent;
-  action?: FC<{ schema: IComponent }>;
+  action?: FC<{ schema: IComponent; onChange: (schema: IComponent) => void }>;
 };
 
-const getExamplesData = (example: Record<string, Module<Menu>>) =>
-  Object.keys(example).map((key) => example[key].default);
-
 export const getComponentByName = (name: string) => {
-  const mappingArr = Object.values(modules);
+  const mappingArr = Object.values(components);
   const mapping = mappingArr.reduce<Mapping>((acc, cur) => {
-    acc = { ...acc, ...cur.default.componentMap };
+    acc = { ...acc, ...cur.componentMap };
     return acc;
   }, {});
   return mapping[name] || ErrorComponent;
 };
 
 export const getJsonByName = (name: string) => {
-  const modulesArr = Object.keys(modules).map((key) => modules[key].default);
+  const modulesArr = Object.keys(examples).map(
+    (key) => components[key].default
+  );
   const mapping = modulesArr.reduce<{ [key: string]: IComponent }>(
     (acc, cur: Menu) => {
       const component = cur.defaultSchema;
@@ -57,22 +48,11 @@ export const getJsonByName = (name: string) => {
 };
 
 export const getRenderActionByName = (name: string) => {
-  const mappingArr = Object.values(modules);
-  const component = mappingArr.find((cur) => cur.default.name === name);
-  return component?.default?.action;
+  const mappingArr = Object.values(components);
+  const component = mappingArr.find((cur) => cur.name === name);
+  return component?.action;
 };
 
-export default [
-  {
-    type: "通用",
-    menus: getExamplesData(generalExamples),
-  },
-  {
-    type: "数据展示",
-    menus: getExamplesData(datashowExamples),
-  },
-  {
-    type: "数据输入",
-    menus: getExamplesData(dataInputExamples),
-  },
-];
+export default Object.values(examples)
+  .map((e) => e.default)
+  .sort((a, b) => a.idx - b.idx);

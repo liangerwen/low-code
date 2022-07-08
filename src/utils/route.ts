@@ -1,5 +1,5 @@
 import { CustomRoutes } from "@/Router";
-import { concatPath } from ".";
+import { concatPath } from "./url";
 
 export const getParentRoute = (routes: CustomRoutes[], path: string) => {
   let ret, transferPath;

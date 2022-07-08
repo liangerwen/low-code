@@ -17,7 +17,6 @@ import useLocale from "@/hooks/useLocale";
 import LangSetting from "@/components/Settings/LocaleSetting";
 import ModeSetting from "@/components/Settings/ModeSetting";
 import OnlineTheme from "@/components/Settings/ThemeSetting";
-import { parseSearch } from "@/utils/query";
 
 import Background from "@/assets/background.jpg";
 import Earth from "@/assets/earth.png";
@@ -26,6 +25,7 @@ import Planet1 from "@/assets/planet1.png";
 import Planet3 from "@/assets/planet3.png";
 import Planet4 from "@/assets/planet4.png";
 import { IconLock, IconUser } from "@arco-design/web-react/icon";
+import { parseSearch } from "@/utils/url";
 
 const FormItem = Form.Item;
 const { Title } = Typography;
@@ -137,7 +137,6 @@ export default function Login() {
           form={form}
           onSubmit={(form) => {
             login(JSON.stringify(form));
-            console.log(location);
             const query = parseSearch<{ redirect: string }>(location.search);
             navigator(query.redirect || "/");
           }}
