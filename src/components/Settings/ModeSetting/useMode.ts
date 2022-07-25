@@ -1,5 +1,5 @@
 import { ModeType, useSettings } from "@/components/Settings";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 
 export const getElementMode = () =>
   document.body.getAttribute("arco-theme") === ModeType.DARK

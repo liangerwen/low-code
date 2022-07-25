@@ -24,7 +24,7 @@ import { useSettings } from "./Settings";
 import classNames from "classnames";
 import { getParentRoute } from "@/utils/route";
 import { concatPath } from "@/utils/url";
-import { IconPlus, IconPlusCircle } from "@arco-design/web-react/icon";
+import { IconPlus } from "@arco-design/web-react/icon";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -145,7 +145,7 @@ export default function Layout(props: IProps) {
                       navigate(path);
                     }
                   }}
-                  hasCollapseButton
+                  // hasCollapseButton
                 >
                   <Row justify="center" className="py-8">
                     <Button type="outline" icon={<IconPlus />} onClick={()=>{

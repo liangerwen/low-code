@@ -1,15 +1,8 @@
 import { updateObject } from "@/utils";
-import {
-  Form,
-  Grid,
-  Input,
-  Select,
-  Switch,
-} from "@arco-design/web-react";
+import { Form, Grid, Input, Select, Switch } from "@arco-design/web-react";
 import { omit } from "lodash";
 import { useCallback, useEffect } from "react";
-import IconModal from "../../IconModal";
-import EditorIcon from "../../icons";
+import IconModal from "../../../components/IconModal";
 
 const FormItem = Form.Item;
 const useForm = Form.useForm;
@@ -22,6 +15,11 @@ interface ButtonProps {
   size: "mini" | "small" | "large";
   text: string;
   icon: string;
+  shape: "circle" | "round" | "square";
+  disabled: boolean;
+  iconOnly: boolean;
+  loading: boolean;
+  long: boolean;
 }
 
 const PropForm = (props: {
@@ -33,22 +31,18 @@ const PropForm = (props: {
   const onChange = useCallback(
     (_, form) => {
       const newSchema = updateObject(props.schema, (schema) => {
-        schema.props = {
-          ...(schema.props || {}),
+        schema.attrs = {
+          ...(schema.attrs || {}),
           ...omit(form, "text"),
         };
         if (form.icon) {
-          schema.props = {
-            ...(schema.props || {}),
-            icon: <EditorIcon name={form.icon} />,
-            $$icon: {
+          schema.attrs = {
+            ...(schema.attrs || {}),
+            icon: {
               isIcon: true,
               name: form.icon,
             },
           };
-        } else {
-          delete schema.props.icon;
-          delete schema.props.$$icon;
         }
         schema.inline = !form.long;
         schema.children = form.text ? [form.text] : null;
@@ -59,10 +53,10 @@ const PropForm = (props: {
   );
 
   useEffect(() => {
-    const btnProps = props.schema.props || {};
+    const btnProps = props.schema.attrs || {};
+    form.resetFields();
     form.setFieldsValue({
       ...btnProps,
-      icon: btnProps.icon && (btnProps.$$icon.name as string),
       text: props.schema.children?.[0] as string,
     });
   }, [props.schema]);

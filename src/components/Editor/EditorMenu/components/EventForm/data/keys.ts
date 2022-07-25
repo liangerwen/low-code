@@ -1,0 +1,26 @@
+const enum MENUKEYS {
+  OPEN_PAGE = "openPage",
+  BACK_PAGE = "backPage",
+  REFRESH_PAGE = "refreshPage",
+  OPEN_MODAL = "openModal",
+  CLOSE_MODAL = "closeModal",
+  OPEN_DRAWER = "openDrawer",
+  CLOSE_DRAWER = "closeDrawer",
+  MESSAGE = "message",
+  SUBMIT_FORM = "submitForm",
+  VALIDATE_FORM = "validateForm",
+  CLEAR_FORM = "clearForm",
+  RESET_FORM = "resetForm",
+  REQUEST = "request",
+  DOWNLOAD_FILE = "downloadFile",
+  UPLOAD_FILE = "uploadFile",
+  REFRESH_COMPONENT = "refreshComponent",
+  DISPLAY_COMPONENT = "displayComponent",
+  HIDDEN_COMPONENT = "hiddenComponent",
+  SET_COMPONENT_ATTRS = "setComponentAttrs",
+  TRIGGER_COMPONENT_EVENT = "triggerComponentEvent",
+  COPY = "copy",
+  CUSTOM = "custom",
+}
+
+export default MENUKEYS;

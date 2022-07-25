@@ -6,7 +6,7 @@ const name = "a-link";
 const defaultSchema = {
   name,
   title: "链接",
-  props: {
+  attrs: {
     href: "link",
     icon: "222",
   },

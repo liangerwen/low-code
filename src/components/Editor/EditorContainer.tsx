@@ -18,11 +18,11 @@ import {
 } from "@arco-design/web-react/icon";
 import ReactJson from "react-json-view";
 import classNames from "classnames";
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { EditorContext } from ".";
 import Item from "./Item";
-import { filterComponent, findComponent, formatSchemaIcon } from "./utils";
+import { filterComponent, findComponent } from "./utils";
 import styles from "./styles/editor-container.module.less";
 import itemStyles from "./styles/item.module.less";
 import { getRenderActionByName } from "./EditorMenu/data";
@@ -53,12 +53,16 @@ export default function EditorContainer(props: IProps) {
   };
 
   const [visible, setVisible] = useState(false);
+  const [json, setJson] = useState({});
 
   const toolbar = [
     {
       content: "查看JSON",
       icon: <IconCodeBlock />,
-      onClick: () => setVisible(true),
+      onClick: () => {
+        setVisible(true);
+        setJson(props.schema);
+      },
     },
     {
       content: "复制",
@@ -125,10 +129,10 @@ export default function EditorContainer(props: IProps) {
 
   const { elementMode } = useSettings();
 
-  const schema = useMemo(
-    () => formatSchemaIcon(props.schema, "to"),
-    [props.schema]
-  );
+  // const schema = useMemo(
+  //   () => formatSchemaByCustomProps(props.schema, "to"),
+  //   [props.schema]
+  // );
 
   return (
     <Layout className="h-full">
@@ -189,7 +193,7 @@ export default function EditorContainer(props: IProps) {
         placement="left"
       >
         <ReactJson
-          src={schema as object}
+          src={json as object}
           indentWidth={2}
           iconStyle="square"
           displayDataTypes={false}

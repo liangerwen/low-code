@@ -4,12 +4,16 @@ import vitePluginForArco from "@arco-plugins/vite-react";
 import Unocss from "unocss/vite";
 import { presetUno, presetIcons } from "unocss";
 import commpressPlugin from "vite-plugin-compression";
+import monacoEditorPlugin from "vite-plugin-monaco-editor";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
     vitePluginForArco(),
+    monacoEditorPlugin({
+      languageWorkers: ["editorWorkerService", "typescript"],
+    }),
     Unocss({
       presets: [
         presetUno(),

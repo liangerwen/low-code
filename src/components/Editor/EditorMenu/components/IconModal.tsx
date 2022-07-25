@@ -16,13 +16,13 @@ import iconsJson from "@arco-design/web-react/icon/icons.json";
 import classNames from "classnames";
 import { chunk, setWith } from "lodash";
 import { cloneElement, useCallback, useEffect, useMemo, useState } from "react";
-import EditorIcon from "./icons";
+import EditorIcon from "./EditorIcon";
 
 const Row = Grid.Row;
 const Col = Grid.Col;
 
 interface IProps {
-  value?: string;
+  value?: IconType;
   onChange?: (val: string) => void;
   trigger?: React.ReactNode;
 }
@@ -65,18 +65,21 @@ export default (props: IProps) => {
     }
   }, [iconList, isEmpty]);
 
-  const toggleHidden = useCallback((key) => {
-    const idx = hiddenList.findIndex((i) => i === key);
-    if (idx >= 0) {
-      setHiddenList(
-        updateObject(hiddenList, (list) => {
-          list.splice(idx, 1);
-        })
-      );
-    } else {
-      setHiddenList([...hiddenList, key]);
-    }
-  }, [hiddenList]);
+  const toggleHidden = useCallback(
+    (key) => {
+      const idx = hiddenList.findIndex((i) => i === key);
+      if (idx >= 0) {
+        setHiddenList(
+          updateObject(hiddenList, (list) => {
+            list.splice(idx, 1);
+          })
+        );
+      } else {
+        setHiddenList([...hiddenList, key]);
+      }
+    },
+    [hiddenList]
+  );
 
   return (
     <>
@@ -89,7 +92,7 @@ export default (props: IProps) => {
       ) : (
         <Button
           onClick={() => setVisible(true)}
-          icon={props.value && <EditorIcon name={props.value} />}
+          icon={props.value && <EditorIcon name={props.value.name} />}
         >
           点击选择图标
         </Button>

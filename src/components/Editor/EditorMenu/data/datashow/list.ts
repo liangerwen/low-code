@@ -6,7 +6,7 @@ const name = "a-list";
 const defaultSchema = {
   name,
   title: "列表",
-  props: {
+  attrs: {
     type: "primary",
   },
   children: [

@@ -6,7 +6,7 @@ const name = "a-input";
 const defaultSchema = {
   name,
   title: "输入框",
-  props: {
+  attrs: {
     placeholder: "Please enter something",
     allowClear: true,
   },

@@ -6,7 +6,7 @@ const name = "a-table";
 const defaultSchema = {
   name,
   title: "表格",
-  props: {
+  attrs: {
     columns: [
       {
         title: "Name",

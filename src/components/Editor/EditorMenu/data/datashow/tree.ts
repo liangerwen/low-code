@@ -6,7 +6,7 @@ const name = "a-tree";
 const defaultSchema = {
   name,
   title: "树",
-  props: {
+  attrs: {
     treeData: [
       {
         title: "Trunk 0-0",

@@ -1,13 +1,7 @@
 import { Layout } from "@arco-design/web-react";
 import classNames from "classnames";
 import { v4 as uuidv4 } from "uuid";
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useCallback, useState } from "react";
 import EditorContainer, { PAGE_FLAG } from "./EditorContainer";
 import EditorMenu from "./EditorMenu";
 import styles from "./styles/index.module.less";
@@ -22,17 +16,7 @@ import { createPortal } from "react-dom";
 import { isAdd } from "./EditorMenu/MenuItem";
 import { isEqual } from "lodash";
 import { updateObject } from "@/utils";
-import {
-  filterComponent,
-  findComponent,
-  findWarpper,
-  formatSchemaIcon,
-} from "./utils";
-
-interface IProps {
-  schema: ISchema;
-  onChange: (value: ISchema) => void;
-}
+import { filterComponent, findComponent, findWarpper } from "./utils";
 
 export enum Direction {
   PREV,
@@ -60,7 +44,8 @@ export const EditorContext = createContext<IProvider>({
   position: null,
 });
 
-export default (props: IProps) => {
+export default () => {
+  const [schema, setSchema] = useState<ISchema>([]);
   const [activeComponent, setActiveComponent] = useState<IComponent | null>(
     null
   );
@@ -107,7 +92,7 @@ export default (props: IProps) => {
 
         // 当前元素是目标元素的祖父
         const currentComponent = findComponent(
-          props.schema,
+          schema,
           (c) => c?.id === activeId
         );
         if (
@@ -161,7 +146,7 @@ export default (props: IProps) => {
         active: { id },
       } = e;
       if (position && movingComponent) {
-        let newSchema = props.schema;
+        let newSchema = schema;
         const targetId = position.id,
           targetDirection = position.direction;
         // 如果不是新增就先移除当前组件
@@ -200,8 +185,8 @@ export default (props: IProps) => {
             }
           });
         }
-        if (!isEqual(props.schema, newSchema)) {
-          props.onChange(newSchema);
+        if (!isEqual(schema, newSchema)) {
+          setSchema(newSchema);
           if (isAdd(id)) {
             setActiveComponent(movingComponent);
           }
@@ -211,13 +196,13 @@ export default (props: IProps) => {
       setPosition(null);
       setMovingComponent(null);
     },
-    [props.schema, position, movingComponent]
+    [schema, position, movingComponent]
   );
 
-  const schema = useMemo(
-    () => formatSchemaIcon(props.schema, "from"),
-    [props.schema]
-  );
+  // const schema = useMemo(
+  //   () => formatSchemaByCustomProps(props.schema, "from"),
+  //   [props.schema]
+  // );
 
   return (
     <EditorContext.Provider
@@ -241,12 +226,7 @@ export default (props: IProps) => {
             <EditorMenu />
           </Layout.Sider>
           <Layout.Content className={styles["lc-container"]}>
-            <EditorContainer
-              schema={schema}
-              onChange={(schema) =>
-                props.onChange(formatSchemaIcon(schema, "to"))
-              }
-            />
+            <EditorContainer schema={schema} onChange={setSchema} />
           </Layout.Content>
         </Layout>
         {createPortal(

@@ -6,6 +6,7 @@ import { forwardRef, ReactNode, useCallback, useContext, useMemo } from "react";
 import styles from "./styles/item.module.less";
 import { Direction, EditorContext } from ".";
 import { getComponentByName } from "./EditorMenu/data";
+import EditorIcon from "./EditorMenu/components/EditorIcon";
 
 const { Col } = Grid;
 
@@ -15,22 +16,34 @@ interface IProps {
 }
 
 export const renderCommonComponents = (
-  demo: (IComponent | string)[],
+  demo: (IComponent | string | IconType)[],
   disabled = false
 ) => {
   return demo.map((component, idx) => {
     if (typeof component === "string") return component;
-    const Common = getComponentByName(component.name);
+    if ((component as IconType).isIcon === true)
+      return <EditorIcon name={component.name} />;
+
+    const { name, attrs = {}, children = [] } = component as IComponent;
+    const props: Record<string, any> = {};
+    Object.keys(attrs).forEach((ak) => {
+      props[ak] = attrs[ak]?.isIcon ? (
+        <EditorIcon name={attrs[ak].name} />
+      ) : (
+        attrs[ak]
+      );
+    });
+
+    const Common = getComponentByName(name);
     return (
       <Common
-        {...component.props}
+        {...props}
         key={idx}
-        className={classNames(component.props?.className, {
+        className={classNames(props?.className, {
           "pointer-events-none select-none": disabled,
         })}
       >
-        {component?.children?.length &&
-          renderCommonComponents(component.children, disabled)}
+        {children?.length && renderCommonComponents(children, disabled)}
       </Common>
     );
   });
@@ -67,7 +80,7 @@ const ItemWarp = forwardRef<
 
 const Item = (props: IProps) => {
   const { item, index } = props;
-  const { id, inline, container, name, props: p, children = [] } = item;
+  const { id, inline, container, name, attrs: p, children = [] } = item;
 
   const {
     attributes,
