@@ -1,5 +1,11 @@
-import { updateObject } from "@/utils";
-import { Collapse, Empty, Space, Typography } from "@arco-design/web-react";
+import { produce } from "@/utils";
+import {
+  Collapse,
+  Empty,
+  Space,
+  Tooltip,
+  Typography,
+} from "@arco-design/web-react";
 import {
   IconDelete,
   IconDragDotVertical,
@@ -13,6 +19,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragOverlay,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -21,10 +28,16 @@ import {
   verticalListSortingStrategy,
   useSortable,
 } from "@dnd-kit/sortable";
+import {
+  restrictToVerticalAxis,
+  restrictToParentElement,
+} from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import menuData from "./data";
 import EventModal from "./EventModal";
+import { createPortal } from "react-dom";
+import classNames from "classnames";
 
 const { Paragraph, Text } = Typography;
 
@@ -34,13 +47,23 @@ const eventOptions = menuData
   .map((i) => ({ label: i.title, value: i.key }));
 
 function EventListItem(props: {
+  id: string;
   label: ReactNode | string;
   value: string | number;
-  onDelete: (val: string | number) => void;
-  onEdit: (val: string | number) => void;
+  onDelete?: (id: string) => void;
+  onEdit?: (id: string) => void;
+  className?: string;
+  isDragOverlay?: boolean;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: props.value });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+    isSorting,
+  } = useSortable({ id: props.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -49,7 +72,11 @@ function EventListItem(props: {
 
   return (
     <div
-      className="flex p-2 rounded border-[rgb(var(--gray-3))] border-1 mb-2 relative"
+      className={classNames(
+        "flex p-2 rounded border-[rgb(var(--gray-3))] border-1 mb-2 relative bg-[var(--color-bg-2)] color-[var(--color-text-2)]",
+        { "op-20": isDragging },
+        props.className
+      )}
       style={style}
       {...attributes}
       ref={setNodeRef}
@@ -60,23 +87,25 @@ function EventListItem(props: {
       >
         <IconDragDotVertical />
       </div>
-      <div>
-        <Paragraph className="important-mb-0">{props.value}</Paragraph>
-        <Paragraph className="important-mb-0 important-color-[rgb(var(--gray-5))]">
-          {props.label}
-        </Paragraph>
-      </div>
+      <Tooltip content={props.id} disabled={isSorting || props.isDragOverlay}>
+        <div>
+          <Paragraph className="important-mb-0">{props.value}</Paragraph>
+          <Paragraph className="important-mb-0 important-color-[rgb(var(--gray-5))]">
+            {props.label}
+          </Paragraph>
+        </div>
+      </Tooltip>
       <Space className="absolute right-2 top-2">
         <IconEdit
           className="cursor-pointer"
           onClick={() => {
-            props.onEdit(props.value);
+            props?.onEdit(props.id);
           }}
         />
         <IconDelete
           className="cursor-pointer"
           onClick={() => {
-            props.onDelete(props.value);
+            props?.onDelete(props.id);
           }}
         />
       </Space>
@@ -97,41 +126,71 @@ function EventList(props: {
     })
   );
 
+  const [active, setActive] = useState(null);
+
   return (
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      // 限制仅在父元素内垂直拖拽
+      modifiers={[restrictToVerticalAxis, restrictToParentElement]}
     >
       <SortableContext
-        items={value.map((v) => v.name)}
+        items={value.map((v) => v.id)}
         strategy={verticalListSortingStrategy}
       >
         {value.map((v) => {
           const label = eventOptions.find((op) => op.value === v.name).label;
           return (
             <EventListItem
-              key={v.name}
+              key={v.id}
+              id={v.id}
               value={v.name}
               label={label}
-              onDelete={(val) => {
-                onChange(value.filter((v) => v.name !== val));
+              onDelete={(id) => {
+                onChange(value.filter((v) => v.id !== id));
               }}
-              onEdit={(val) => onEdit(value.find((v) => v.name !== val))}
+              onEdit={(id) => onEdit(value.find((v) => v.id === id))}
             />
           );
         })}
       </SortableContext>
+      {createPortal(
+        <DragOverlay>
+          {active && (
+            <EventListItem
+              className="shadow-xl"
+              {...active}
+              isDragOverlay={true}
+            />
+          )}
+        </DragOverlay>,
+        document.body
+      )}
     </DndContext>
   );
 
   function handleDragEnd(event) {
     const { active, over } = event;
     if (active.id !== over.id) {
-      const oldIndex = value.findIndex((v) => v.name === active.id);
-      const newIndex = value.findIndex((v) => v.name === over.id);
+      const oldIndex = value.findIndex((v) => v.id === active.id);
+      const newIndex = value.findIndex((v) => v.id === over.id);
       onChange(arrayMove(value, oldIndex, newIndex));
     }
+  }
+
+  function handleDragStart({ active }) {
+    if (!active) {
+      return;
+    }
+    const activeItem = value.find((v) => v.id === active.id);
+    setActive({
+      id: activeItem.id,
+      value: activeItem.name,
+      label: eventOptions.find((op) => op.value === activeItem.name).label,
+    });
   }
 }
 
@@ -198,7 +257,7 @@ export default function EventCollapse({
                     <IconDelete
                       onClick={() => {
                         onChange?.(
-                          updateObject(value, (events) => {
+                          produce(value, (events) => {
                             delete events[et];
                           })
                         );
@@ -228,11 +287,11 @@ export default function EventCollapse({
         onOk={(event) => {
           let newEvents;
           if (actionType === ActionType.ADD) {
-            newEvents = updateObject(value, (events) => {
+            newEvents = produce(value, (events) => {
               events[eventType] = [...(events[eventType] || []), event];
             });
           } else if (actionType === ActionType.EDIT) {
-            newEvents = updateObject(value, (events) => {
+            newEvents = produce(value, (events) => {
               const changeEvent = events[eventType];
               const changIdx = changeEvent.findIndex(
                 (ce) => ce.name === eventFormValue.name

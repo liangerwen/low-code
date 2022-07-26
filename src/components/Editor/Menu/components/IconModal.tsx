@@ -1,6 +1,6 @@
 import { useSettings } from "@/components/Settings";
 import useLocale from "@/hooks/useLocale";
-import { updateObject } from "@/utils";
+import { produce } from "@/utils";
 import {
   Modal,
   Grid,
@@ -23,7 +23,7 @@ const Col = Grid.Col;
 
 interface IProps {
   value?: IconType;
-  onChange?: (val: string) => void;
+  onChange?: (val: IconType) => void;
   trigger?: React.ReactNode;
 }
 
@@ -70,7 +70,7 @@ export default (props: IProps) => {
       const idx = hiddenList.findIndex((i) => i === key);
       if (idx >= 0) {
         setHiddenList(
-          updateObject(hiddenList, (list) => {
+          produce(hiddenList, (list) => {
             list.splice(idx, 1);
           })
         );
@@ -167,7 +167,10 @@ export default (props: IProps) => {
                                 <div
                                   className="arco-btn arco-btn-outline important-flex flex-col items-center py-4"
                                   onClick={() => {
-                                    props?.onChange(icon.componentName);
+                                    props?.onChange({
+                                      isIcon: true,
+                                      name: icon.componentName,
+                                    });
                                     setVisible(false);
                                   }}
                                 >

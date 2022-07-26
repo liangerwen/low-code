@@ -2,8 +2,8 @@ import { Layout } from "@arco-design/web-react";
 import classNames from "classnames";
 import { v4 as uuidv4 } from "uuid";
 import { createContext, useCallback, useState } from "react";
-import EditorContainer, { PAGE_FLAG } from "./EditorContainer";
-import EditorMenu from "./EditorMenu";
+import EditorContainer, { PAGE_FLAG } from "./Container";
+import EditorMenu from "./Menu";
 import styles from "./styles/index.module.less";
 import {
   DndContext,
@@ -13,10 +13,11 @@ import {
   DragStartEvent,
 } from "@dnd-kit/core";
 import { createPortal } from "react-dom";
-import { isAdd } from "./EditorMenu/MenuItem";
+import { isAdd } from "./Menu/MenuItem";
 import { isEqual } from "lodash";
-import { updateObject } from "@/utils";
+import { produce } from "@/utils";
 import { filterComponent, findComponent, findWarpper } from "./utils";
+import GlobalSettingsProvider from "./GlobalSettingsProvider";
 
 export enum Direction {
   PREV,
@@ -157,7 +158,7 @@ export default () => {
         if (targetId === PAGE_FLAG) {
           newSchema = [...newSchema, movingComponent];
         } else {
-          newSchema = updateObject(newSchema, (schema) => {
+          newSchema = produce(newSchema, (schema) => {
             const targetComponent = findComponent(
               schema,
               (c) => c?.id === targetId
@@ -205,43 +206,48 @@ export default () => {
   // );
 
   return (
-    <EditorContext.Provider
-      value={{
-        setActiveComponent: (component) => setActiveComponent(component),
-        activeComponent,
-        movingComponent,
-        position,
-      }}
-    >
-      <DndContext
-        onDragStart={onDragStart}
-        onDragEnd={onDragEnd}
-        onDragMove={onDragMove}
+    <GlobalSettingsProvider>
+      <EditorContext.Provider
+        value={{
+          setActiveComponent: (component) => setActiveComponent(component),
+          activeComponent,
+          movingComponent,
+          position,
+        }}
       >
-        <Layout className={styles["lc-layout"]}>
-          <Layout.Sider
-            width={300}
-            className={classNames(styles["lc-container"], "p-0 important-mr-2")}
-          >
-            <EditorMenu />
-          </Layout.Sider>
-          <Layout.Content className={styles["lc-container"]}>
-            <EditorContainer schema={schema} onChange={setSchema} />
-          </Layout.Content>
-        </Layout>
-        {createPortal(
-          <DragOverlay>
-            {active ? (
-              <div
-                className={classNames(styles["dragging-btn"], "cursor-move")}
-              >
-                {active}
-              </div>
-            ) : null}
-          </DragOverlay>,
-          document.body
-        )}
-      </DndContext>
-    </EditorContext.Provider>
+        <DndContext
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
+          onDragMove={onDragMove}
+        >
+          <Layout className={styles["lc-layout"]}>
+            <Layout.Sider
+              width={300}
+              className={classNames(
+                styles["lc-container"],
+                "p-0 important-mr-2"
+              )}
+            >
+              <EditorMenu />
+            </Layout.Sider>
+            <Layout.Content className={styles["lc-container"]}>
+              <EditorContainer schema={schema} onChange={setSchema} />
+            </Layout.Content>
+          </Layout>
+          {createPortal(
+            <DragOverlay>
+              {active ? (
+                <div
+                  className={classNames(styles["dragging-btn"], "cursor-move")}
+                >
+                  {active}
+                </div>
+              ) : null}
+            </DragOverlay>,
+            document.body
+          )}
+        </DndContext>
+      </EditorContext.Provider>
+    </GlobalSettingsProvider>
   );
 };

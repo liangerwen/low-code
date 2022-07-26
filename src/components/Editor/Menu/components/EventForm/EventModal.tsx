@@ -1,6 +1,7 @@
 import useLocale from "@/hooks/useLocale";
 import { Layout, Menu, Modal } from "@arco-design/web-react";
 import { useEffect, useRef, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import menuData from "./data";
 import EventFormContent from "./data/EventFormContent";
 import MENUKEYS from "./data/keys";
@@ -52,11 +53,11 @@ export default function EventModal({
       visible={visible}
       onCancel={onCancel}
       onOk={() => {
-        console.log(form.current);
         if (form.current) {
           form.current.validate().then((vaild) => {
             if (vaild) {
               onOk?.({
+                id: uuidv4(),
                 name: selectedKeys[0],
               });
             }

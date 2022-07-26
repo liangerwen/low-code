@@ -38,7 +38,7 @@ export default () => {
   };
 
   return (
-    <Space direction="vertical" className="important-flex px-2">
+    <Space direction="vertical" className="important-flex">
       <Input.Search
         placeholder="输入关键字过滤组件"
         value={keyWords}

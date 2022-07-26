@@ -1,4 +1,4 @@
-import { updateObject } from "@/utils";
+import { produce } from "@/utils";
 import { Form, Grid, Input, Select, Switch } from "@arco-design/web-react";
 import { omit } from "lodash";
 import { useCallback, useEffect } from "react";
@@ -30,20 +30,11 @@ const PropForm = (props: {
 
   const onChange = useCallback(
     (_, form) => {
-      const newSchema = updateObject(props.schema, (schema) => {
+      const newSchema = produce(props.schema, (schema) => {
         schema.attrs = {
-          ...(schema.attrs || {}),
+          ...schema.attrs,
           ...omit(form, "text"),
         };
-        if (form.icon) {
-          schema.attrs = {
-            ...(schema.attrs || {}),
-            icon: {
-              isIcon: true,
-              name: form.icon,
-            },
-          };
-        }
         schema.inline = !form.long;
         schema.children = form.text ? [form.text] : null;
       });
@@ -53,10 +44,9 @@ const PropForm = (props: {
   );
 
   useEffect(() => {
-    const btnProps = props.schema.attrs || {};
     form.resetFields();
     form.setFieldsValue({
-      ...btnProps,
+      ...props.schema.attrs,
       text: props.schema.children?.[0] as string,
     });
   }, [props.schema]);
@@ -119,6 +109,7 @@ const PropForm = (props: {
             field="disabled"
             layout="inline"
             labelAlign="left"
+            triggerPropName="checked"
           >
             <Switch />
           </FormItem>
@@ -129,6 +120,7 @@ const PropForm = (props: {
             field="loading"
             layout="inline"
             labelAlign="left"
+            triggerPropName="checked"
           >
             <Switch />
           </FormItem>
@@ -144,6 +136,7 @@ const PropForm = (props: {
             field="iconOnly"
             layout="inline"
             labelAlign="left"
+            triggerPropName="checked"
           >
             <Switch />
           </FormItem>
@@ -154,6 +147,7 @@ const PropForm = (props: {
             field="long"
             layout="inline"
             labelAlign="left"
+            triggerPropName="checked"
           >
             <Switch />
           </FormItem>

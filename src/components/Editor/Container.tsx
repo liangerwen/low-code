@@ -25,9 +25,10 @@ import Item from "./Item";
 import { filterComponent, findComponent } from "./utils";
 import styles from "./styles/editor-container.module.less";
 import itemStyles from "./styles/item.module.less";
-import { getRenderActionByName } from "./EditorMenu/data";
+import { getRenderActionByName } from "./Menu/data";
 import { ModeType, useSettings } from "../Settings";
-import { updateObject } from "@/utils";
+import { produce } from "@/utils";
+import { useGlobalSetting } from "./GlobalSettingsProvider";
 
 const { Row } = Grid;
 
@@ -53,7 +54,6 @@ export default function EditorContainer(props: IProps) {
   };
 
   const [visible, setVisible] = useState(false);
-  const [json, setJson] = useState({});
 
   const toolbar = [
     {
@@ -61,7 +61,6 @@ export default function EditorContainer(props: IProps) {
       icon: <IconCodeBlock />,
       onClick: () => {
         setVisible(true);
-        setJson(props.schema);
       },
     },
     {
@@ -113,7 +112,7 @@ export default function EditorContainer(props: IProps) {
         <ComponentAction
           schema={schema}
           onChange={(component) => {
-            const newSchema = updateObject(props.schema, (schema) => {
+            const newSchema = produce(props.schema, (schema) => {
               const currentComponent = findComponent(
                 schema,
                 (c) => c.id === component.id
@@ -128,11 +127,7 @@ export default function EditorContainer(props: IProps) {
   }, [activeComponent, props.schema]);
 
   const { elementMode } = useSettings();
-
-  // const schema = useMemo(
-  //   () => formatSchemaByCustomProps(props.schema, "to"),
-  //   [props.schema]
-  // );
+  const { globalSetting } = useGlobalSetting();
 
   return (
     <Layout className="h-full">
@@ -193,7 +188,13 @@ export default function EditorContainer(props: IProps) {
         placement="left"
       >
         <ReactJson
-          src={json as object}
+          src={
+            {
+              name: "page",
+              ...globalSetting.pageSetting,
+              body: props.schema,
+            } as object
+          }
           indentWidth={2}
           iconStyle="square"
           displayDataTypes={false}

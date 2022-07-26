@@ -1,7 +1,7 @@
 import { Select } from "@arco-design/web-react";
 import { ReactNode, useMemo } from "react";
 import EventList from "./EventList";
-import { updateObject } from "@/utils";
+import { produce } from "@/utils";
 
 interface IProps {
   value?: Record<string, IEvent[]>;
@@ -24,7 +24,7 @@ export default function (props: IProps) {
         options={options}
         value={eventKeys}
         onChange={(val) => {
-          const newEvents = updateObject(value, (events) => {
+          const newEvents = produce(value, (events) => {
             Object.keys(events).forEach((ek) => {
               if (val.indexOf(ek) === -1) {
                 delete events[ek];

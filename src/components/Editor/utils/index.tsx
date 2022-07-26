@@ -2,7 +2,7 @@ type ICondition = (component: IComponent) => boolean;
 type ICallback = (component: IComponent) => void;
 
 export const findComponents = (schema: ISchema, condition: ICondition) => {
-  const ret: IComponent[] = [];
+  const ret: ISchema = [];
   schema.forEach((component) => {
     if (condition(component)) {
       ret.push(component);
@@ -63,11 +63,10 @@ export const findWarpper = (schema: ISchema, id: string | number) => {
     (c) =>
       !!c.container &&
       !!c.children &&
-      (c.children as IComponent[]).find((child) => child.id === id) !==
-        undefined
+      (c.children as ISchema).find((child) => child.id === id) !== undefined
   );
   if (!warpperComponent) return null;
-  const warpperIdx = (warpperComponent.children as IComponent[])!.findIndex(
+  const warpperIdx = (warpperComponent.children as ISchema)!.findIndex(
     (component) => component.id === id
   );
   return { warpper: warpperComponent.children as ISchema, index: warpperIdx };

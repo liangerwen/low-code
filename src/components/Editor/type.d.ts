@@ -1,16 +1,5 @@
-// interface IComponent {
-//   id?: string;
-//   name: string;
-//   title?: string;
-//   props?: { [key: string]: any };
-//   children?: (string | IComponent)[];
-//   // icon的children
-//   $$children?: { idx: number; value: { isIcon: true; name: string } }[];
-//   container?: boolean;
-//   inline?: boolean;
-// }
-
 type IEvent = {
+  id: string;
   name: string;
   form?: Record<string, any>;
 };
@@ -31,4 +20,4 @@ interface IComponent {
   inline?: boolean;
 }
 
-type ISchema = IComponent[];
+type ISchema = ISchema;

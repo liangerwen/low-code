@@ -5,8 +5,8 @@ import classNames from "classnames";
 import { forwardRef, ReactNode, useCallback, useContext, useMemo } from "react";
 import styles from "./styles/item.module.less";
 import { Direction, EditorContext } from ".";
-import { getComponentByName } from "./EditorMenu/data";
-import EditorIcon from "./EditorMenu/components/EditorIcon";
+import { getComponentByName } from "./Menu/data";
+import EditorIcon from "./Menu/components/EditorIcon";
 
 const { Col } = Grid;
 
@@ -178,7 +178,7 @@ const Item = (props: IProps) => {
                 )}
               >
                 {children.length > 0 &&
-                  (children as IComponent[]).map((c, idx) => (
+                  (children as ISchema).map((c, idx) => (
                     <Item item={c} key={idx} index={idx} />
                   ))}
               </Common>
