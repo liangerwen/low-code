@@ -1,7 +1,7 @@
 import { Form, Switch } from "@arco-design/web-react";
 import { pick } from "lodash";
-import { useGlobalSetting } from "../GlobalSettingsProvider";
-import EventForm from "./components/EventForm";
+import { useGlobalSetting } from "../../components/GlobalSettingsProvider";
+import EventForm from "../components/EventForm";
 
 const FormItem = Form.Item;
 const useForm = Form.useForm;

@@ -3,10 +3,11 @@ import { IconDragDot } from "@arco-design/web-react/icon";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import classNames from "classnames";
 import { forwardRef, ReactNode, useCallback, useContext, useMemo } from "react";
+import { Direction, EditorContext } from "..";
+import EditorIcon from "../Menu/components/EditorIcon";
+import { getComponentByName } from "../Menu/data";
+
 import styles from "./styles/item.module.less";
-import { Direction, EditorContext } from ".";
-import { getComponentByName } from "./Menu/data";
-import EditorIcon from "./Menu/components/EditorIcon";
 
 const { Col } = Grid;
 
@@ -23,7 +24,6 @@ export const renderCommonComponents = (
     if (typeof component === "string") return component;
     if ((component as IconType).isIcon === true)
       return <EditorIcon name={component.name} />;
-
     const { name, attrs = {}, children = [] } = component as IComponent;
     const props: Record<string, any> = {};
     Object.keys(attrs).forEach((ak) => {
@@ -43,7 +43,9 @@ export const renderCommonComponents = (
           "pointer-events-none select-none": disabled,
         })}
       >
-        {children?.length && renderCommonComponents(children, disabled)}
+        {children.length > 0
+          ? renderCommonComponents(children, disabled)
+          : null}
       </Common>
     );
   });
@@ -178,7 +180,7 @@ const Item = (props: IProps) => {
                 )}
               >
                 {children.length > 0 &&
-                  (children as ISchema).map((c, idx) => (
+                  (children as IComponent[]).map((c, idx) => (
                     <Item item={c} key={idx} index={idx} />
                   ))}
               </Common>

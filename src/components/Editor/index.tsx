@@ -13,11 +13,11 @@ import {
   DragStartEvent,
 } from "@dnd-kit/core";
 import { createPortal } from "react-dom";
-import { isAdd } from "./Menu/MenuItem";
 import { isEqual } from "lodash";
 import { produce } from "@/utils";
 import { filterComponent, findComponent, findWarpper } from "./utils";
-import GlobalSettingsProvider from "./GlobalSettingsProvider";
+import GlobalSettingsProvider from "./components/GlobalSettingsProvider";
+import { isAdd } from "./Menu/ComponentsTab/MenuItem";
 
 export enum Direction {
   PREV,
@@ -46,7 +46,7 @@ export const EditorContext = createContext<IProvider>({
 });
 
 export default () => {
-  const [schema, setSchema] = useState<ISchema>([]);
+  const [schema, setSchema] = useState<IComponent[]>([]);
   const [activeComponent, setActiveComponent] = useState<IComponent | null>(
     null
   );

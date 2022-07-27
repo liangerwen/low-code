@@ -19,5 +19,3 @@ interface IComponent {
   container?: boolean;
   inline?: boolean;
 }
-
-type ISchema = ISchema;

@@ -21,20 +21,21 @@ import classNames from "classnames";
 import { useCallback, useContext, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { EditorContext } from ".";
-import Item from "./Item";
 import { filterComponent, findComponent } from "./utils";
-import styles from "./styles/editor-container.module.less";
-import itemStyles from "./styles/item.module.less";
 import { getRenderActionByName } from "./Menu/data";
 import { ModeType, useSettings } from "../Settings";
 import { produce } from "@/utils";
-import { useGlobalSetting } from "./GlobalSettingsProvider";
+import { useGlobalSetting } from "./components/GlobalSettingsProvider";
+import Item from "./components/Item";
+
+import styles from "./styles/container.module.less";
+import itemStyles from "./components/styles/item.module.less";
 
 const { Row } = Grid;
 
 interface IProps {
-  schema: ISchema;
-  onChange: (schema: ISchema) => void;
+  schema: IComponent[];
+  onChange: (schema: IComponent[]) => void;
 }
 
 export const PAGE_FLAG = "page";

@@ -1,6 +1,6 @@
 import { IconProps } from "@arco-design/web-react/icon";
 import { FC } from "react";
-import ErrorComponent from "../../ErrorComponent";
+import ErrorComponent from "../../components/ErrorComponent";
 
 const examples = import.meta.globEager<
   Module<{ type: string; menus: Menu[]; idx: number }>
@@ -18,7 +18,7 @@ export type Menu = {
   name: string;
   componentMap: { [name: string]: FC<any> };
   icon: FC<IconProps>;
-  demo: ISchema;
+  demo: IComponent[];
   defaultSchema: IComponent;
   action?: FC<{ schema: IComponent; onChange: (schema: IComponent) => void }>;
 };
