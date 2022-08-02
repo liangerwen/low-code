@@ -31,3 +31,4 @@ jobs:
         port: 22
         local_path: './dist/*'
         remote_path: /www/wwwroot/lowcode
+        delete_remote_files: true
