@@ -23,12 +23,12 @@ jobs:
     - name: Build
       run: pnpm build
     - name: Deploy
-      uses: wlixcc/SFTP-Deploy-Action@v1.0
+      uses: wlixcc/SFTP-Deploy-Action@v1.2.4
       with:
         server: ${{ secrets.USER_HOST }}
         username: ${{ secrets.USER_NAME }}
         password: ${{ secrets.USER_PASS }}
         port: 22
-        ssh_private_key: ''
         local_path: './dist/*'
         remote_path: /www/wwwroot/lowcode
+        delete_remote_files: true
