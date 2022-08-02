@@ -28,5 +28,7 @@ jobs:
         server: ${{ secrets.USER_HOST }}
         username: ${{ secrets.USER_NAME }}
         password: ${{ secrets.USER_PASS }}
+        port: 22
+        ssh_private_key: ''
         local_path: './dist/*'
         remote_path: /www/wwwroot/lowcode
