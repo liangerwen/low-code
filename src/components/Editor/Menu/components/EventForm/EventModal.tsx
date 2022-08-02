@@ -1,5 +1,5 @@
 import useLocale from "@/hooks/useLocale";
-import { Layout, Menu, Modal } from "@arco-design/web-react";
+import { Layout, Menu, Message, Modal } from "@arco-design/web-react";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import menuData from "./data";
@@ -31,10 +31,9 @@ export default function EventModal({
   onCancel?: () => void;
   initialValues?: Record<string, any>;
 }) {
-  const { t } = useLocale();
   const form = useRef<{ validate: () => Promise<boolean> }>(null);
   const [selectedKeys, setSelectedKeys] = useState<MENUKEYS[]>([
-    MENUKEYS.OPEN_PAGE,
+    MENUKEYS.REFRESH_PAGE,
   ]);
 
   useEffect(() => {
@@ -45,7 +44,7 @@ export default function EventModal({
 
   return (
     <Modal
-      title={t("editor.icon.select")}
+      title="选择事件"
       style={{ width: 1200 }}
       simple={false}
       maskClosable={false}
@@ -53,16 +52,22 @@ export default function EventModal({
       visible={visible}
       onCancel={onCancel}
       onOk={() => {
-        if (form.current) {
-          form.current.validate().then((vaild) => {
-            if (vaild) {
-              onOk?.({
-                id: uuidv4(),
-                name: selectedKeys[0],
-              });
-            }
-          });
+        if (selectedKeys.length === 0) {
+          Message.error("请选择事件");
+          return;
         }
+        if (!form.current) {
+          Message.error("事件表单配置错误");
+          return;
+        }
+        form.current.validate().then((vaild) => {
+          if (vaild) {
+            onOk?.({
+              id: uuidv4(),
+              name: selectedKeys[0],
+            });
+          }
+        });
       }}
     >
       <Layout className="h-[420px] rounded border-[rgb(var(--gray-3))] border-1 overflow-hidden">

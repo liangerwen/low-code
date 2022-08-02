@@ -2,7 +2,7 @@ import { Alert, Collapse, Space, Grid, Input } from "@arco-design/web-react";
 import chunk from "lodash/chunk";
 import { useMemo, useState } from "react";
 import MenuItem from "./MenuItem";
-import data from "../data";
+import data from "./data";
 
 import styles from "./styles/index.module.less";
 import "./styles/index.less";

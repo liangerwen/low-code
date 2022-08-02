@@ -1,6 +1,6 @@
 import { IconProps } from "@arco-design/web-react/icon";
 import { FC } from "react";
-import ErrorComponent from "../../components/ErrorComponent";
+import ErrorComponent from "../../../components/ErrorComponent";
 
 const examples = import.meta.globEager<
   Module<{ type: string; menus: Menu[]; idx: number }>
@@ -20,7 +20,7 @@ export type Menu = {
   icon: FC<IconProps>;
   demo: IComponent[];
   defaultSchema: IComponent;
-  action?: FC<{ schema: IComponent; onChange: (schema: IComponent) => void }>;
+  Action?: FC<{ schema: IComponent; onChange: (schema: IComponent) => void }>;
 };
 
 export const getComponentByName = (name: string) => {
@@ -50,7 +50,7 @@ export const getJsonByName = (name: string) => {
 export const getRenderActionByName = (name: string) => {
   const mappingArr = Object.values(components);
   const component = mappingArr.find((cur) => cur.name === name);
-  return component?.action;
+  return component?.Action;
 };
 
 export default Object.values(examples)

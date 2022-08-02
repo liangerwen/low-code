@@ -19,3 +19,12 @@ interface IComponent {
   container?: boolean;
   inline?: boolean;
 }
+
+interface ISchema {
+  name: "page";
+  inMenu: boolean;
+  onLoad?: IEvent[];
+  onDestroy?: IEvent[];
+  onUpdate?: IEvent[];
+  body: IComponent[];
+}

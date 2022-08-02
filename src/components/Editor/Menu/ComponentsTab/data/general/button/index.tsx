@@ -1,7 +1,7 @@
 import { Button } from "@arco-design/web-react";
 import { IconCheckCircleFill } from "@arco-design/web-react/icon";
-import ActionWarp from "../../../components/ActionWarp";
-import EventForm from "../../../components/EventForm";
+import ActionWarp from "../../../../components/ActionWarp";
+import EventForm from "../../../../components/EventForm";
 import PropForm from "./PropForm";
 
 const name = "a-button";
@@ -16,7 +16,7 @@ const defaultSchema = {
   inline: true,
 };
 
-const action = (props: {
+const Action = (props: {
   schema: IComponent;
   onChange: (schema: IComponent) => void;
 }) => {
@@ -36,8 +36,8 @@ const action = (props: {
           props: {
             options: [
               { label: "点击", value: "onClick" },
-              { label: "鼠标移入", value: "onMouseEnter" },
-              { label: "鼠标移出", value: "onMouseLeave" },
+              // { label: "鼠标移入", value: "onMouseEnter" },
+              // { label: "鼠标移出", value: "onMouseLeave" },
             ],
             value: props.schema.events,
             onChange: (val) => {
@@ -56,5 +56,5 @@ export default {
   icon: IconCheckCircleFill,
   demo: [defaultSchema],
   defaultSchema,
-  action,
+  Action,
 };

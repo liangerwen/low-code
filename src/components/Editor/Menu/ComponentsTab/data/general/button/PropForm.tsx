@@ -2,7 +2,7 @@ import { produce } from "@/utils";
 import { Form, Grid, Input, Select, Switch } from "@arco-design/web-react";
 import { omit } from "lodash";
 import { useCallback, useEffect } from "react";
-import IconModal from "../../../components/IconModal";
+import IconModal from "../../../../components/IconModal";
 
 const FormItem = Form.Item;
 const useForm = Form.useForm;

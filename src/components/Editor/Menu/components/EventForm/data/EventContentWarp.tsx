@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Typography } from "@arco-design/web-react";
+import { Empty, Typography } from "@arco-design/web-react";
 const { Paragraph } = Typography;
 
 export default ({
@@ -14,6 +14,7 @@ export default ({
     <Paragraph className="important-color-[rgb(var(--gray-5))] ml-4">
       {desc}
     </Paragraph>
-    {children}
+    <Paragraph>基础配置</Paragraph>
+    <div className="ml-4">{children || <Empty description="暂无配置内容" />}</div>
   </>
 );

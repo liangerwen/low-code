@@ -16,7 +16,6 @@ import { createPortal } from "react-dom";
 import { isEqual } from "lodash";
 import { produce } from "@/utils";
 import { filterComponent, findComponent, findWarpper } from "./utils";
-import GlobalSettingsProvider from "./components/GlobalSettingsProvider";
 import { isAdd } from "./Menu/ComponentsTab/MenuItem";
 
 export enum Direction {
@@ -45,8 +44,19 @@ export const EditorContext = createContext<IProvider>({
   position: null,
 });
 
-export default () => {
-  const [schema, setSchema] = useState<IComponent[]>([]);
+interface IProps {
+  onSave: (schema: ISchema) => void;
+  initialValues?: ISchema;
+}
+
+export default (props: IProps) => {
+  const [schema, setSchema] = useState<ISchema>(
+    props.initialValues || {
+      name: "page",
+      inMenu: true,
+      body: [],
+    }
+  );
   const [activeComponent, setActiveComponent] = useState<IComponent | null>(
     null
   );
@@ -93,7 +103,7 @@ export default () => {
 
         // 当前元素是目标元素的祖父
         const currentComponent = findComponent(
-          schema,
+          schema.body,
           (c) => c?.id === activeId
         );
         if (
@@ -147,18 +157,18 @@ export default () => {
         active: { id },
       } = e;
       if (position && movingComponent) {
-        let newSchema = schema;
+        let newBody = schema.body;
         const targetId = position.id,
           targetDirection = position.direction;
         // 如果不是新增就先移除当前组件
         if (!isAdd(id)) {
-          newSchema = filterComponent(newSchema, (c) => c?.id !== id);
+          newBody = filterComponent(newBody, (c) => c?.id !== id);
         }
         // 根页面直接push
         if (targetId === PAGE_FLAG) {
-          newSchema = [...newSchema, movingComponent];
+          newBody = [...newBody, movingComponent];
         } else {
-          newSchema = produce(newSchema, (schema) => {
+          newBody = produce(newBody, (schema) => {
             const targetComponent = findComponent(
               schema,
               (c) => c?.id === targetId
@@ -186,8 +196,8 @@ export default () => {
             }
           });
         }
-        if (!isEqual(schema, newSchema)) {
-          setSchema(newSchema);
+        if (!isEqual(schema, newBody)) {
+          setSchema({ ...schema, body: newBody });
           if (isAdd(id)) {
             setActiveComponent(movingComponent);
           }
@@ -206,48 +216,47 @@ export default () => {
   // );
 
   return (
-    <GlobalSettingsProvider>
-      <EditorContext.Provider
-        value={{
-          setActiveComponent: (component) => setActiveComponent(component),
-          activeComponent,
-          movingComponent,
-          position,
-        }}
+    <EditorContext.Provider
+      value={{
+        setActiveComponent: (component) => setActiveComponent(component),
+        activeComponent,
+        movingComponent,
+        position,
+      }}
+    >
+      <DndContext
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        onDragMove={onDragMove}
       >
-        <DndContext
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
-          onDragMove={onDragMove}
-        >
-          <Layout className={styles["lc-layout"]}>
-            <Layout.Sider
-              width={300}
-              className={classNames(
-                styles["lc-container"],
-                "p-0 important-mr-2"
-              )}
-            >
-              <EditorMenu />
-            </Layout.Sider>
-            <Layout.Content className={styles["lc-container"]}>
-              <EditorContainer schema={schema} onChange={setSchema} />
-            </Layout.Content>
-          </Layout>
-          {createPortal(
-            <DragOverlay>
-              {active ? (
-                <div
-                  className={classNames(styles["dragging-btn"], "cursor-move")}
-                >
-                  {active}
-                </div>
-              ) : null}
-            </DragOverlay>,
-            document.body
-          )}
-        </DndContext>
-      </EditorContext.Provider>
-    </GlobalSettingsProvider>
+        <Layout className={styles["lc-layout"]}>
+          <Layout.Sider
+            width={300}
+            className={classNames(styles["lc-container"], "p-0 important-mr-2")}
+          >
+            <EditorMenu schema={schema} onChange={setSchema} />
+          </Layout.Sider>
+          <Layout.Content className={styles["lc-container"]}>
+            <EditorContainer
+              schema={schema}
+              onChange={setSchema}
+              onSave={() => props.onSave(schema)}
+            />
+          </Layout.Content>
+        </Layout>
+        {createPortal(
+          <DragOverlay>
+            {active ? (
+              <div
+                className={classNames(styles["dragging-btn"], "cursor-move")}
+              >
+                {active}
+              </div>
+            ) : null}
+          </DragOverlay>,
+          document.body
+        )}
+      </DndContext>
+    </EditorContext.Provider>
   );
 };

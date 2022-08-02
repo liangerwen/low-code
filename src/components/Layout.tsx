@@ -6,6 +6,7 @@ import {
   Menu,
   Message,
   Grid,
+  Divider,
 } from "@arco-design/web-react";
 import NavBar from "../components/NavBar";
 import {
@@ -120,18 +121,24 @@ export default function Layout(props: IProps) {
     [t]
   );
 
+  const contentClass =
+    "bg-[var(--color-bg-2)] rounded-[8px] shadow-[rgba(0,0,0,0.08)] shadow";
+
   return (
-    <ArcoLayout className="overflow-hidden bg-[rgb(var(--gray-2))] h-[100vh]">
+    <ArcoLayout className="overflow-hidden h-[100vh]">
       {navbar && (
         <ArcoLayout.Header>
           <NavBar />
         </ArcoLayout.Header>
       )}
-      <ArcoLayout.Content className="h-[calc(100vh-56px)]">
+      <ArcoLayout.Content className="h-[calc(100vh-56px)] bg-[rgb(var(--gray-2))]">
         {menu ? (
-          <ArcoLayout className="h-full">
+          <ArcoLayout className="h-full p-[6px] box-border">
             {pageSetting.menu && (
-              <ArcoLayout.Sider width="auto">
+              <ArcoLayout.Sider
+                width="auto"
+                className={classNames(contentClass, "mr-[8px] overflow-hidden")}
+              >
                 <Menu
                   className="w-full h-full"
                   style={{ width: pageSetting.menuWidth }}
@@ -148,28 +155,35 @@ export default function Layout(props: IProps) {
                   // hasCollapseButton
                 >
                   <Row justify="center" className="py-8">
-                    <Button type="outline" icon={<IconPlus />} onClick={()=>{
-                      navigate('/new')
-                    }}>
+                    <Button
+                      type="outline"
+                      icon={<IconPlus />}
+                      onClick={() => {
+                        navigate("/new");
+                      }}
+                    >
                       新建
                     </Button>
                   </Row>
+                  <Divider className="mt-0" />
                   {renderMenus(routes)}
                 </Menu>
               </ArcoLayout.Sider>
             )}
-            <ArcoLayout.Content className="bg-[var(--color-fill-2)] p-4 flex flex-col min-h-full box-border">
+            <ArcoLayout.Content className="flex flex-col min-h-full box-border">
               <ArcoLayout>
-                <Breadcrumb>
+                <Breadcrumb className={classNames(contentClass, "p-2")}>
                   {breadcrumb.map((b, idx) => (
                     <Breadcrumb.Item key={idx}>{b}</Breadcrumb.Item>
                   ))}
                 </Breadcrumb>
-                <ArcoLayout.Content>
+                <ArcoLayout.Content
+                  className={classNames(contentClass, "my-2 p-2")}
+                >
                   {widthRouter ? <Outlet /> : children}
                 </ArcoLayout.Content>
                 {footer && (
-                  <ArcoLayout.Footer>
+                  <ArcoLayout.Footer className={contentClass}>
                     <Footer />
                   </ArcoLayout.Footer>
                 )}

@@ -83,6 +83,13 @@ const routes: CustomRoutes[] = [
     inMenu: false,
   },
   {
+    path: "/edit/:id",
+    element: (
+      <Layout footer={false}>{lazyload(() => import("./pages/Editor"))}</Layout>
+    ),
+    inMenu: false,
+  },
+  {
     path: "/login",
     element: <Login />,
     inMenu: false,

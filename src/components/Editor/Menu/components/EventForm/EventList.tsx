@@ -239,7 +239,7 @@ export default function EventCollapse({
   return (
     <>
       {eventKeys.length > 0 && (
-        <Collapse>
+        <Collapse defaultActiveKey={eventKeys}>
           {eventKeys.map((et) => {
             const label = options.find((op) => op.value === et)?.label;
             return (

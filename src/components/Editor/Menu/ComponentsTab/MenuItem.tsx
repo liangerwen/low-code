@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { useHover } from "react-use";
 import { v1 as uuidv1 } from "uuid";
 import { renderCommonComponents } from "../../components/Item";
-import { Menu } from "../data";
+import { Menu } from "./data";
 import styles from "./styles/menu-item.module.less";
 
 const MENUTYPE = "MENU_ITEM";

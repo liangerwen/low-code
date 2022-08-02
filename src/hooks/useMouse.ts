@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useEvent } from "react-use";
 
 export default () => {
   const [position, setPosition] = useState({ X: 0, Y: 0 });
@@ -11,12 +12,7 @@ export default () => {
     });
   }, []);
 
-  useEffect(() => {
-    window.addEventListener("mousemove", changePosition);
-    return () => {
-      window.removeEventListener("mousemove", changePosition);
-    };
-  }, []);
+  useEvent("mousemove", changePosition)
 
   return position;
 };

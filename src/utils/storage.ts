@@ -3,6 +3,7 @@ export const enum LocalKeys {
   MODE_KEY = "mode",
   THEME_KEY = "theme",
   LANG_KEY = "lang",
+  SCHEMA_KEY = "schema",
 }
 
 export const getLocal = <T>(key: LocalKeys): T | null => {

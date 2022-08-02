@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { forwardRef, ReactNode, useCallback, useContext, useMemo } from "react";
 import { Direction, EditorContext } from "..";
 import EditorIcon from "../Menu/components/EditorIcon";
-import { getComponentByName } from "../Menu/data";
+import { getComponentByName } from "../Menu/ComponentsTab/data";
 
 import styles from "./styles/item.module.less";
 
@@ -124,7 +124,10 @@ const Item = (props: IProps) => {
     );
   }, [position, inline]);
 
-  const isActive = useMemo(() => activeComponent?.id === id, [activeComponent]);
+  const isActive = useMemo(
+    () => activeComponent?.id === id,
+    [activeComponent, id]
+  );
   const isEnter = useMemo(
     () =>
       container &&

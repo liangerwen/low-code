@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconProps, IconSkin } from "@arco-design/web-react/icon";
-import { Button, ButtonProps } from "@arco-design/web-react";
+import { ButtonProps } from "@arco-design/web-react";
 import ThemeModal from "./ThemeModal";
 import IconButton from "@/components/IconButton";
 

@@ -1,6 +1,5 @@
 import { Form, Switch } from "@arco-design/web-react";
 import { pick } from "lodash";
-import { useGlobalSetting } from "../../components/GlobalSettingsProvider";
 import EventForm from "../components/EventForm";
 
 const FormItem = Form.Item;
@@ -15,27 +14,27 @@ interface FormProps {
   };
 }
 
-export default () => {
+interface IProps {
+  schema: ISchema;
+  onChange: (schema: ISchema) => void;
+}
+
+export default (props: IProps) => {
   const [form] = useForm<FormProps>();
-  const { globalSetting, setGlobalSetting } = useGlobalSetting();
 
   return (
     <Form
       form={form}
       layout="vertical"
       initialValues={{
-        inMenu: globalSetting.pageSetting.inMenu,
-        lifecycle: pick(
-          globalSetting.pageSetting,
-          "onLoad",
-          "onDestroy",
-          "onUpdate"
-        ),
+        inMenu: props.schema.inMenu,
+        lifecycle: pick(props.schema, "onLoad", "onDestroy", "onUpdate"),
       }}
       onChange={(_, form) => {
-        setGlobalSetting({
-          ...globalSetting,
-          pageSetting: { ...form.lifecycle, inMenu: !!form.inMenu },
+        props.onChange({
+          ...props.schema,
+          ...form.lifecycle,
+          inMenu: !!form.inMenu,
         });
       }}
     >

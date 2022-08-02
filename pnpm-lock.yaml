@@ -21,6 +21,7 @@ specifiers:
   '@vitejs/plugin-react': ^1.3.0
   axios: ^0.27.2
   classnames: ^2.3.1
+  dayjs: ^1.11.4
   less: ^4.1.2
   lodash: ^4.17.21
   monaco-editor: ^0.33.0
@@ -47,6 +48,7 @@ dependencies:
   '@dnd-kit/utilities': 3.2.0_react@18.1.0
   axios: 0.27.2
   classnames: 2.3.1
+  dayjs: 1.11.4
   lodash: 4.17.21
   monaco-editor: 0.33.0
   react: 18.1.0
@@ -114,7 +116,7 @@ packages:
       b-tween: 0.3.3
       b-validate: 1.4.0
       compute-scroll-into-view: 1.0.17
-      dayjs: 1.11.2
+      dayjs: 1.11.4
       lodash: 4.17.21
       number-precision: 1.5.2
       react: 18.1.0
@@ -1110,8 +1112,8 @@ packages:
   /csstype/3.1.0:
     resolution: {integrity: sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==}
 
-  /dayjs/1.11.2:
-    resolution: {integrity: sha512-F4LXf1OeU9hrSYRPTTj/6FbO4HTjPKXvEIC1P2kcnFurViINCVk3ZV0xAS3XVx9MkMsXbbqlK6hjseaYbgKEHw==}
+  /dayjs/1.11.4:
+    resolution: {integrity: sha512-Zj/lPM5hOvQ1Bf7uAvewDaUcsJoI6JmNqmHhHl3nyumwe0XHwt8sWdOVAPACJzCebL8gQCi+K49w7iKWnGwX9g==}
     dev: false
 
   /debug/3.2.7:
