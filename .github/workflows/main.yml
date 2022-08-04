@@ -1,0 +1,34 @@
+name: Build Low Code
+on:
+  push:
+    branches:
+      - main
+jobs:
+  # 任务ID
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2.2.2
+      with:
+        version: next-7
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.15.0
+        cache: 'pnpm'
+    - name: Install
+      run: pnpm i
+    - name: Build
+      run: pnpm build
+    - name: Deploy
+      uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      with:
+        server: ${{ secrets.USER_HOST }}
+        username: ${{ secrets.USER_NAME }}
+        password: ${{ secrets.USER_PASS }}
+        port: 22
+        local_path: './dist/*'
+        remote_path: /www/wwwroot/lowcode
+        delete_remote_files: true
