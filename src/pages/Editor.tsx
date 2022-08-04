@@ -30,7 +30,8 @@ export default () => {
   );
 
   const onCloseBoswer = useCallback((e) => {
-    e.returnValue = "";
+    e.preventDefault();
+    e.returnValue = "离开后系统不会保存您所做的更改。";
   }, []);
 
   useEvent("beforeunload", onCloseBoswer);

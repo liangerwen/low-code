@@ -1,19 +1,12 @@
 type ICondition = (component: IComponent) => boolean;
 type ICallback = (component: IComponent) => void;
 
-export const findComponents = (schema: IComponent[], condition: ICondition) => {
-  const ret: IComponent[] = [];
-  schema.forEach((component) => {
-    if (condition(component)) {
-      ret.push(component);
-    }
-    if (component.container && component.children) {
-      ret.push(...findComponents(component.children as IComponent[], condition));
-    }
-  });
-  return ret;
-};
-
+/**
+ * 根据判断条件寻找组件
+ * @param schema 组件数组
+ * @param condition 条件方法
+ * @returns 组件
+ */
 export const findComponent = (
   schema: IComponent[],
   condition: ICondition
@@ -30,6 +23,12 @@ export const findComponent = (
   return null;
 };
 
+/**
+ * 递归组件执行方法
+ * @param schema 组件数组
+ * @param callback 所要执行的方法
+ * @returns void
+ */
 export const diffSchema = (schema: IComponent[], callback: ICallback) => {
   for (const component of schema) {
     callback(component);
@@ -39,6 +38,12 @@ export const diffSchema = (schema: IComponent[], callback: ICallback) => {
   }
 };
 
+/**
+ * 根据判断条件筛选组件
+ * @param schema 组件数组
+ * @param condition 条件方法
+ * @returns 组件数组
+ */
 export const filterComponent = (
   schema: IComponent[],
   condition: ICondition
@@ -53,6 +58,12 @@ export const filterComponent = (
     return s;
   });
 
+/**
+ * 根据id找到子组件的父组件
+ * @param schema 组件数组
+ * @param id 子组件id
+ * @returns 父组件孩子数组和子组件对应索引 | 空
+ */
 export const findWarpper = (schema: IComponent[], id: string | number) => {
   const rootIdx = schema.findIndex((component) => component.id === id);
   if (rootIdx >= 0) {

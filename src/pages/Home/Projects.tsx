@@ -1,4 +1,4 @@
-import { produce } from "@/utils";
+import { download, produce } from "@/utils";
 import { LocalKeys } from "@/utils/storage";
 import {
   Avatar,
@@ -26,14 +26,22 @@ import {
 import classNames from "classnames";
 import dayjs from "dayjs";
 import { chunk } from "lodash";
-import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useMemo } from "react";
+import {
+  useHref,
+  useNavigate,
+  useLocation,
+  UNSAFE_NavigationContext,
+} from "react-router-dom";
 import { useLocalStorage } from "react-use";
+import { v4 as uuidv4 } from "uuid";
 const { Meta } = Card;
 const { Row, Col } = Grid;
 
 export default function Projects() {
+  let { basename, navigator } = useContext(UNSAFE_NavigationContext);
   const navigate = useNavigate();
+  const location = useLocation();
   const [schemas, setSchemas] = useLocalStorage<
     {
       id: string;
@@ -42,7 +50,54 @@ export default function Projects() {
       date: number;
       publish: boolean;
     }[]
-  >(LocalKeys.SCHEMA_KEY, []);
+  >(LocalKeys.SCHEMA_KEY, [
+    {
+      id: uuidv4(),
+      name: "测试",
+      schema: {
+        name: "page",
+        inMenu: true,
+        body: [
+          {
+            name: "a-button",
+            title: "按钮",
+            attrs: {
+              type: "primary",
+              long: true,
+              icon: {
+                isIcon: true,
+                name: "IconDown",
+              },
+              disabled: true,
+              status: "warning",
+            },
+            children: ["按钮"],
+            inline: false,
+            id: "1eb46a8f-da6b-446d-b1e0-467f4deae81a",
+            events: {
+              onClick: [],
+            },
+          },
+          {
+            name: "a-link",
+            title: "链接",
+            attrs: {
+              href: "https://www.baidu.com",
+              icon: "222",
+              target: "__blank",
+            },
+            children: ["链接"],
+            inline: true,
+            id: "215e94be-67e4-4b45-9fa1-2626157fbed0",
+          },
+        ],
+        onDestroy: [],
+        onUpdate: [],
+      },
+      date: Date.now(),
+      publish: false,
+    },
+  ]);
 
   const projects = useMemo(
     () =>
@@ -65,7 +120,8 @@ export default function Projects() {
             {pl.map((p) => (
               <Col span={6} key={p.id}>
                 <Card
-                  className="rounded-[8px] overflow-hidden w-full"
+                  hoverable
+                  className="important-rounded-[8px] overflow-hidden w-full"
                   cover={
                     <div style={{ height: 204, overflow: "hidden" }}>
                       <img
@@ -92,6 +148,12 @@ export default function Projects() {
                           onClickMenuItem={(key) => {
                             switch (key) {
                               case "preview":
+                                const url = p.schema.inMenu
+                                  ? `/preview-menu/${p.id}`
+                                  : `/preview/${p.id}`;
+                                window.open(
+                                  `${window.location.origin}/#${url}`
+                                );
                                 break;
                               case "publish":
                                 setSchemas(
@@ -124,6 +186,10 @@ export default function Projects() {
                                 }
                                 break;
                               case "download":
+                                download({
+                                  fileName: `${p.id}.json`,
+                                  content: JSON.stringify(p, null, 2),
+                                });
                                 break;
                               case "delete":
                                 setSchemas(

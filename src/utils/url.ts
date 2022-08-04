@@ -1,16 +1,7 @@
-export const concatPath = (path: string, ...paths: string[]) => {
-  let ret = paths.reduce((pre, cur) => {
-    if (cur) {
-      return (
-        (pre ? (pre.endsWith("/") ? pre : pre + "/") : pre) +
-        (cur.startsWith("/") ? cur.slice(1) : cur)
-      );
-    }
-    return pre;
-  }, path);
-  return ret.startsWith("/") ? ret || "/" : "/" + ret;
-};
+export const concatPath = (paths: string[]) =>
+  paths.join("/").replace(/\/\/+/g, "/");
 
+// search字符串转对象
 export function parseSearch<T extends Partial<Record<string, any>>>(
   search: string
 ): T {

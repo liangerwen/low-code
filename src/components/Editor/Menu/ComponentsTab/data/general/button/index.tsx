@@ -12,7 +12,7 @@ const defaultSchema = {
   attrs: {
     type: "primary",
   },
-  children: ["按钮"],
+  children: ["按钮", "11"],
   inline: true,
 };
 

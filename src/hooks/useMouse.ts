@@ -1,6 +1,9 @@
 import { useCallback, useState } from "react";
 import { useEvent } from "react-use";
 
+/**
+ * 鼠标移动hook
+ */
 export default () => {
   const [position, setPosition] = useState({ X: 0, Y: 0 });
 

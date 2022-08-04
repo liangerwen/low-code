@@ -2,6 +2,9 @@ import { useCallback, useEffect, useRef } from "react";
 import locales from "@/locale";
 import { useSettings } from "@/components/Settings";
 
+/**
+ * 国际化hook
+ */
 export default function useLocale() {
   const { lang } = useSettings();
   const notExistAry = useRef(new Set());

@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { AxiosResponse } from "axios";
 
+/**
+ * 调接口hook
+ * @param api 接口
+ * @param defaultValue 默认值
+ * @param options 配置项
+ * @returns loading, error, data, request
+ */
 export default function useRequest<T, U = any>(
   api: (params?: U) => Promise<AxiosResponse<T>>,
   defaultValue = [] as unknown as T,

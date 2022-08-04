@@ -7,8 +7,9 @@ const defaultSchema = {
   name,
   title: "链接",
   attrs: {
-    href: "link",
+    href: "https://www.baidu.com",
     icon: "222",
+    target: "__blank",
   },
   children: ["链接"],
   inline: true,

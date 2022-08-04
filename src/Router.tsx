@@ -1,7 +1,7 @@
 import NotFind from "./pages/404";
 import Login from "./pages/Login";
 import { IconApps } from "@arco-design/web-react/icon";
-import { Spin } from "@arco-design/web-react";
+import { Spin, Layout as ArcoLayout } from "@arco-design/web-react";
 import { lazy, Suspense, useEffect } from "react";
 import Layout from "./components/Layout";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +21,7 @@ const lazyload = (importFn, props = {}) => {
   );
 };
 
-function Redirect({ to }) {
+export function Redirect({ to }) {
   let navigate = useNavigate();
   useEffect(() => {
     navigate(to);
@@ -86,6 +86,28 @@ const routes: CustomRoutes[] = [
     path: "/edit/:id",
     element: (
       <Layout footer={false}>{lazyload(() => import("./pages/Editor"))}</Layout>
+    ),
+    inMenu: false,
+  },
+  {
+    path: "/preview/:id",
+    element: (
+      <Layout footer={false}>
+        <ArcoLayout className="h-full important-p-[6px] box-border">
+          <ArcoLayout.Content className="bg-[var(--color-bg-2)] rounded-[8px] shadow-[rgba(0,0,0,0.08)] shadow p-2">
+            {lazyload(() => import("./pages/Preview"))}
+          </ArcoLayout.Content>
+        </ArcoLayout>
+      </Layout>
+    ),
+    inMenu: false,
+  },
+  {
+    path: "/preview-menu/:id",
+    element: (
+      <Layout footer={false} menu>
+        {lazyload(() => import("./pages/Preview"))}
+      </Layout>
     ),
     inMenu: false,
   },

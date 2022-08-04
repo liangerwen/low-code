@@ -1,7 +1,7 @@
 import { Layout } from "@arco-design/web-react";
 import classNames from "classnames";
 import { v4 as uuidv4 } from "uuid";
-import { createContext, useCallback, useState } from "react";
+import { createContext, FC, useCallback, useState } from "react";
 import EditorContainer, { PAGE_FLAG } from "./Container";
 import EditorMenu from "./Menu";
 import styles from "./styles/index.module.less";
@@ -17,6 +17,7 @@ import { isEqual } from "lodash";
 import { produce } from "@/utils";
 import { filterComponent, findComponent, findWarpper } from "./utils";
 import { isAdd } from "./Menu/ComponentsTab/MenuItem";
+import Viewer, { IProps as ViewerProps } from "./Viewer";
 
 export enum Direction {
   PREV,
@@ -49,7 +50,7 @@ interface IProps {
   initialValues?: ISchema;
 }
 
-export default (props: IProps) => {
+const Editor = (props: IProps) => {
   const [schema, setSchema] = useState<ISchema>(
     props.initialValues || {
       name: "page",
@@ -260,3 +261,7 @@ export default (props: IProps) => {
     </EditorContext.Provider>
   );
 };
+
+Editor.Viewer = Viewer;
+
+export default Editor;

@@ -14,6 +14,7 @@ specifiers:
   '@types/react': ^18.0.0
   '@types/react-color': ^3.0.6
   '@types/react-dom': ^18.0.0
+  '@types/react-transition-group': ^4.4.5
   '@types/uuid': ^8.3.4
   '@unocss/preset-attributify': ^0.31.12
   '@unocss/preset-icons': ^0.31.12
@@ -30,6 +31,7 @@ specifiers:
   react-dom: ^18.0.0
   react-json-view: ^1.21.3
   react-router-dom: ^6.3.0
+  react-transition-group: ^4.4.5
   react-use: ^17.4.0
   typescript: ^4.6.3
   unocss: ^0.31.12
@@ -56,6 +58,7 @@ dependencies:
   react-dom: 18.1.0_react@18.1.0
   react-json-view: 1.21.3_ohobp6rpsmerwlq5ipwfh5yigy
   react-router-dom: 6.3.0_ef5jwxihqo6n7gxfmzogljlgcm
+  react-transition-group: 4.4.5_ef5jwxihqo6n7gxfmzogljlgcm
   react-use: 17.4.0_ef5jwxihqo6n7gxfmzogljlgcm
   uuid: 8.3.2
 
@@ -66,6 +69,7 @@ devDependencies:
   '@types/react': 18.0.9
   '@types/react-color': 3.0.6
   '@types/react-dom': 18.0.5
+  '@types/react-transition-group': 4.4.5
   '@types/uuid': 8.3.4
   '@unocss/preset-attributify': 0.31.17
   '@unocss/preset-icons': 0.31.17
@@ -122,7 +126,7 @@ packages:
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-focus-lock: 2.9.1_7cpxmzzodpxnolj5zcc5cr63ji
-      react-transition-group: 4.4.2_ef5jwxihqo6n7gxfmzogljlgcm
+      react-transition-group: 4.4.5_ef5jwxihqo6n7gxfmzogljlgcm
       resize-observer-polyfill: 1.5.1
       scroll-into-view-if-needed: 2.2.20
       shallowequal: 1.1.0
@@ -700,6 +704,12 @@ packages:
 
   /@types/react-dom/18.0.5:
     resolution: {integrity: sha512-OWPWTUrY/NIrjsAPkAk1wW9LZeIjSvkXRhclsFO8CZcZGCOg2G0YZy4ft+rOyYxy8B7ui5iZzi9OkDebZ7/QSA==}
+    dependencies:
+      '@types/react': 18.0.9
+    dev: true
+
+  /@types/react-transition-group/4.4.5:
+    resolution: {integrity: sha512-juKD/eiSM3/xZYzjuzH6ZwpP+/lejltmiS3QEzV/vmb/Q8+HfDmxu+Baga8UEMGBqV88Nbg4l2hY/K2DkyaLLA==}
     dependencies:
       '@types/react': 18.0.9
     dev: true
@@ -2163,8 +2173,8 @@ packages:
       - '@types/react'
     dev: false
 
-  /react-transition-group/4.4.2_ef5jwxihqo6n7gxfmzogljlgcm:
-    resolution: {integrity: sha512-/RNYfRAMlZwDSr6z4zNKV6xu53/e2BuaBbGhbyYIXTrmgu/bGHzmqOs7mJSJBHy9Ud+ApHx3QjrkKSp1pxvlFg==}
+  /react-transition-group/4.4.5_ef5jwxihqo6n7gxfmzogljlgcm:
+    resolution: {integrity: sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g==}
     peerDependencies:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'

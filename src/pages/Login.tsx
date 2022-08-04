@@ -26,6 +26,7 @@ import Planet3 from "@/assets/planet3.png";
 import Planet4 from "@/assets/planet4.png";
 import { IconLock, IconUser } from "@arco-design/web-react/icon";
 import { parseSearch } from "@/utils/url";
+import useForHooks from "@/hooks/useForHooks";
 
 const FormItem = Form.Item;
 const { Title } = Typography;
@@ -90,7 +91,7 @@ export default function Login() {
   );
 
   return (
-    <Layout className="overflow-hidden h-[100vh]">
+    <Layout className="overflow-hidden h-[100vh] w-[100vw]">
       <img
         src={Background}
         className="absolute w-full h-full top-0 left-0 object-cover pointer-events-none z-[-1]"

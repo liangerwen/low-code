@@ -14,11 +14,11 @@ import {
   ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
 import { isLogin } from "../utils/auth";
-import routes, { CustomRoutes } from "@/Router";
 import Footer from "./Footer";
 import useLocale from "@/hooks/useLocale";
 import { useSettings } from "./Settings";
@@ -26,6 +26,7 @@ import classNames from "classnames";
 import { getParentRoute } from "@/utils/route";
 import { concatPath } from "@/utils/url";
 import { IconPlus } from "@arco-design/web-react/icon";
+import routes, { CustomRoutes } from "@/Router";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -37,6 +38,7 @@ interface IProps {
   footer?: boolean;
   navbar?: boolean;
   children?: ReactNode;
+  extraRoutes?: CustomRoutes[];
 }
 
 export default function Layout(props: IProps) {
@@ -45,6 +47,7 @@ export default function Layout(props: IProps) {
     menu = false,
     footer = true,
     navbar = true,
+    extraRoutes = [],
     children,
   } = props;
 
@@ -59,9 +62,11 @@ export default function Layout(props: IProps) {
   const { t } = useLocale();
   const { pageSetting } = useSettings();
 
+  const lewRoutes = useMemo(() => [...extraRoutes, ...routes], [extraRoutes]);
+
   useEffect(() => {
     const path = location.pathname;
-    if (!isLogin()) {
+    if (!isLogin() && path !== "/login") {
       Message.error("请先登录");
       navigate(`/login?redirect=${path}`, { replace: true });
       return;
@@ -71,7 +76,7 @@ export default function Layout(props: IProps) {
     if (openKey) {
       setOpenKeys([openKey]);
     }
-  }, [location]);
+  }, [location.pathname]);
 
   useEffect(() => {
     setBreadcrumb(breadcrumbMap.current.get(location.pathname) || []);
@@ -80,7 +85,7 @@ export default function Layout(props: IProps) {
   const renderMenus = useCallback(
     (routes: CustomRoutes[], basePath = "") => {
       const menus = routes.map((item) => {
-        const path = concatPath(basePath, item.path);
+        const path = concatPath([basePath, item.path]);
         if (item.inMenu !== false && item.breadcrumb !== false) {
           const preRoutes = breadcrumbMap.current.get(basePath) || [];
           breadcrumbMap.current.set(path, [
@@ -125,7 +130,7 @@ export default function Layout(props: IProps) {
     "bg-[var(--color-bg-2)] rounded-[8px] shadow-[rgba(0,0,0,0.08)] shadow";
 
   return (
-    <ArcoLayout className="overflow-hidden h-[100vh]">
+    <ArcoLayout className="overflow-hidden h-[100vh] w-[100vw] min-w-[1620px]">
       {navbar && (
         <ArcoLayout.Header>
           <NavBar />
@@ -133,11 +138,14 @@ export default function Layout(props: IProps) {
       )}
       <ArcoLayout.Content className="h-[calc(100vh-56px)] bg-[rgb(var(--gray-2))]">
         {menu ? (
-          <ArcoLayout className="h-full p-[6px] box-border">
+          <ArcoLayout className="h-full important-p-[6px] box-border">
             {pageSetting.menu && (
               <ArcoLayout.Sider
                 width="auto"
-                className={classNames(contentClass, "mr-[8px] overflow-hidden")}
+                className={classNames(
+                  contentClass,
+                  "important-mr-[8px] overflow-hidden"
+                )}
               >
                 <Menu
                   className="w-full h-full"
@@ -166,32 +174,38 @@ export default function Layout(props: IProps) {
                     </Button>
                   </Row>
                   <Divider className="mt-0" />
-                  {renderMenus(routes)}
+                  {renderMenus(lewRoutes)}
                 </Menu>
               </ArcoLayout.Sider>
             )}
             <ArcoLayout.Content className="flex flex-col min-h-full box-border">
               <ArcoLayout>
-                <Breadcrumb className={classNames(contentClass, "p-2")}>
-                  {breadcrumb.map((b, idx) => (
-                    <Breadcrumb.Item key={idx}>{b}</Breadcrumb.Item>
-                  ))}
-                </Breadcrumb>
-                <ArcoLayout.Content
-                  className={classNames(contentClass, "my-2 p-2")}
-                >
+                {breadcrumb.length > 0 && (
+                  <Breadcrumb className={classNames(contentClass, "p-2 mb-2")}>
+                    {breadcrumb.map((b, idx) => (
+                      <Breadcrumb.Item key={idx}>{b}</Breadcrumb.Item>
+                    ))}
+                  </Breadcrumb>
+                )}
+                <ArcoLayout.Content className={classNames(contentClass, "p-2")}>
                   {widthRouter ? <Outlet /> : children}
                 </ArcoLayout.Content>
                 {footer && (
-                  <ArcoLayout.Footer className={contentClass}>
+                  <ArcoLayout.Footer
+                    className={classNames(contentClass, {
+                      "important-mt-2": pageSetting.footer,
+                    })}
+                  >
                     <Footer />
                   </ArcoLayout.Footer>
                 )}
               </ArcoLayout>
             </ArcoLayout.Content>
           </ArcoLayout>
+        ) : widthRouter ? (
+          <Outlet />
         ) : (
-          <>{widthRouter ? <Outlet /> : children}</>
+          children
         )}
       </ArcoLayout.Content>
       {footer && !menu && (

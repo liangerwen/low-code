@@ -23,6 +23,11 @@ export type Menu = {
   Action?: FC<{ schema: IComponent; onChange: (schema: IComponent) => void }>;
 };
 
+/**
+ * 根据名称获取对应React组件
+ * @param name 组件名称
+ * @returns React组件
+ */
 export const getComponentByName = (name: string) => {
   const mappingArr = Object.values(components);
   const mapping = mappingArr.reduce<Mapping>((acc, cur) => {
@@ -32,6 +37,11 @@ export const getComponentByName = (name: string) => {
   return mapping[name] || ErrorComponent;
 };
 
+/**
+ * 根据名称获取对应默认json
+ * @param name 
+ * @returns json对象
+ */
 export const getJsonByName = (name: string) => {
   const modulesArr = Object.keys(examples).map(
     (key) => components[key].default
@@ -47,6 +57,11 @@ export const getJsonByName = (name: string) => {
   return mapping[name];
 };
 
+/**
+ * 根据名称获取对应Action组件
+ * @param name 
+ * @returns Action组件
+ */
 export const getRenderActionByName = (name: string) => {
   const mappingArr = Object.values(components);
   const component = mappingArr.find((cur) => cur.name === name);

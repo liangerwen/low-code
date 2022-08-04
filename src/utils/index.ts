@@ -32,3 +32,24 @@ export const deepArrayPick = (arr, deepKeys, pickKeys) => {
     return ret;
   });
 };
+
+// 下载文件
+export const download = (option: { fileName: string; content: string }) => {
+  const { fileName, content } = option;
+  const file = new Blob([content], { type: "application/json" });
+  const fileUrl = URL.createObjectURL(file);
+  const linkElement = document.createElement("a");
+  linkElement.setAttribute("href", fileUrl);
+  linkElement.setAttribute("download", fileName);
+  linkElement.click();
+};
+
+// 复制文字
+export const copy = (content: string) => {
+  const container = document.createElement("textarea");
+  container.innerHTML = JSON.stringify(content);
+  document.body.appendChild(container);
+  container.select();
+  document.execCommand("copy");
+  document.body.removeChild(container);
+};
