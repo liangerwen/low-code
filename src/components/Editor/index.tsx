@@ -46,18 +46,13 @@ export const EditorContext = createContext<IProvider>({
 });
 
 interface IProps {
+  value: ISchema;
+  onChange: (schema: ISchema) => void;
   onSave: (schema: ISchema) => void;
-  initialValues?: ISchema;
 }
 
 const Editor = (props: IProps) => {
-  const [schema, setSchema] = useState<ISchema>(
-    props.initialValues || {
-      name: "page",
-      inMenu: true,
-      body: [],
-    }
-  );
+  const { value, onChange, onSave } = props;
   const [activeComponent, setActiveComponent] = useState<IComponent | null>(
     null
   );
@@ -104,7 +99,7 @@ const Editor = (props: IProps) => {
 
         // 当前元素是目标元素的祖父
         const currentComponent = findComponent(
-          schema.body,
+          value.body,
           (c) => c?.id === activeId
         );
         if (
@@ -149,7 +144,7 @@ const Editor = (props: IProps) => {
         setPosition(null);
       }
     },
-    [position]
+    [position, value, movingComponent]
   );
 
   const onDragEnd = useCallback(
@@ -158,7 +153,7 @@ const Editor = (props: IProps) => {
         active: { id },
       } = e;
       if (position && movingComponent) {
-        let newBody = schema.body;
+        let newBody = value.body;
         const targetId = position.id,
           targetDirection = position.direction;
         // 如果不是新增就先移除当前组件
@@ -197,8 +192,8 @@ const Editor = (props: IProps) => {
             }
           });
         }
-        if (!isEqual(schema, newBody)) {
-          setSchema({ ...schema, body: newBody });
+        if (!isEqual(value, newBody)) {
+          onChange({ ...value, body: newBody });
           if (isAdd(id)) {
             setActiveComponent(movingComponent);
           }
@@ -208,7 +203,7 @@ const Editor = (props: IProps) => {
       setPosition(null);
       setMovingComponent(null);
     },
-    [schema, position, movingComponent]
+    [value, position, movingComponent]
   );
 
   // const schema = useMemo(
@@ -235,13 +230,13 @@ const Editor = (props: IProps) => {
             width={300}
             className={classNames(styles["lc-container"], "p-0 important-mr-2")}
           >
-            <EditorMenu schema={schema} onChange={setSchema} />
+            <EditorMenu schema={value} onChange={onChange} />
           </Layout.Sider>
           <Layout.Content className={styles["lc-container"]}>
             <EditorContainer
-              schema={schema}
-              onChange={setSchema}
-              onSave={() => props.onSave(schema)}
+              schema={value}
+              onChange={onChange}
+              onSave={() => onSave(value)}
             />
           </Layout.Content>
         </Layout>

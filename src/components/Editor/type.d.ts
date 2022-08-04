@@ -26,5 +26,6 @@ interface ISchema {
   onLoad?: IEvent[];
   onDestroy?: IEvent[];
   onUpdate?: IEvent[];
+  data?: Record<string, any>;
   body: IComponent[];
 }

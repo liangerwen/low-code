@@ -36,6 +36,7 @@ interface IGlobal {
   };
   copy: (content: string) => void;
   data: Record<string, any>;
+  setData: (data: Record<string, any>) => void;
 }
 
 /**

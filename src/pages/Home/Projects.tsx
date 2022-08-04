@@ -26,22 +26,15 @@ import {
 import classNames from "classnames";
 import dayjs from "dayjs";
 import { chunk } from "lodash";
-import { useContext, useMemo } from "react";
-import {
-  useHref,
-  useNavigate,
-  useLocation,
-  UNSAFE_NavigationContext,
-} from "react-router-dom";
+import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 import { v4 as uuidv4 } from "uuid";
 const { Meta } = Card;
 const { Row, Col } = Grid;
 
 export default function Projects() {
-  let { basename, navigator } = useContext(UNSAFE_NavigationContext);
   const navigate = useNavigate();
-  const location = useLocation();
   const [schemas, setSchemas] = useLocalStorage<
     {
       id: string;
@@ -66,33 +59,38 @@ export default function Projects() {
               long: true,
               icon: {
                 isIcon: true,
-                name: "IconDown",
+                name: "IconRefresh",
               },
-              disabled: true,
               status: "warning",
             },
-            children: ["按钮"],
+            children: ["刷新页面按钮"],
             inline: false,
             id: "1eb46a8f-da6b-446d-b1e0-467f4deae81a",
             events: {
-              onClick: [],
+              onClick: [
+                {
+                  id: "7968ea8d-1283-439c-89d7-3d0ceecd6564",
+                  name: "refreshPage",
+                },
+              ],
             },
           },
           {
             name: "a-link",
             title: "链接",
             attrs: {
-              href: "https://www.baidu.com",
-              icon: "222",
+              href: "https://github.com/liangerwen",
+              icon: {
+                isIcon: true,
+                name: "IconGithub",
+              },
               target: "__blank",
             },
-            children: ["链接"],
+            children: ["Github"],
             inline: true,
             id: "215e94be-67e4-4b45-9fa1-2626157fbed0",
           },
         ],
-        onDestroy: [],
-        onUpdate: [],
       },
       date: Date.now(),
       publish: false,

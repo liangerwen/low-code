@@ -43,7 +43,7 @@ export const renderCommonComponents = (
           "pointer-events-none select-none": disabled,
         })}
       >
-        {children.length > 0
+        {(children || []).length > 0
           ? renderCommonComponents(children, disabled)
           : null}
       </Common>

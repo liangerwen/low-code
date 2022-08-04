@@ -3,7 +3,7 @@ import { useEvent, useLocalStorage } from "react-use";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate, useParams } from "react-router-dom";
 import { LocalKeys } from "@/utils/storage";
-import { useCallback, useMemo } from "react";
+import { useCallback, useState } from "react";
 import { produce } from "@/utils";
 
 const defaultSchema: ISchema = {
@@ -24,9 +24,9 @@ export default () => {
       publish: boolean;
     }[]
   >(LocalKeys.SCHEMA_KEY, []);
-  const initialValues = useMemo(
-    () => schemas.find((i) => i.id === params.id)?.schema || defaultSchema,
-    [params.id, schemas]
+
+  const [schema, setSchema] = useState(
+    schemas.find((i) => i.id === params.id)?.schema || defaultSchema
   );
 
   const onCloseBoswer = useCallback((e) => {
@@ -66,7 +66,8 @@ export default () => {
           }
         }
       }}
-      initialValues={initialValues}
+      value={schema}
+      onChange={setSchema}
     />
   );
 };

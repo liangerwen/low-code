@@ -29,6 +29,7 @@ specifiers:
   react: ^18.0.0
   react-color: ^2.19.3
   react-dom: ^18.0.0
+  react-error-boundary: ^3.1.4
   react-json-view: ^1.21.3
   react-router-dom: ^6.3.0
   react-transition-group: ^4.4.5
@@ -56,6 +57,7 @@ dependencies:
   react: 18.1.0
   react-color: 2.19.3_react@18.1.0
   react-dom: 18.1.0_react@18.1.0
+  react-error-boundary: 3.1.4_react@18.1.0
   react-json-view: 1.21.3_ohobp6rpsmerwlq5ipwfh5yigy
   react-router-dom: 6.3.0_ef5jwxihqo6n7gxfmzogljlgcm
   react-transition-group: 4.4.5_ef5jwxihqo6n7gxfmzogljlgcm
@@ -2087,6 +2089,16 @@ packages:
       loose-envify: 1.4.0
       react: 18.1.0
       scheduler: 0.22.0
+    dev: false
+
+  /react-error-boundary/3.1.4_react@18.1.0:
+    resolution: {integrity: sha512-uM9uPzZJTF6wRQORmSrvOIgt4lJ9MC1sNgEOj2XGsDTRE4kmpWxg7ENK9EWNKJRMAOY9z0MuF4yIfl6gp4sotA==}
+    engines: {node: '>=10', npm: '>=6'}
+    peerDependencies:
+      react: '>=16.13.1'
+    dependencies:
+      '@babel/runtime': 7.18.0
+      react: 18.1.0
     dev: false
 
   /react-focus-lock/2.9.1_7cpxmzzodpxnolj5zcc5cr63ji:
