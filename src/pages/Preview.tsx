@@ -1,18 +1,13 @@
 import Editor from "@/components/Editor";
-import { Redirect } from "@/Router";
-import { LocalKeys } from "@/utils/storage";
+import { getLocal, LocalKeys } from "@/utils/storage";
 import { Message } from "@arco-design/web-react";
-import { useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 
 export default function Preview() {
   const params = useParams();
-
-  if (!params.id) {
-    Message.error("未找到此ID的项目");
-    return <Redirect to="/" />;
-  }
+  const navigate = useNavigate();
 
   const [schemas] = useLocalStorage<
     {
@@ -25,9 +20,19 @@ export default function Preview() {
   >(LocalKeys.SCHEMA_KEY, []);
 
   const schema = useMemo(
-    () => schemas.find((i) => i.id === params.id)?.schema,
+    () =>
+      params.id
+        ? schemas.find((i) => i.id === params.id)?.schema
+        : getLocal<ISchema>(LocalKeys.CURRENT_SCHEMA_KEY),
     [params.id, schemas]
   );
 
-  return <Editor.Viewer schema={schema} />;
+  useEffect(() => {
+    if (!schema) {
+      Message.error("没有预览配置");
+      navigate("/", { replace: true });
+    }
+  }, [schema]);
+
+  return schema && <Editor.Viewer schema={schema} />;
 }

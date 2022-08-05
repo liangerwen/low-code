@@ -40,6 +40,7 @@ interface IProps {
   schema: ISchema;
   onChange: (schema: ISchema) => void;
   onSave: () => void;
+  onPreview: () => void;
 }
 
 export const PAGE_FLAG = "page";
@@ -114,9 +115,7 @@ export default function EditorContainer(props: IProps) {
     {
       content: "预览",
       icon: <IconEye />,
-      onClick: () => {
-        navigate("/preview");
-      },
+      onClick: props.onPreview,
     },
     {
       content: "复制",

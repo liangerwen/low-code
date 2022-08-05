@@ -49,10 +49,11 @@ interface IProps {
   value: ISchema;
   onChange: (schema: ISchema) => void;
   onSave: (schema: ISchema) => void;
+  onPreview: (schema: ISchema) => void;
 }
 
 const Editor = (props: IProps) => {
-  const { value, onChange, onSave } = props;
+  const { value, onChange, onSave, onPreview } = props;
   const [activeComponent, setActiveComponent] = useState<IComponent | null>(
     null
   );
@@ -237,6 +238,7 @@ const Editor = (props: IProps) => {
               schema={value}
               onChange={onChange}
               onSave={() => onSave(value)}
+              onPreview={() => onPreview(value)}
             />
           </Layout.Content>
         </Layout>

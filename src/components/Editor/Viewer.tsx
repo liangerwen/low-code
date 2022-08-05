@@ -11,7 +11,7 @@ interface ItemProps {
 
 const ViewerItem = (props: ItemProps) => {
   const { item, ...reset } = props;
-  const { container, name, attrs = {}, children = [], events = {} } = item;
+  const { container, name, attrs = {}, children, events = {} } = item;
 
   const Common = getComponentByName(name);
 
@@ -32,6 +32,7 @@ const ViewerItem = (props: ItemProps) => {
 
   const commonChildren = useMemo(
     () =>
+      children &&
       children.map((c, idx) => {
         if (typeof c === "string") return c;
         if ((c as IconType).isIcon === true)
@@ -41,17 +42,12 @@ const ViewerItem = (props: ItemProps) => {
     [children]
   );
 
-  useEffect(() => {
-    if (!container) {
-      console.log(commonChildren);
-    }
-  }, []);
-
   return (
     <>
       {container ? (
         <Common {...commomProps}>
-          {children.length > 0 &&
+          {children &&
+            children.length > 0 &&
             (children as IComponent[]).map((c, idx) => (
               <ViewerItem item={c} key={idx} {...reset} />
             ))}

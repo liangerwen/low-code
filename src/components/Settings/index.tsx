@@ -113,7 +113,7 @@ export const SettingProvider = ({ children }) => {
       }
     });
     modeMutationObserver.observe(document.body, { attributes: true });
-    return modeMutationObserver.disconnect;
+    return () => modeMutationObserver.disconnect();
   }, []);
 
   return (

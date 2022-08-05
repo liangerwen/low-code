@@ -3,7 +3,7 @@ import { useEvent, useLocalStorage } from "react-use";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate, useParams } from "react-router-dom";
 import { LocalKeys } from "@/utils/storage";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { produce } from "@/utils";
 
 const defaultSchema: ISchema = {
@@ -25,9 +25,14 @@ export default () => {
     }[]
   >(LocalKeys.SCHEMA_KEY, []);
 
-  const [schema, setSchema] = useState(
+  const [schema, setSchema, clearSchema] = useLocalStorage<ISchema>(
+    LocalKeys.CURRENT_SCHEMA_KEY,
     schemas.find((i) => i.id === params.id)?.schema || defaultSchema
   );
+
+  useEffect(() => {
+    return clearSchema;
+  }, []);
 
   const onCloseBoswer = useCallback((e) => {
     e.preventDefault();
@@ -68,6 +73,10 @@ export default () => {
       }}
       value={schema}
       onChange={setSchema}
+      onPreview={(schema) => {
+        const url = schema.inMenu ? `/preview-menu` : `/preview`;
+        window.open(`${window.location.origin}/#${url}`);
+      }}
     />
   );
 };

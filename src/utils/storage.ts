@@ -4,6 +4,7 @@ export const enum LocalKeys {
   THEME_KEY = "theme",
   LANG_KEY = "lang",
   SCHEMA_KEY = "schema",
+  CURRENT_SCHEMA_KEY = "current_schema",
 }
 
 export const getLocal = <T>(key: LocalKeys): T | null => {

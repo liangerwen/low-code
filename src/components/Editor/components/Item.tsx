@@ -24,7 +24,7 @@ export const renderCommonComponents = (
     if (typeof component === "string") return component;
     if ((component as IconType).isIcon === true)
       return <EditorIcon name={component.name} />;
-    const { name, attrs = {}, children = [] } = component as IComponent;
+    const { name, attrs = {}, children } = component as IComponent;
     const props: Record<string, any> = {};
     Object.keys(attrs).forEach((ak) => {
       props[ak] = attrs[ak]?.isIcon ? (
@@ -43,7 +43,7 @@ export const renderCommonComponents = (
           "pointer-events-none select-none": disabled,
         })}
       >
-        {(children || []).length > 0
+        {children && children.length > 0
           ? renderCommonComponents(children, disabled)
           : null}
       </Common>
@@ -82,7 +82,7 @@ const ItemWarp = forwardRef<
 
 const Item = (props: IProps) => {
   const { item, index } = props;
-  const { id, inline, container, name, attrs: p, children = [] } = item;
+  const { id, inline, container, name, attrs: p, children } = item;
 
   const {
     attributes,
@@ -182,7 +182,8 @@ const Item = (props: IProps) => {
                   p?.className
                 )}
               >
-                {children.length > 0 &&
+                {children &&
+                  children.length > 0 &&
                   (children as IComponent[]).map((c, idx) => (
                     <Item item={c} key={idx} index={idx} />
                   ))}

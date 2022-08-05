@@ -1,13 +1,16 @@
 import ReactDOM from "react-dom/client";
 import { HashRouter } from "react-router-dom";
+import { ErrorBoundary } from "react-error-boundary";
 import App from "./App";
-import "@arco-design/web-react/dist/css/arco.css";
+import ErrorComponent from "./components/ErrorComponent";
 import "uno.css";
 import "./global.less";
 import "./locale/index";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <HashRouter>
-    <App />
-  </HashRouter>
+  <ErrorBoundary FallbackComponent={ErrorComponent}>
+    <HashRouter>
+      <App />
+    </HashRouter>
+  </ErrorBoundary>
 );
