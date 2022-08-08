@@ -130,7 +130,7 @@ export default function Layout(props: IProps) {
     "bg-[var(--color-bg-2)] rounded-[8px] shadow-[rgba(0,0,0,0.08)] shadow";
 
   return (
-    <ArcoLayout className="overflow-hidden h-[100vh] w-[100vw] min-w-[1620px]">
+    <ArcoLayout className="overflow-hidden h-[100vh] w-[100vw] min-w-[640px]">
       {navbar && (
         <ArcoLayout.Header>
           <NavBar />
