@@ -1,7 +1,7 @@
 import { Tree } from "@arco-design/web-react";
 import { IconCheckCircleFill } from "@arco-design/web-react/icon";
 
-const name = "a-tree";
+const name = "tree";
 
 const defaultSchema = {
   name,

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@arco-design/color": "^0.4.0",
-    "@arco-design/web-react": "2.35.0",
+    "@arco-design/web-react": "^2.38.0",
     "@babel/standalone": "^7.18.8",
     "@dnd-kit/core": "^6.0.3",
     "@dnd-kit/modifiers": "^6.0.0",

@@ -17,7 +17,7 @@ import { isEqual } from "lodash";
 import { produce } from "@/utils";
 import { filterComponent, findComponent, findWarpper } from "./utils";
 import { isAdd } from "./Menu/ComponentsTab/MenuItem";
-import Viewer, { IProps as ViewerProps } from "./Viewer";
+import Viewer from "./Viewer";
 
 export enum Direction {
   PREV,

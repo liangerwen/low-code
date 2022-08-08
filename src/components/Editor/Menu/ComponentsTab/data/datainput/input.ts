@@ -1,7 +1,7 @@
 import { Input } from "@arco-design/web-react";
 import { IconCheckCircleFill } from "@arco-design/web-react/icon";
 
-const name = "a-input";
+const name = "input";
 
 const defaultSchema = {
   name,

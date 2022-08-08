@@ -1,10 +1,10 @@
+import { lazy, Suspense, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Spin, Layout as ArcoLayout } from "@arco-design/web-react";
+import { IconApps } from "@arco-design/web-react/icon";
 import NotFind from "./pages/404";
 import Login from "./pages/Login";
-import { IconApps } from "@arco-design/web-react/icon";
-import { Spin, Layout as ArcoLayout } from "@arco-design/web-react";
-import { lazy, Suspense, useEffect } from "react";
 import Layout from "./components/Layout";
-import { useNavigate } from "react-router-dom";
 
 const lazyload = (importFn, props = {}) => {
   const LazyComp = lazy(importFn);

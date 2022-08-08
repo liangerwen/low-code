@@ -21,10 +21,10 @@ export default function Preview() {
 
   const schema = useMemo(
     () =>
-      params.id
-        ? schemas.find((i) => i.id === params.id)?.schema
+      params["*"]
+        ? schemas.find((i) => i.id === params["*"])?.schema
         : getLocal<ISchema>(LocalKeys.CURRENT_SCHEMA_KEY),
-    [params.id, schemas]
+    [params["*"], schemas]
   );
 
   useEffect(() => {

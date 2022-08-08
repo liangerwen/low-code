@@ -52,7 +52,7 @@ export default function Projects() {
         inMenu: true,
         body: [
           {
-            name: "a-button",
+            name: "button",
             title: "按钮",
             attrs: {
               type: "primary",
@@ -76,7 +76,7 @@ export default function Projects() {
             },
           },
           {
-            name: "a-link",
+            name: "link",
             title: "链接",
             attrs: {
               href: "https://github.com/liangerwen",

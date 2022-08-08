@@ -1,7 +1,7 @@
 import { List } from "@arco-design/web-react";
 import { IconCheckCircleFill } from "@arco-design/web-react/icon";
 
-const name = "a-list";
+const name = "list";
 
 const defaultSchema = {
   name,
@@ -11,15 +11,15 @@ const defaultSchema = {
   },
   children: [
     {
-      name: "a-list-item",
+      name: "list-item",
       children: ["item1"],
     },
     {
-      name: "a-list-item",
+      name: "list-item",
       children: ["item2"],
     },
     {
-      name: "a-list-item",
+      name: "list-item",
       children: ["item3"],
     },
   ],
@@ -27,7 +27,7 @@ const defaultSchema = {
 
 export default {
   name,
-  componentMap: { [name]: List, "a-list-item": List.Item },
+  componentMap: { [name]: List, "list-item": List.Item },
   icon: IconCheckCircleFill,
   demo: [defaultSchema],
   defaultSchema,

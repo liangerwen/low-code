@@ -3,7 +3,7 @@ import { IconCheckCircleFill } from "@arco-design/web-react/icon";
 
 const { Row } = Grid;
 
-const name = "a-row";
+const name = "row";
 
 const defaultSchema = {
   name,

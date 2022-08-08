@@ -1,18 +1,18 @@
-import { Button } from "@arco-design/web-react";
+import ActionWarp from "@/components/Editor/Menu/components/ActionWarp";
+import EventForm from "@/components/Editor/Menu/components/EventForm";
+import { Typography } from "@arco-design/web-react";
 import { IconCheckCircleFill } from "@arco-design/web-react/icon";
-import ActionWarp from "../../../../components/ActionWarp";
-import EventForm from "../../../../components/EventForm";
+import { useMemo } from "react";
 import PropForm from "./PropForm";
 
-const name = "button";
+const { Text } = Typography;
+
+const name = "text";
 
 const defaultSchema = {
   name,
-  title: "按钮",
-  attrs: {
-    type: "primary",
-  },
-  children: ["按钮"],
+  title: "文字",
+  children: ["这是一段文字"],
   inline: true,
 };
 
@@ -20,9 +20,9 @@ const Action = (props: {
   schema: IComponent;
   onChange: (schema: IComponent) => void;
 }) => {
-  return (
-    <ActionWarp
-      options={[
+  const options = useMemo(() => {
+    if (props.schema?.attrs?.editable) {
+      return [
         {
           title: "属性",
           key: 1,
@@ -34,25 +34,30 @@ const Action = (props: {
           key: 2,
           Form: EventForm,
           props: {
-            options: [
-              { label: "点击", value: "onClick" },
-              // { label: "鼠标移入", value: "onMouseEnter" },
-              // { label: "鼠标移出", value: "onMouseLeave" },
-            ],
+            options: [{ label: "编辑", value: "onChange" }],
             value: props.schema.events,
             onChange: (val) => {
               props.onChange({ ...props.schema, events: val });
             },
           },
         },
-      ]}
-    />
-  );
+      ];
+    }
+    return [
+      {
+        title: "属性",
+        key: 1,
+        Form: PropForm,
+        props,
+      },
+    ];
+  }, [props.schema]);
+  return <ActionWarp options={options} />;
 };
 
 export default {
   name,
-  componentMap: { [name]: Button },
+  componentMap: { [name]: Text },
   icon: IconCheckCircleFill,
   demo: [defaultSchema],
   defaultSchema,

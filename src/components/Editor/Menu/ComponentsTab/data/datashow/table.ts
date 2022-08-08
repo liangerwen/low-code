@@ -1,7 +1,7 @@
 import { Table } from "@arco-design/web-react";
 import { IconCheckCircleFill } from "@arco-design/web-react/icon";
 
-const name = "a-table";
+const name = "table";
 
 const defaultSchema = {
   name,

@@ -23,7 +23,7 @@ export const renderCommonComponents = (
   return demo.map((component, idx) => {
     if (typeof component === "string") return component;
     if ((component as IconType).isIcon === true)
-      return <EditorIcon name={component.name} />;
+      return <EditorIcon name={component.name} key={idx} />;
     const { name, attrs = {}, children } = component as IComponent;
     const props: Record<string, any> = {};
     Object.keys(attrs).forEach((ak) => {

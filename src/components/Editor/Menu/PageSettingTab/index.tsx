@@ -47,7 +47,7 @@ export default (props: IProps) => {
           ]}
         />
       </FormItem>
-      <FormItem label="是否在菜单中" field="inMenu" triggerPropName="checked">
+      <FormItem label="在菜单中" field="inMenu" triggerPropName="checked">
         <Switch />
       </FormItem>
     </Form>

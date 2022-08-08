@@ -13,7 +13,7 @@ interface ButtonProps {
   type: "text" | "primary" | "secondary" | "dashed" | "outline";
   status: "warning" | "danger" | "success";
   size: "mini" | "small" | "large";
-  text: string;
+  content: string;
   icon: string;
   shape: "circle" | "round" | "square";
   disabled: boolean;
@@ -33,10 +33,10 @@ const PropForm = (props: {
       const newSchema = produce(props.schema, (schema) => {
         schema.attrs = {
           ...schema.attrs,
-          ...omit(form, "text"),
+          ...omit(form, "content"),
         };
         schema.inline = !form.long;
-        schema.children = form.text ? [form.text] : null;
+        schema.children = form.content ? [form.content] : null;
       });
       props.onChange(newSchema);
     },
@@ -47,7 +47,7 @@ const PropForm = (props: {
     form.resetFields();
     form.setFieldsValue({
       ...props.schema.attrs,
-      text: props.schema.children?.[0] as string,
+      content: props.schema.children?.[0] as string,
     });
   }, [props.schema]);
 
@@ -99,13 +99,13 @@ const PropForm = (props: {
           ]}
         />
       </FormItem>
-      <FormItem label="内容" field="text">
+      <FormItem label="内容" field="content">
         <Input placeholder="输入内容" allowClear />
       </FormItem>
       <Row>
         <Col span={12}>
           <FormItem
-            label="是否禁用"
+            label="禁用"
             field="disabled"
             layout="inline"
             labelAlign="left"
@@ -116,7 +116,7 @@ const PropForm = (props: {
         </Col>
         <Col span={12}>
           <FormItem
-            label="是否加载"
+            label="加载"
             field="loading"
             layout="inline"
             labelAlign="left"
@@ -143,7 +143,7 @@ const PropForm = (props: {
         </Col>
         <Col span={12}>
           <FormItem
-            label="是否块级"
+            label="块级"
             field="long"
             layout="inline"
             labelAlign="left"
