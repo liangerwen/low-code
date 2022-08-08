@@ -28,14 +28,14 @@ const PropForm = (props: {
   const onChange = useCallback(
     (_, form) => {
       const newSchema = produce(props.schema, (schema) => {
-        schema.attrs = {
-          ...schema.attrs,
+        schema.props = {
+          ...schema.props,
           ...omit(form, "content", "blank"),
         };
         if (form.blank) {
-          schema.attrs.target = "__blank";
+          schema.props.target = "__blank";
         } else {
-          delete schema.attrs.target;
+          delete schema.props.target;
         }
         schema.children = form.content ? [form.content] : null;
       });
@@ -45,11 +45,11 @@ const PropForm = (props: {
   );
 
   useEffect(() => {
-    const { attrs } = props.schema;
-    const { hoverable = true, target } = attrs;
+    const { props: p } = props.schema;
+    const { hoverable = true, target } = p;
     form.resetFields();
     form.setFieldsValue({
-      ...attrs,
+      ...p,
       hoverable,
       blank: target === "__blank",
       content: props.schema.children?.[0] as string,

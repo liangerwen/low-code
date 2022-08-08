@@ -27,7 +27,7 @@ export default function EventModal({
   initialValues,
 }: {
   visible: boolean;
-  onOk?: (event: IEvent) => void;
+  onOk?: (event: ActionType) => void;
   onCancel?: () => void;
   initialValues?: Record<string, any>;
 }) {

@@ -1,6 +1,6 @@
+import ErrorComp from "@/components/Editor/components/ErrorComp";
 import { IconProps } from "@arco-design/web-react/icon";
 import { FC } from "react";
-import ErrorComponent from "../../../components/ErrorComponent";
 
 const examples = import.meta.globEager<
   Module<{ type: string; menus: Menu[]; idx: number }>
@@ -28,18 +28,18 @@ export type Menu = {
  * @param name 组件名称
  * @returns React组件
  */
-export const getComponentByName = (name: string) => {
+export const getComponentByName = (name: string): FC<any> => {
   const mappingArr = Object.values(components);
   const mapping = mappingArr.reduce<Mapping>((acc, cur) => {
     acc = { ...acc, ...cur.componentMap };
     return acc;
   }, {});
-  return mapping[name] || ErrorComponent;
+  return mapping[name] || ErrorComp;
 };
 
 /**
  * 根据名称获取对应默认json
- * @param name 
+ * @param name
  * @returns json对象
  */
 export const getJsonByName = (name: string) => {
@@ -59,7 +59,7 @@ export const getJsonByName = (name: string) => {
 
 /**
  * 根据名称获取对应Action组件
- * @param name 
+ * @param name
  * @returns Action组件
  */
 export const getRenderActionByName = (name: string) => {

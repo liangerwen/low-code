@@ -2,10 +2,21 @@ import { Divider, Grid, Space } from "@arco-design/web-react";
 import { IconDragDot } from "@arco-design/web-react/icon";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import classNames from "classnames";
-import { forwardRef, ReactNode, useCallback, useContext, useMemo } from "react";
+import { isArray } from "lodash";
+import {
+  FC,
+  forwardRef,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+} from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { Direction, EditorContext } from "..";
 import EditorIcon from "../Menu/components/EditorIcon";
 import { getComponentByName } from "../Menu/ComponentsTab/data";
+import { parseChildren, parseProps } from "../utils/parse";
+import ErrorComp from "./ErrorComp";
 
 import styles from "./styles/item.module.less";
 
@@ -16,40 +27,27 @@ interface IProps {
   index: number;
 }
 
-export const renderCommonComponents = (
-  demo: (IComponent | string | IconType)[],
-  disabled = false
-) => {
-  return demo.map((component, idx) => {
-    if (typeof component === "string") return component;
-    if ((component as IconType).isIcon === true)
-      return <EditorIcon name={component.name} key={idx} />;
-    const { name, attrs = {}, children } = component as IComponent;
-    const props: Record<string, any> = {};
-    Object.keys(attrs).forEach((ak) => {
-      props[ak] = attrs[ak]?.isIcon ? (
-        <EditorIcon name={attrs[ak].name} />
-      ) : (
-        attrs[ak]
-      );
-    });
+export function CommonItem({ item, disabled = false }) {
+  const { id, name, props: p = {}, children } = item as IComponent;
 
-    const Common = getComponentByName(name);
-    return (
-      <Common
+  const props = parseProps(p, { window });
+
+  const Comp = getComponentByName(name);
+  return (
+    <ErrorBoundary
+      fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
+    >
+      <Comp
         {...props}
-        key={idx}
         className={classNames(props?.className, {
           "pointer-events-none select-none": disabled,
         })}
       >
-        {children && children.length > 0
-          ? renderCommonComponents(children, disabled)
-          : null}
-      </Common>
-    );
-  });
-};
+        {isArray(children) && parseChildren(children)}
+      </Comp>
+    </ErrorBoundary>
+  );
+}
 
 const ItemWarp = forwardRef<
   HTMLDivElement,
@@ -82,7 +80,7 @@ const ItemWarp = forwardRef<
 
 const Item = (props: IProps) => {
   const { item, index } = props;
-  const { id, inline, container, name, attrs: p, children } = item;
+  const { id, inline, container, name, props: p, children } = item;
 
   const {
     attributes,
@@ -98,7 +96,7 @@ const Item = (props: IProps) => {
     id,
     data: item,
   });
-  const Common = getComponentByName(name);
+  const Comp = getComponentByName(name);
   const { activeComponent, setActiveComponent, movingComponent, position } =
     useContext(EditorContext);
 
@@ -138,7 +136,9 @@ const Item = (props: IProps) => {
   );
 
   return (
-    <>
+    <ErrorBoundary
+      fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
+    >
       {position &&
         position.id === id &&
         position.direction === Direction.PREV &&
@@ -175,19 +175,18 @@ const Item = (props: IProps) => {
         >
           {container ? (
             <>
-              <Common
-                {...p}
+              <Comp
+                {...parseProps(p, { window })}
                 className={classNames(
                   styles["lc-item-content-main"],
                   p?.className
                 )}
               >
-                {children &&
-                  children.length > 0 &&
+                {isArray(children) &&
                   (children as IComponent[]).map((c, idx) => (
                     <Item item={c} key={idx} index={idx} />
                   ))}
-              </Common>
+              </Comp>
               {position &&
                 position.id === id &&
                 position.direction === Direction.MIDDLE &&
@@ -195,7 +194,7 @@ const Item = (props: IProps) => {
               <p className={styles["lc-item-content-tip"]}>拖动组件到此处</p>
             </>
           ) : (
-            renderCommonComponents([item], true)
+            <CommonItem item={item} disabled={true} key={item.id} />
           )}
         </div>
       </ItemWarp>
@@ -203,7 +202,7 @@ const Item = (props: IProps) => {
         position.id === id &&
         position.direction === Direction.NEXT &&
         renderDivider()}
-    </>
+    </ErrorBoundary>
   );
 };
 

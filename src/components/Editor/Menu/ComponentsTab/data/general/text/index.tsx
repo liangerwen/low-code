@@ -1,5 +1,10 @@
 import ActionWarp from "@/components/Editor/Menu/components/ActionWarp";
 import EventForm from "@/components/Editor/Menu/components/EventForm";
+import {
+  generateEventProps,
+  getEventsFromProps,
+} from "@/components/Editor/utils/events";
+import { produce } from "@/utils";
 import { Typography } from "@arco-design/web-react";
 import { IconCheckCircleFill } from "@arco-design/web-react/icon";
 import { useMemo } from "react";
@@ -21,7 +26,7 @@ const Action = (props: {
   onChange: (schema: IComponent) => void;
 }) => {
   const options = useMemo(() => {
-    if (props.schema?.attrs?.editable) {
+    if (props.schema?.props?.editable) {
       return [
         {
           title: "属性",
@@ -35,9 +40,16 @@ const Action = (props: {
           Form: EventForm,
           props: {
             options: [{ label: "编辑", value: "onChange" }],
-            value: props.schema.events,
+            value: getEventsFromProps(props.schema.props.editable),
             onChange: (val) => {
-              props.onChange({ ...props.schema, events: val });
+              props.onChange(
+                produce(props.schema, (schema) => {
+                  schema.props.editable = generateEventProps(
+                    schema.props.editable,
+                    val
+                  );
+                })
+              );
             },
           },
         },

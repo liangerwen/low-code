@@ -4,8 +4,8 @@ import EventList from "./EventList";
 import { produce } from "@/utils";
 
 interface IProps {
-  value?: Record<string, IEvent[]>;
-  onChange?: (val: Record<string, IEvent[]>) => void;
+  value?: Record<string, EventType>;
+  onChange?: (val: Record<string, EventType>) => void;
   options: { label: ReactNode | string; value: string }[];
 }
 
@@ -13,6 +13,14 @@ export default function (props: IProps) {
   const { options, value = {}, onChange } = props;
 
   const eventKeys = useMemo(() => Object.keys(value), [value]);
+  const actionValue = useMemo(
+    () =>
+      Object.entries(value).reduce(
+        (pre, cur) => (pre[cur[0]] = cur[1].actions) && pre,
+        {}
+      ),
+    [value]
+  );
 
   return (
     <>
@@ -32,7 +40,7 @@ export default function (props: IProps) {
             });
             val.forEach((v) => {
               if (!events[v]) {
-                events[v] = [];
+                events[v] = { isEvent: true, actions: [] };
               }
             });
           });
@@ -40,7 +48,19 @@ export default function (props: IProps) {
         }}
         className="mb-2"
       />
-      <EventList value={value} onChange={onChange} options={options} />
+      <EventList
+        value={actionValue}
+        onChange={(value) => {
+          onChange(
+            Object.entries(value).reduce(
+              (pre, cur) =>
+                (pre[cur[0]] = { isEvent: true, actions: cur[1] }) && pre,
+              {}
+            )
+          );
+        }}
+        options={options}
+      />
     </>
   );
 }

@@ -8,7 +8,7 @@ const name = "link";
 const defaultSchema = {
   name,
   title: "链接",
-  attrs: {
+  props: {
     href: "https://www.baidu.com",
     icon: "222",
     target: "__blank",

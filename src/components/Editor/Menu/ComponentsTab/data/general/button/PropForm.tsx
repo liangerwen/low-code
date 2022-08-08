@@ -31,8 +31,8 @@ const PropForm = (props: {
   const onChange = useCallback(
     (_, form) => {
       const newSchema = produce(props.schema, (schema) => {
-        schema.attrs = {
-          ...schema.attrs,
+        schema.props = {
+          ...schema.props,
           ...omit(form, "content"),
         };
         schema.inline = !form.long;
@@ -46,7 +46,7 @@ const PropForm = (props: {
   useEffect(() => {
     form.resetFields();
     form.setFieldsValue({
-      ...props.schema.attrs,
+      ...props.schema.props,
       content: props.schema.children?.[0] as string,
     });
   }, [props.schema]);

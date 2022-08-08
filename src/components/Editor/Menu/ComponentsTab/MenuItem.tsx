@@ -4,7 +4,7 @@ import { useDraggable } from "@dnd-kit/core";
 import classNames from "classnames";
 import { useHover } from "react-use";
 import { v1 as uuidv1 } from "uuid";
-import { renderCommonComponents } from "../../components/Item";
+import { CommonItem } from "../../components/Item";
 import { Menu } from "./data";
 import styles from "./styles/menu-item.module.less";
 
@@ -36,7 +36,9 @@ export default (props: Menu) => {
           <Typography.Title heading={6}>
             {props.defaultSchema.title}
           </Typography.Title>
-          {renderCommonComponents(props.demo)}
+          {props.demo.map((i, idx) => (
+            <CommonItem item={i} key={idx} />
+          ))}
         </div>
       )}
     >

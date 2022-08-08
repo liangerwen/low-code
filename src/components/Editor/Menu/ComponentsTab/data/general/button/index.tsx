@@ -1,5 +1,11 @@
+import {
+  generateEventProps,
+  getEventsFromProps,
+} from "@/components/Editor/utils/events";
+import { produce } from "@/utils";
 import { Button } from "@arco-design/web-react";
 import { IconCheckCircleFill } from "@arco-design/web-react/icon";
+import { useMemo } from "react";
 import ActionWarp from "../../../../components/ActionWarp";
 import EventForm from "../../../../components/EventForm";
 import PropForm from "./PropForm";
@@ -9,7 +15,7 @@ const name = "button";
 const defaultSchema = {
   name,
   title: "按钮",
-  attrs: {
+  props: {
     type: "primary",
   },
   children: ["按钮"],
@@ -39,9 +45,13 @@ const Action = (props: {
               // { label: "鼠标移入", value: "onMouseEnter" },
               // { label: "鼠标移出", value: "onMouseLeave" },
             ],
-            value: props.schema.events,
+            value: getEventsFromProps(props.schema.props),
             onChange: (val) => {
-              props.onChange({ ...props.schema, events: val });
+              props.onChange(
+                produce(props.schema, (schema) => {
+                  schema.props = generateEventProps(schema.props, val);
+                })
+              );
             },
           },
         },

@@ -1,5 +1,6 @@
 import { Form, Switch } from "@arco-design/web-react";
 import { pick } from "lodash";
+import { generateEventProps } from "../../utils/events";
 import EventForm from "../components/EventForm";
 
 const FormItem = Form.Item;
@@ -8,9 +9,9 @@ const useForm = Form.useForm;
 interface FormProps {
   inMenu: boolean;
   lifecycle: {
-    onLoad?: IEvent[];
-    onDestroy?: IEvent[];
-    onUpdate?: IEvent[];
+    onLoad?: EventType;
+    onDestroy?: EventType;
+    onUpdate?: EventType;
   };
 }
 
@@ -32,8 +33,7 @@ export default (props: IProps) => {
       }}
       onChange={(_, form) => {
         props.onChange({
-          ...props.schema,
-          ...form.lifecycle,
+          ...generateEventProps(props.schema, form.lifecycle),
           inMenu: !!form.inMenu,
         });
       }}

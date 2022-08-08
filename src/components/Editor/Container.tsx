@@ -53,6 +53,7 @@ export default function EditorContainer(props: IProps) {
   const [copy, setCopy] = useState<IComponent | null>(null);
 
   const onClear = () => {
+    setActiveComponent(null);
     props.onChange({ ...props.schema, body: [] });
   };
   const onDelete = () => {

@@ -1,7 +1,10 @@
+import { isArray } from "lodash";
 import { useEffect, useMemo, useState } from "react";
-import EditorIcon from "./Menu/components/EditorIcon";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorComp from "./components/ErrorComp";
 import { getComponentByName } from "./Menu/ComponentsTab/data";
-import { createAction, createEvents } from "./utils/events";
+import { createAction } from "./utils/events";
+import { parseChildren, parseProps } from "./utils/parse";
 
 interface ItemProps {
   item: IComponent;
@@ -11,51 +14,28 @@ interface ItemProps {
 
 const ViewerItem = (props: ItemProps) => {
   const { item, ...reset } = props;
-  const { container, name, attrs = {}, children, events = {} } = item;
+  const { id, container, name, props: p = {}, children } = item;
 
   const Common = getComponentByName(name);
 
-  const commomProps = useMemo(() => {
-    const p = {};
-    Object.keys(attrs).forEach((ak) => {
-      p[ak] = attrs[ak]?.isIcon ? (
-        <EditorIcon name={attrs[ak].name} />
-      ) : (
-        attrs[ak]
-      );
-    });
-    return {
-      ...p,
-      ...createEvents(events, { window }),
-    };
-  }, [attrs, events]);
-
-  const commonChildren = useMemo(
-    () =>
-      children &&
-      children.map((c, idx) => {
-        if (typeof c === "string") return c;
-        if ((c as IconType).isIcon === true)
-          return <EditorIcon name={c.name} key={idx} />;
-        return <ViewerItem item={c} key={idx} {...reset} />;
-      }),
-    [children]
-  );
+  const commonProps = useMemo(() => parseProps(p, { window }), [p]);
+  const commonChildren = useMemo(() => parseChildren(children), [children]);
 
   return (
-    <>
+    <ErrorBoundary
+      fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
+    >
       {container ? (
-        <Common {...commomProps}>
-          {children &&
-            children.length > 0 &&
+        <Common {...commonProps}>
+          {isArray(children) &&
             (children as IComponent[]).map((c, idx) => (
               <ViewerItem item={c} key={idx} {...reset} />
             ))}
         </Common>
       ) : (
-        <Common {...commomProps}>{commonChildren}</Common>
+        <Common {...commonProps}>{commonChildren}</Common>
       )}
-    </>
+    </ErrorBoundary>
   );
 };
 
@@ -71,11 +51,15 @@ export default function EditorViewer(props: IProps) {
 
   useEffect(() => {
     if (onLoad) {
-      createAction(onLoad, { window, data: pageData, setData: setPageData })();
+      createAction(onLoad.actions, {
+        window,
+        data: pageData,
+        setData: setPageData,
+      })();
     }
     return () => {
       if (onDestroy) {
-        createAction(onDestroy, {
+        createAction(onDestroy.actions, {
           window,
           data: pageData,
           setData: setPageData,
@@ -86,7 +70,7 @@ export default function EditorViewer(props: IProps) {
 
   useEffect(() => {
     if (onUpdate) {
-      createAction(onUpdate, {
+      createAction(onUpdate.actions, {
         window,
         data: pageData,
         setData: setPageData,

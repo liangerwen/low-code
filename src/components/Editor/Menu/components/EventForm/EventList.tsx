@@ -114,9 +114,9 @@ function EventListItem(props: {
 }
 
 function EventList(props: {
-  value: IEvent[];
-  onChange: (val: IEvent[]) => void;
-  onEdit: (val: IEvent) => void;
+  value: ActionType[];
+  onChange: (val: ActionType[]) => void;
+  onEdit: (val: ActionType) => void;
 }) {
   const { value, onChange, onEdit } = props;
   const sensors = useSensors(
@@ -194,7 +194,7 @@ function EventList(props: {
   }
 }
 
-const enum ActionType {
+const enum HandleType {
   NONE,
   ADD,
   EDIT,
@@ -205,34 +205,34 @@ export default function EventCollapse({
   options,
   onChange,
 }: {
-  value: Record<string, IEvent[]>;
+  value: Record<string, ActionType[]>;
   options: { label: ReactNode | string; value: string }[];
-  onChange?: (val: Record<string, IEvent[]>) => void;
+  onChange?: (val: Record<string, ActionType[]>) => void;
 }) {
   const [visible, setVisible] = useState(false);
-  const [eventFormValue, setEventFormValue] = useState<IEvent | null>(null);
-  const [actionType, setActionType] = useState<ActionType>(ActionType.NONE);
+  const [eventFormValue, setEventFormValue] = useState<ActionType | null>(null);
+  const [handleType, setHandleType] = useState<HandleType>(HandleType.NONE);
   const [eventType, setEventType] = useState<string>("");
   const eventKeys = useMemo(() => Object.keys(value), [value]);
 
   const onAdd = useCallback((et: string) => {
     setVisible(true);
     setEventFormValue(null);
-    setActionType(ActionType.ADD);
+    setHandleType(HandleType.ADD);
     setEventType(et);
   }, []);
 
-  const onEdit = useCallback((et: string, event: IEvent) => {
+  const onEdit = useCallback((et: string, event: ActionType) => {
     setVisible(true);
     setEventFormValue(event);
-    setActionType(ActionType.EDIT);
+    setHandleType(HandleType.EDIT);
     setEventType(et);
   }, []);
 
   const onCalcel = useCallback(() => {
     setVisible(false);
     setEventFormValue(null);
-    setActionType(ActionType.NONE);
+    setHandleType(HandleType.NONE);
     setEventType("");
   }, []);
 
@@ -286,11 +286,11 @@ export default function EventCollapse({
         visible={visible}
         onOk={(event) => {
           let newEvents;
-          if (actionType === ActionType.ADD) {
+          if (handleType === HandleType.ADD) {
             newEvents = produce(value, (events) => {
               events[eventType] = [...(events[eventType] || []), event];
             });
-          } else if (actionType === ActionType.EDIT) {
+          } else if (handleType === HandleType.EDIT) {
             newEvents = produce(value, (events) => {
               const changeEvent = events[eventType];
               const changIdx = changeEvent.findIndex(

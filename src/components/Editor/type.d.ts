@@ -1,7 +1,17 @@
-type IEvent = {
+type ActionType = {
   id: string;
   name: string;
   form?: Record<string, any>;
+};
+
+type EventType = {
+  isEvent: true;
+  actions: ActionType[];
+};
+
+type BindType = {
+  isBind: true;
+  name: string;
 };
 
 type IconType = {
@@ -13,9 +23,8 @@ interface IComponent {
   id?: string;
   name: string;
   title?: string;
-  attrs?: Record<string, any>;
-  events?: Record<string, IEvent[]>;
-  children?: (string | IconType | IComponent)[];
+  props?: Record<string, any>;
+  children?: (string | IconType | BindType | IComponent)[];
   container?: boolean;
   inline?: boolean;
 }
@@ -23,9 +32,9 @@ interface IComponent {
 interface ISchema {
   name: "page";
   inMenu: boolean;
-  onLoad?: IEvent[];
-  onDestroy?: IEvent[];
-  onUpdate?: IEvent[];
+  onLoad?: EventType;
+  onDestroy?: EventType;
+  onUpdate?: EventType;
   data?: Record<string, any>;
   body: IComponent[];
 }

@@ -52,7 +52,7 @@ export default function Projects() {
           {
             name: "button",
             title: "按钮",
-            attrs: {
+            props: {
               type: "primary",
               long: true,
               icon: {
@@ -60,11 +60,6 @@ export default function Projects() {
                 name: "IconRefresh",
               },
               status: "warning",
-            },
-            children: ["刷新页面按钮"],
-            inline: false,
-            id: "1eb46a8f-da6b-446d-b1e0-467f4deae81a",
-            events: {
               onClick: [
                 {
                   id: "7968ea8d-1283-439c-89d7-3d0ceecd6564",
@@ -72,11 +67,13 @@ export default function Projects() {
                 },
               ],
             },
+            children: ["刷新页面按钮"],
+            id: "1eb46a8f-da6b-446d-b1e0-467f4deae81a",
           },
           {
             name: "link",
             title: "链接",
-            attrs: {
+            props: {
               href: "https://github.com/liangerwen",
               icon: {
                 isIcon: true,

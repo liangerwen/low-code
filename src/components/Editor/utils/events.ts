@@ -1,8 +1,10 @@
 import MENUKEYS from "../Menu/components/EventForm/data/keys";
 import { NavigateFunction, Location } from "react-router-dom";
 import { Message, Modal, Notification } from "@arco-design/web-react";
+import { isObject } from "lodash";
+import { produce } from "@/utils";
 
-interface IGlobal {
+export interface IGlobal {
   window: Window;
   router: {
     navigate: NavigateFunction;
@@ -25,7 +27,7 @@ interface IGlobal {
       refresh: (id: string) => void;
       display: (id: string) => void;
       hidden: (id: string) => void;
-      setAttrs: (id: string, attrs: Record<string, any>) => void;
+      setProps: (id: string, props: Record<string, any>) => void;
       triggerEvent: (id: string, name: string) => void;
     };
   };
@@ -46,7 +48,7 @@ interface IGlobal {
  * @returns 根据actions生成的方法
  */
 export function createAction(
-  actions: IEvent[],
+  actions: ActionType[],
   { window, router, ui, service, data }: Partial<IGlobal>
 ) {
   return function () {
@@ -63,18 +65,38 @@ export function createAction(
 }
 
 /**
- * 根据events生成对应事件方法
- * @param events 对应事件
- * @param global 全局方法和变量
- * @returns events生成的事件方法
+ * 根据属性对象返回对应得事件属性对象
+ * @param props 属性对象
+ * @returns 事件属性对象
  */
-export function createEvents(
-  events: Record<string, IEvent[]>,
-  global: Partial<IGlobal>
-) {
+export const getEventsFromProps = (props) => {
+  if (!isObject(props)) return {};
   const ret = {};
-  Object.keys(events).forEach((k) => {
-    ret[k] = createAction(events[k], global);
+  Object.keys(props).forEach((k) => {
+    const prop = props[k];
+    if (prop.isEvent) {
+      ret[k] = prop;
+    }
   });
   return ret;
-}
+};
+
+/**
+ * 根据事件属性对象和原本属性对象生成新的属性对象
+ * @param props 属性对象
+ * @param eventProps 事件属性对象
+ * @returns 新的属性对象
+ */
+export const generateEventProps = <T extends Object>(
+  props: T,
+  eventProps
+): T => {
+  if (!isObject(props) || !isObject(eventProps)) return props;
+  return produce(props, (p) => {
+    const oldEventProps = getEventsFromProps(props);
+    Object.keys(oldEventProps).forEach((key) => {
+      delete p[key];
+    });
+    Object.assign(p, eventProps);
+  });
+};

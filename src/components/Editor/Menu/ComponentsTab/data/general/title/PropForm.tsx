@@ -1,3 +1,4 @@
+import BindFormItem from "@/components/Editor/Menu/components/BindFormItem";
 import { produce } from "@/utils";
 import {
   EllipsisConfig,
@@ -19,14 +20,11 @@ const Col = Grid.Col;
 
 type TextProps = Omit<
   TypographyTextProps & {
-    heading: 1 | 2 | 3 | 4 | 5 | 6;
-    spacing: boolean;
     blockquote: boolean;
-    text: string;
-    ellipsis: boolean;
-    ellipsisConfig: EllipsisConfig;
+    content: string;
+    heading: 1 | 2 | 3 | 4 | 5 | 6;
   },
-  "className" | "style" | "children"
+  "className" | "style" | "children" | "ellipsis"
 >;
 
 const switchFormItemProps: Partial<FormItemProps> = {
@@ -46,23 +44,11 @@ const PropForm = (props: {
   const onChange = useCallback(
     (_, form) => {
       const newSchema = produce(props.schema, (schema) => {
-        schema.attrs = {
-          ...schema.attrs,
-          ...omit(form, "text", "spacing", "ellipsisConfig"),
+        schema.props = {
+          ...schema.props,
+          ...omit(form, "content"),
         };
-        if (form.spacing) {
-          schema.attrs.spacing = "close";
-        } else {
-          delete schema.attrs.spacing;
-        }
-        if (form.ellipsis) {
-          schema.attrs.ellipsis = form.ellipsisConfig || {
-            defaultExpanded: true,
-          };
-        } else {
-          delete schema.attrs.ellipsis;
-        }
-        schema.children = form.text ? [form.text] : null;
+        schema.children = form.content ? [form.content] : null;
       });
       props.onChange(newSchema);
     },
@@ -70,23 +56,19 @@ const PropForm = (props: {
   );
 
   useEffect(() => {
-    const { attrs = {} } = props.schema;
-    const { spacing, ellipsis } = attrs;
+    const { props: p = { heading: 1 }, children } = props.schema;
     form.resetFields();
     form.setFieldsValue({
-      ...attrs,
-      spacing: spacing === "close",
-      text: props.schema.children?.[0] as string,
-      ellipsis: !!ellipsis,
-      ellipsisConfig: ellipsis,
+      ...p,
+      content: children?.[0] as string,
     });
   }, [props.schema]);
 
   return (
     <Form form={form} layout="vertical" onChange={onChange}>
-      <FormItem label="内容" field="text">
+      <BindFormItem label="内容" field="content">
         <Input.TextArea placeholder="输入内容" allowClear />
-      </FormItem>
+      </BindFormItem>
       <FormItem label="类型" field="type">
         <Select
           placeholder="选择类型"
@@ -100,6 +82,32 @@ const PropForm = (props: {
           ]}
         />
       </FormItem>
+      <FormItem label="大小" field="heading">
+        <Select
+          placeholder="选择大小"
+          allowClear
+          options={[
+            { label: "H1", value: 1 },
+            { label: "H2", value: 2 },
+            { label: "H3", value: 3 },
+            { label: "H4", value: 4 },
+            { label: "H5", value: 5 },
+            { label: "H6", value: 6 },
+          ]}
+        />
+      </FormItem>
+      <Row>
+        <Col span={12}>
+          <FormItem label="禁用" field="disabled" {...switchFormItemProps}>
+            <Switch />
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="标记" field="mark" {...switchFormItemProps}>
+            <Switch />
+          </FormItem>
+        </Col>
+      </Row>
       <Row>
         <Col span={12}>
           <FormItem label="加粗" field="bold" {...switchFormItemProps}>
@@ -131,19 +139,16 @@ const PropForm = (props: {
           </FormItem>
         </Col>
         <Col span={12}>
-          <FormItem label="可编辑" field="editable" {...switchFormItemProps}>
-            <Switch />
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem label="禁用" field="disabled" {...switchFormItemProps}>
-            <Switch />
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="标记" field="mark" {...switchFormItemProps}>
+          <FormItem
+            disabled={
+              !Boolean((props.schema.children?.[0] as BindType)?.isBind)
+            }
+            label="可编辑"
+            field="editable"
+            {...switchFormItemProps}
+            normalize={(val) => (val ? {} : false)}
+            formatter={(val) => Boolean(val)}
+          >
             <Switch />
           </FormItem>
         </Col>
