@@ -34,14 +34,14 @@ import {
 } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import { ReactNode, useCallback, useMemo, useState } from "react";
-import menuData from "./data";
+import menus from "./menus";
 import EventModal from "./EventModal";
 import { createPortal } from "react-dom";
 import classNames from "classnames";
 
 const { Paragraph, Text } = Typography;
 
-const eventOptions = menuData
+const eventOptions = menus
   .map((i) => i.children)
   .flat()
   .map((i) => ({ label: i.title, value: i.key }));

@@ -2,20 +2,13 @@ import { Divider, Grid, Space } from "@arco-design/web-react";
 import { IconDragDot } from "@arco-design/web-react/icon";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import classNames from "classnames";
-import { isArray } from "lodash";
-import {
-  FC,
-  forwardRef,
-  ReactNode,
-  useCallback,
-  useContext,
-  useMemo,
-} from "react";
+import { isEmpty } from "lodash";
+import { forwardRef, ReactNode, useCallback, useContext, useMemo } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Direction, EditorContext } from "..";
-import EditorIcon from "../Menu/components/EditorIcon";
 import { getComponentByName } from "../Menu/ComponentsTab/data";
 import { parseChildren, parseProps } from "../utils/parse";
+import useGlobal from "../utils/useGlobal";
 import ErrorComp from "./ErrorComp";
 
 import styles from "./styles/item.module.less";
@@ -29,22 +22,31 @@ interface IProps {
 
 export function CommonItem({ item, disabled = false }) {
   const { id, name, props: p = {}, children } = item as IComponent;
+  const global = useGlobal();
 
-  const props = parseProps(p, { window });
-
-  const Comp = getComponentByName(name);
+  const Common = getComponentByName(name);
+  const commonProps = useMemo(() => parseProps(p, global), [p]);
+  const commonChildren = useMemo(
+    () =>
+      parseChildren(children, {
+        render: (child, idx) => (
+          <CommonItem item={child} disabled={disabled} key={idx} />
+        ),
+      }),
+    [children]
+  );
   return (
     <ErrorBoundary
       fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
     >
-      <Comp
-        {...props}
-        className={classNames(props?.className, {
+      <Common
+        {...commonProps}
+        className={classNames(commonProps?.className, {
           "pointer-events-none select-none": disabled,
         })}
       >
-        {isArray(children) && parseChildren(children)}
-      </Comp>
+        {commonChildren}
+      </Common>
     </ErrorBoundary>
   );
 }
@@ -81,6 +83,8 @@ const ItemWarp = forwardRef<
 const Item = (props: IProps) => {
   const { item, index } = props;
   const { id, inline, container, name, props: p, children } = item;
+
+  const global = useGlobal();
 
   const {
     attributes,
@@ -135,6 +139,8 @@ const Item = (props: IProps) => {
     [position]
   );
 
+  const isCol = useMemo(() => name === "col", [name]);
+
   return (
     <ErrorBoundary
       fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
@@ -153,7 +159,7 @@ const Item = (props: IProps) => {
           [styles["lc-item__enter"]]: isEnter,
         })}
         inline={inline}
-        span={24}
+        {...(isCol && p)}
         ref={setDragRef}
         onClick={(e: Event) => {
           e.stopPropagation();
@@ -176,13 +182,13 @@ const Item = (props: IProps) => {
           {container ? (
             <>
               <Comp
-                {...parseProps(p, { window })}
+                {...(isCol ? { span: 24 } : parseProps(p, global))}
                 className={classNames(
                   styles["lc-item-content-main"],
                   p?.className
                 )}
               >
-                {isArray(children) &&
+                {!isEmpty(children) &&
                   (children as IComponent[]).map((c, idx) => (
                     <Item item={c} key={idx} index={idx} />
                   ))}
@@ -194,7 +200,7 @@ const Item = (props: IProps) => {
               <p className={styles["lc-item-content-tip"]}>拖动组件到此处</p>
             </>
           ) : (
-            <CommonItem item={item} disabled={true} key={item.id} />
+            <CommonItem item={item} disabled={true} />
           )}
         </div>
       </ItemWarp>

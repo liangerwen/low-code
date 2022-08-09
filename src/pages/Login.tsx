@@ -26,7 +26,6 @@ import Planet3 from "@/assets/planet3.png";
 import Planet4 from "@/assets/planet4.png";
 import { IconLock, IconUser } from "@arco-design/web-react/icon";
 import { parseSearch } from "@/utils/url";
-import useForHooks from "@/hooks/useForHooks";
 
 const FormItem = Form.Item;
 const { Title } = Typography;
@@ -166,7 +165,7 @@ export default function Login() {
           >
             <Input
               prefix={<IconUser />}
-              placeholder="请输入用户名"
+              placeholder="请输入用户名/任意字符"
               autoComplete="off"
             />
           </FormItem>
@@ -176,7 +175,7 @@ export default function Login() {
           >
             <Input.Password
               prefix={<IconLock />}
-              placeholder="请输入密码"
+              placeholder="请输入密码/任意字符"
               autoComplete="new-password"
             />
           </FormItem>

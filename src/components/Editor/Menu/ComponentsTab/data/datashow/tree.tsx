@@ -1,5 +1,4 @@
 import { Tree } from "@arco-design/web-react";
-import { IconCheckCircleFill } from "@arco-design/web-react/icon";
 
 const name = "tree";
 
@@ -48,7 +47,9 @@ const defaultSchema = {
 export default {
   name,
   componentMap: { [name]: Tree },
-  icon: IconCheckCircleFill,
+  icon: () => (
+    <i className="arco-icon arco-icon-select-all i-material-symbols:account-tree-outline-rounded" />
+  ),
   demo: [defaultSchema],
   defaultSchema,
 };

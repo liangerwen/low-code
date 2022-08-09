@@ -1,10 +1,11 @@
-import { isArray } from "lodash";
+import { isEmpty } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorComp from "./components/ErrorComp";
 import { getComponentByName } from "./Menu/ComponentsTab/data";
 import { createAction } from "./utils/events";
 import { parseChildren, parseProps } from "./utils/parse";
+import useGlobal from "./utils/useGlobal";
 
 interface ItemProps {
   item: IComponent;
@@ -12,28 +13,50 @@ interface ItemProps {
   setData: (data: Record<string, any>) => void;
 }
 
+function ViewerCommonItem({ item }) {
+  const { id, name, props: p = {}, children } = item as IComponent;
+
+  const global = useGlobal();
+
+  const Common = getComponentByName(name);
+  const commonProps = useMemo(() => parseProps(p, global), [p]);
+  const commonChildren = useMemo(
+    () =>
+      parseChildren(children, {
+        render: (child, idx) => <ViewerCommonItem item={child} key={idx} />,
+      }),
+    [children]
+  );
+  return (
+    <ErrorBoundary
+      fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
+    >
+      <Common {...commonProps}>{commonChildren}</Common>
+    </ErrorBoundary>
+  );
+}
+
 const ViewerItem = (props: ItemProps) => {
   const { item, ...reset } = props;
   const { id, container, name, props: p = {}, children } = item;
+  const global = useGlobal();
 
-  const Common = getComponentByName(name);
-
-  const commonProps = useMemo(() => parseProps(p, { window }), [p]);
-  const commonChildren = useMemo(() => parseChildren(children), [children]);
+  const Comp = getComponentByName(name);
+  const CompProps = useMemo(() => parseProps(p, global), [p, global]);
 
   return (
     <ErrorBoundary
       fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
     >
       {container ? (
-        <Common {...commonProps}>
-          {isArray(children) &&
+        <Comp {...CompProps}>
+          {!isEmpty(children) &&
             (children as IComponent[]).map((c, idx) => (
               <ViewerItem item={c} key={idx} {...reset} />
             ))}
-        </Common>
+        </Comp>
       ) : (
-        <Common {...commonProps}>{commonChildren}</Common>
+        <ViewerCommonItem item={item} />
       )}
     </ErrorBoundary>
   );

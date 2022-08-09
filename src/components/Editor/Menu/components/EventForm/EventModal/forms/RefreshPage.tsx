@@ -1,6 +1,6 @@
 import { forwardRef, useImperativeHandle } from "react";
 import EventContentWarp from "../EventContentWarp";
-import MENUKEYS from "../keys";
+import MENUKEYS from "../../keys";
 
 const RefreshPageForm = forwardRef<{ validate: () => Promise<boolean> }>(
   function CustomForm(_, ref) {

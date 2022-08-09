@@ -6,7 +6,6 @@ import {
 } from "@/components/Editor/utils/events";
 import { produce } from "@/utils";
 import { Typography } from "@arco-design/web-react";
-import { IconCheckCircleFill } from "@arco-design/web-react/icon";
 import { useMemo } from "react";
 import PropForm from "./PropForm";
 
@@ -70,7 +69,9 @@ const Action = (props: {
 export default {
   name,
   componentMap: { [name]: Text },
-  icon: IconCheckCircleFill,
+  icon: () => (
+    <i className="arco-icon arco-icon-select-all i-material-symbols:format-color-text" />
+  ),
   demo: [defaultSchema],
   defaultSchema,
   Action,

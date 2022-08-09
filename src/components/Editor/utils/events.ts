@@ -1,45 +1,7 @@
-import MENUKEYS from "../Menu/components/EventForm/data/keys";
-import { NavigateFunction, Location } from "react-router-dom";
-import { Message, Modal, Notification } from "@arco-design/web-react";
-import { isObject } from "lodash";
+import { isPlainObject } from "lodash";
 import { produce } from "@/utils";
-
-export interface IGlobal {
-  window: Window;
-  router: {
-    navigate: NavigateFunction;
-    location: Location;
-  };
-  ui: {
-    modal: Partial<
-      Pick<typeof Modal, "confirm" | "info" | "success" | "warning" | "error">
-    >;
-    // drawer:,
-    message: typeof Message;
-    notifiy: typeof Notification;
-    form: {
-      submit: (id: string) => void;
-      validate: (id: string) => void;
-      clear: (id: string) => void;
-      reset: (id: string) => void;
-    };
-    component: {
-      refresh: (id: string) => void;
-      display: (id: string) => void;
-      hidden: (id: string) => void;
-      setProps: (id: string, props: Record<string, any>) => void;
-      triggerEvent: (id: string, name: string) => void;
-    };
-  };
-  service: {
-    request: (id: string) => void;
-    upload: () => void;
-    download: (url: string) => void;
-  };
-  copy: (content: string) => void;
-  data: Record<string, any>;
-  setData: (data: Record<string, any>) => void;
-}
+import { IGlobal } from "./useGlobal";
+import MENUKEYS from "../Menu/components/EventForm/keys";
 
 /**
  * 根据actions生成方法
@@ -49,7 +11,7 @@ export interface IGlobal {
  */
 export function createAction(
   actions: ActionType[],
-  { window, router, ui, service, data }: Partial<IGlobal>
+  { window, router, ui, service, data }: PowerPartial<IGlobal>
 ) {
   return function () {
     actions.forEach((action) => {
@@ -70,7 +32,7 @@ export function createAction(
  * @returns 事件属性对象
  */
 export const getEventsFromProps = (props) => {
-  if (!isObject(props)) return {};
+  if (!isPlainObject(props)) return {};
   const ret = {};
   Object.keys(props).forEach((k) => {
     const prop = props[k];
@@ -91,7 +53,7 @@ export const generateEventProps = <T extends Object>(
   props: T,
   eventProps
 ): T => {
-  if (!isObject(props) || !isObject(eventProps)) return props;
+  if (!isPlainObject(props) || !isPlainObject(eventProps)) return props;
   return produce(props, (p) => {
     const oldEventProps = getEventsFromProps(props);
     Object.keys(oldEventProps).forEach((key) => {

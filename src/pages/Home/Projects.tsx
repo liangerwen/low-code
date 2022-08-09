@@ -79,7 +79,7 @@ export default function Projects() {
                 isIcon: true,
                 name: "IconGithub",
               },
-              target: "__blank",
+              target: "_blank",
             },
             children: ["Github"],
             inline: true,

@@ -32,7 +32,9 @@ const defaultSchema = {
 export default {
   name,
   componentMap: { [name]: Table },
-  icon: IconCheckCircleFill,
+  icon: () => (
+    <i className="arco-icon arco-icon-select-all i-material-symbols:backup-table" />
+  ),
   demo: [defaultSchema],
   defaultSchema,
 };

@@ -4,8 +4,6 @@ import {
 } from "@/components/Editor/utils/events";
 import { produce } from "@/utils";
 import { Button } from "@arco-design/web-react";
-import { IconCheckCircleFill } from "@arco-design/web-react/icon";
-import { useMemo } from "react";
 import ActionWarp from "../../../../components/ActionWarp";
 import EventForm from "../../../../components/EventForm";
 import PropForm from "./PropForm";
@@ -63,7 +61,9 @@ const Action = (props: {
 export default {
   name,
   componentMap: { [name]: Button },
-  icon: IconCheckCircleFill,
+  icon: () => (
+    <i className="arco-icon arco-icon-select-all i-teenyicons:button-outline" />
+  ),
   demo: [defaultSchema],
   defaultSchema,
   Action,

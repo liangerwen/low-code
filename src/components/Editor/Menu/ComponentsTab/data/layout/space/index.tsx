@@ -1,23 +1,13 @@
 import ActionWarp from "@/components/Editor/Menu/components/ActionWarp";
-import { Link } from "@arco-design/web-react";
-import { IconLink } from "@arco-design/web-react/icon";
+import { Space } from "@arco-design/web-react";
 import PropForm from "./PropForm";
 
-const name = "link";
+const name = "space";
 
 const defaultSchema = {
   name,
-  title: "链接",
-  props: {
-    href: "https://www.baidu.com",
-    icon: {
-      isIcon: true,
-      name: "IconLink",
-    },
-    target: "_blank",
-  },
-  children: ["链接"],
-  inline: true,
+  title: "间距",
+  container: true,
 };
 
 const Action = (props: {
@@ -40,8 +30,10 @@ const Action = (props: {
 
 export default {
   name,
-  componentMap: { [name]: Link },
-  icon: IconLink,
+  componentMap: { [name]: Space },
+  icon: () => (
+    <i className="arco-icon arco-icon-select-all i-lucide:align-horizontal-space-around" />
+  ),
   demo: [defaultSchema],
   defaultSchema,
   Action,

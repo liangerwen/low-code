@@ -38,3 +38,7 @@ interface ISchema {
   data?: Record<string, any>;
   body: IComponent[];
 }
+
+type PowerPartial<T> = {
+  [U in keyof T]?: Partial<T[U]>;
+};

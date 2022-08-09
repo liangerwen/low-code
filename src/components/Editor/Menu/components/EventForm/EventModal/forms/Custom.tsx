@@ -2,7 +2,7 @@ import JsCodeEditor from "@/components/JsCodeEditor";
 import { forwardRef, useImperativeHandle, useRef } from "react";
 import * as monaco from "monaco-editor";
 import EventContentWarp from "../EventContentWarp";
-import MENUKEYS from "../keys";
+import MENUKEYS from "../../keys";
 
 const CustomForm = forwardRef<{ validate: () => Promise<boolean> }>(
   function CustomForm(_, ref) {

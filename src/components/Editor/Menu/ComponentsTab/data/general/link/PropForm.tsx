@@ -16,7 +16,7 @@ interface LinkProps {
   disabled: boolean;
   hoverable: boolean;
   href: string;
-  blank: boolean;
+  target: boolean;
 }
 
 const PropForm = (props: {
@@ -30,13 +30,8 @@ const PropForm = (props: {
       const newSchema = produce(props.schema, (schema) => {
         schema.props = {
           ...schema.props,
-          ...omit(form, "content", "blank"),
+          ...omit(form, "content"),
         };
-        if (form.blank) {
-          schema.props.target = "__blank";
-        } else {
-          delete schema.props.target;
-        }
         schema.children = form.content ? [form.content] : null;
       });
       props.onChange(newSchema);
@@ -45,13 +40,10 @@ const PropForm = (props: {
   );
 
   useEffect(() => {
-    const { props: p } = props.schema;
-    const { hoverable = true, target } = p;
+    const { props: p = { hoverable: true } } = props.schema;
     form.resetFields();
     form.setFieldsValue({
       ...p,
-      hoverable,
-      blank: target === "__blank",
       content: props.schema.children?.[0] as string,
     });
   }, [props.schema]);
@@ -102,7 +94,13 @@ const PropForm = (props: {
       <FormItem label="图标" field="icon">
         <IconModal />
       </FormItem>
-      <FormItem label="新标签打开" field="blank" triggerPropName="checked">
+      <FormItem
+        label="新标签打开"
+        field="target"
+        triggerPropName="checked"
+        normalize={(val) => (val ? "_blank" : "_self")}
+        formatter={(val) => val === "_blank"}
+      >
         <Switch />
       </FormItem>
     </Form>

@@ -1,23 +1,15 @@
 import ActionWarp from "@/components/Editor/Menu/components/ActionWarp";
-import { Link } from "@arco-design/web-react";
-import { IconLink } from "@arco-design/web-react/icon";
+import { Grid } from "@arco-design/web-react";
 import PropForm from "./PropForm";
 
-const name = "link";
+const { Row } = Grid;
+
+const name = "row";
 
 const defaultSchema = {
   name,
-  title: "链接",
-  props: {
-    href: "https://www.baidu.com",
-    icon: {
-      isIcon: true,
-      name: "IconLink",
-    },
-    target: "_blank",
-  },
-  children: ["链接"],
-  inline: true,
+  title: "行",
+  container: true,
 };
 
 const Action = (props: {
@@ -40,9 +32,20 @@ const Action = (props: {
 
 export default {
   name,
-  componentMap: { [name]: Link },
-  icon: IconLink,
-  demo: [defaultSchema],
+  componentMap: { [name]: Row },
+  icon: () => (
+    <i className="arco-icon arco-icon-select-all i-mdi:land-rows-horizontal" />
+  ),
+  demo: [
+    {
+      name,
+      title: "行",
+      container: true,
+      props: {
+        className: "py-10 border border-dashed border-[rgb(var(--gray-4))]",
+      },
+    },
+  ],
   defaultSchema,
   Action,
 };

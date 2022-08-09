@@ -1,10 +1,9 @@
-import useLocale from "@/hooks/useLocale";
 import { Layout, Menu, Message, Modal } from "@arco-design/web-react";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import menuData from "./data";
-import EventFormContent from "./data/EventFormContent";
-import MENUKEYS from "./data/keys";
+import EventFormContent from "./EventFormContent";
+import MENUKEYS from "../keys";
+import menus from "../menus";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -80,7 +79,7 @@ export default function EventModal({
               setSelectedKeys([key as MENUKEYS]);
             }}
           >
-            {renderMenus(menuData)}
+            {renderMenus(menus)}
           </Menu>
         </Layout.Sider>
         <Layout.Content className="p-4">

@@ -1,23 +1,12 @@
 import ActionWarp from "@/components/Editor/Menu/components/ActionWarp";
-import { Link } from "@arco-design/web-react";
-import { IconLink } from "@arco-design/web-react/icon";
+import { Divider } from "@arco-design/web-react";
 import PropForm from "./PropForm";
 
-const name = "link";
+const name = "divider";
 
 const defaultSchema = {
   name,
-  title: "链接",
-  props: {
-    href: "https://www.baidu.com",
-    icon: {
-      isIcon: true,
-      name: "IconLink",
-    },
-    target: "_blank",
-  },
-  children: ["链接"],
-  inline: true,
+  title: "分割线",
 };
 
 const Action = (props: {
@@ -40,8 +29,10 @@ const Action = (props: {
 
 export default {
   name,
-  componentMap: { [name]: Link },
-  icon: IconLink,
+  componentMap: { [name]: Divider },
+  icon: () => (
+    <i className="arco-icon arco-icon-select-all i-ic:baseline-safety-divider" />
+  ),
   demo: [defaultSchema],
   defaultSchema,
   Action,

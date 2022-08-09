@@ -7,7 +7,7 @@ const folderExamples = import.meta.globEager<Module<Menu>>("./*/index.ts(x)?");
 const menuData = { ...fileExamples, ...folderExamples };
 
 export default {
-  idx: 2,
-  type: "数据展示",
+  idx: 1,
+  type: "布局",
   menus: Object.keys(menuData).map((key) => menuData[key].default),
 };
