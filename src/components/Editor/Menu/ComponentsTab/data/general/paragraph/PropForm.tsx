@@ -1,7 +1,6 @@
 import BindFormItem from "@/components/Editor/Menu/components/BindFormItem";
 import { produce } from "@/utils";
 import {
-  EllipsisConfig,
   Form,
   FormItemProps,
   Grid,
@@ -66,7 +65,7 @@ const PropForm = (props: {
 
   return (
     <Form form={form} layout="vertical" onChange={onChange}>
-      <BindFormItem label="内容" field="content">
+      <BindFormItem label="内容" field="content" data={{}}>
         <Input.TextArea placeholder="输入内容" allowClear />
       </BindFormItem>
       <FormItem label="类型" field="type">

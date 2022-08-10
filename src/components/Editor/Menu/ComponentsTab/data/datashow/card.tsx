@@ -1,5 +1,4 @@
 import { Card } from "@arco-design/web-react";
-import { IconList } from "@arco-design/web-react/icon";
 
 const name = "card";
 
@@ -16,7 +15,9 @@ const defaultSchema = {
 export default {
   name,
   componentMap: { [name]: Card },
-  icon: IconList,
+  icon: () => (
+    <i className="arco-icon arco-icon-select-all i-ic:round-credit-card" />
+  ),
   demo: [defaultSchema],
   defaultSchema,
 };

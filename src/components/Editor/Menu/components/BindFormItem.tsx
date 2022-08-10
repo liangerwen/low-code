@@ -8,9 +8,12 @@ import {
 import { cloneElement, useMemo, useState } from "react";
 const RadioGroup = Radio.Group;
 
-const data = { a: 1, b: 2 };
-
-function BindFormItemChildrenWarpper({ children, triggerPropName, ...rest }) {
+function BindFormItemChildrenWarpper({
+  children,
+  data,
+  triggerPropName,
+  ...rest
+}) {
   const value = useMemo(() => {
     const v = triggerPropName ? rest[triggerPropName] : rest.value;
     return Object.values(data).includes(v) ? v : undefined;
@@ -54,10 +57,26 @@ function BindFormItemChildrenWarpper({ children, triggerPropName, ...rest }) {
   );
 }
 
-export default function BindFormItem({ children, ...rest }: FormItemProps) {
+export default function BindFormItem({
+  children,
+  data,
+  ...rest
+}: FormItemProps & { data: Record<string, any> }) {
+  const noop = (v) => v;
+  const formatter = rest.formatter || noop;
+  const normalize = rest.normalize || noop;
   return (
-    <Form.Item {...rest} formatter={(v) => (v?.isBind ? v.name : v)}>
-      <BindFormItemChildrenWarpper triggerPropName={rest.triggerPropName}>
+    <Form.Item
+      {...rest}
+      formatter={(v) => (v?.isBind ? v.name : formatter(v))}
+      normalize={(v, prevValue, allValues) =>
+        v?.isBind ? v : normalize(v, prevValue, allValues)
+      }
+    >
+      <BindFormItemChildrenWarpper
+        triggerPropName={rest.triggerPropName}
+        data={data}
+      >
         {children}
       </BindFormItemChildrenWarpper>
     </Form.Item>

@@ -5,7 +5,7 @@ import {
   useImperativeHandle,
 } from "react";
 import EventContentWarp from "./EventContentWarp";
-import MENUKEYS from "./keys";
+import MENUKEYS from "../keys";
 
 const fileForms = import.meta.globEager<
   Module<{

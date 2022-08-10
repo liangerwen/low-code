@@ -51,6 +51,7 @@ interface IProvider {
   onBack: () => void;
   onSave: () => void;
   onPreview: () => void;
+  globalData: Record<string, any>;
 }
 
 export const EditorContext = createContext<IProvider>({
@@ -66,6 +67,7 @@ export const EditorContext = createContext<IProvider>({
   onBack: () => {},
   onSave: () => {},
   onPreview: () => {},
+  globalData: {},
 });
 
 interface IProps {
@@ -135,9 +137,10 @@ const Editor = (props: IProps) => {
         // 当前元素的中心位置
         const middleX = left + width / 2,
           middleY = top + height / 2;
+        const edgeHeight = height / 4 > 15 ? 15 : height / 4;
         // 当前元素y坐标分为上中下 上1/4 中1/2 下1/4
-        const middleTop = top + height / 4,
-          middleBottom = top + height * (3 / 4);
+        const middleTop = top + edgeHeight,
+          middleBottom = top + height - edgeHeight;
         let direction: Direction;
         if ((current as IComponent)?.inline && movingComponent?.inline) {
           // inline组件以x轴区分方向
@@ -315,21 +318,24 @@ const Editor = (props: IProps) => {
   };
 
   const onForward = () => {
-    setActiveComponent(null);
     const forwardSchema = forwardRef.current.shift();
-    if (forwardSchema) {
-      stackPush(historyRef.current, forwardSchema);
-      onChange(forwardSchema);
+    if (!forwardSchema) {
+      Message.warning("无可恢复的内容");
+      return;
     }
+    setActiveComponent(null);
+    stackPush(historyRef.current, forwardSchema);
+    onChange(forwardSchema);
   };
 
   const onBack = () => {
-    if (isEmpty(historyRef.current)) return;
-    setActiveComponent(null);
-    if (historyRef.current.length > 1) {
-      stackPush(forwardRef.current, historyRef.current.shift());
-      onChange(historyRef.current[0]);
+    if (historyRef.current.length <= 1) {
+      Message.warning("无可撤销的内容");
+      return;
     }
+    setActiveComponent(null);
+    stackPush(forwardRef.current, historyRef.current.shift());
+    onChange(historyRef.current[0]);
   };
 
   return (
@@ -347,6 +353,7 @@ const Editor = (props: IProps) => {
         onPreview: () => onPreview(value),
         onForward,
         onBack,
+        globalData: value.data || {},
       }}
     >
       <DndContext

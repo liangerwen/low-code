@@ -258,12 +258,12 @@ const Item = (props: IProps) => {
           onClick: setActive,
           className: classNames(className, {
             [styles["lc-item__inline"]]: inline,
+            "min-w-130px important-pt-[20px]": showActions,
           }),
         }}
         childrenWarpperProps={{
           className: classNames({
             [styles["lc-item__container"]]: container,
-            "min-w-130px important-pt-[20px]": showActions,
           }),
         }}
         selfProps={{
