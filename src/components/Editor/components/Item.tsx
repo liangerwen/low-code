@@ -1,9 +1,22 @@
-import { Divider, Grid, Space } from "@arco-design/web-react";
-import { IconDragDot } from "@arco-design/web-react/icon";
+import useHover from "@/hooks/useHover";
+import { Divider, Space, Tooltip } from "@arco-design/web-react";
+import {
+  IconCopy,
+  IconDelete,
+  IconDragDot,
+  IconPaste,
+} from "@arco-design/web-react/icon";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import classNames from "classnames";
-import { isEmpty } from "lodash";
-import { forwardRef, ReactNode, useCallback, useContext, useMemo } from "react";
+import { isEmpty, mergeWith } from "lodash";
+import {
+  FC,
+  forwardRef,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+} from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Direction, EditorContext } from "..";
 import { getComponentByName } from "../Menu/ComponentsTab/data";
@@ -12,8 +25,6 @@ import useGlobal from "../utils/useGlobal";
 import ErrorComp from "./ErrorComp";
 
 import styles from "./styles/item.module.less";
-
-const { Col } = Grid;
 
 interface IProps {
   item: IComponent;
@@ -51,38 +62,87 @@ export function CommonItem({ item, disabled = false }) {
   );
 }
 
-const ItemWarp = forwardRef<
-  HTMLDivElement,
-  {
-    inline?: boolean;
-    span: number;
-    children?: ReactNode;
-    [key: string]: any;
-  }
->(
+const ItemWarpper = forwardRef(
   (
-    props = {
-      inline: false,
-      span: 24,
+    props: {
+      type?: "warpper" | "selfWarpper";
+      Component: FC<any>;
+      children?: ReactNode;
+      containerWarpperProps: Record<string, any>;
+      childrenWarpperProps: Record<string, any>;
+      selfProps: Record<string, any>;
+      action?: ReactNode;
     },
-    ref
+    ref: React.LegacyRef<HTMLDivElement>
   ) => {
-    const { inline, span, children, ...resetProps } = props;
-    return inline ? (
-      <div ref={ref} {...resetProps}>
+    const {
+      type,
+      Component,
+      children,
+      containerWarpperProps,
+      childrenWarpperProps,
+      selfProps,
+      action,
+    } = props;
+    if (type === "selfWarpper") {
+      const p = mergeWith(
+        containerWarpperProps,
+        childrenWarpperProps,
+        selfProps,
+        (oldV, newV, key) => {
+          if (key === "className") {
+            return classNames(oldV, newV);
+          }
+        }
+      );
+      return (
+        <Component {...p} ref={ref}>
+          {action}
+          {children}
+        </Component>
+      );
+    }
+    if (type === "warpper") {
+      return (
+        <div {...containerWarpperProps} ref={ref}>
+          {action}
+          <Component {...selfProps}>
+            <div {...childrenWarpperProps}>{children}</div>
+          </Component>
+        </div>
+      );
+    }
+
+    const p = mergeWith(
+      containerWarpperProps,
+      childrenWarpperProps,
+      (oldV, newV, key) => {
+        if (key === "className") {
+          return classNames(oldV, newV);
+        }
+      }
+    );
+    return (
+      <div {...p} ref={ref}>
+        {action}
         {children}
       </div>
-    ) : (
-      <Col ref={ref} span={span} {...resetProps}>
-        {children}
-      </Col>
     );
   }
 );
 
 const Item = (props: IProps) => {
   const { item, index } = props;
-  const { id, inline, container, name, props: p, children } = item;
+  const {
+    id,
+    inline,
+    container,
+    onlyContainer,
+    name,
+    title,
+    props: p,
+    children,
+  } = item;
 
   const global = useGlobal();
 
@@ -101,9 +161,28 @@ const Item = (props: IProps) => {
     data: item,
   });
   const Comp = getComponentByName(name);
-  const { activeComponent, setActiveComponent, movingComponent, position } =
-    useContext(EditorContext);
+  const {
+    activeComponent,
+    setActiveComponent,
+    movingComponent,
+    position,
+    onDelete,
+    onCopy,
+    onPaste,
+  } = useContext(EditorContext);
 
+  const isPrev = useMemo(
+    () => position?.id === id && position?.direction === Direction.PREV,
+    [position, id]
+  );
+  const isMiddle = useMemo(
+    () => position?.id === id && position?.direction === Direction.MIDDLE,
+    [position, id]
+  );
+  const isNext = useMemo(
+    () => position?.id === id && position?.direction === Direction.NEXT,
+    [position, id]
+  );
   const renderDivider = useCallback(() => {
     const isVertical = inline && movingComponent?.inline;
     return (
@@ -130,84 +209,125 @@ const Item = (props: IProps) => {
     () => activeComponent?.id === id,
     [activeComponent, id]
   );
-  const isEnter = useMemo(
-    () =>
-      container &&
-      position &&
-      position.id === id &&
-      position.direction === Direction.MIDDLE,
-    [position]
+
+  const setActive = useCallback(
+    (e) => {
+      e.stopPropagation();
+      setActiveComponent(item);
+    },
+    [setActiveComponent, item]
   );
 
-  const isCol = useMemo(() => name === "col", [name]);
+  const className = useMemo(
+    () =>
+      classNames(styles["lc-item"], {
+        [styles["lc-item__active"]]: isActive,
+        [styles["lc-item__dragging"]]: isDragging,
+      }),
+    [isActive, isDragging, movingComponent]
+  );
+
+  const [setHoverRef, isHover] = useHover<HTMLElement>();
+
+  const showActions = useMemo(
+    () => isHover && !movingComponent,
+    [movingComponent, isHover]
+  );
 
   return (
     <ErrorBoundary
       fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
     >
-      {position &&
-        position.id === id &&
-        position.direction === Direction.PREV &&
-        renderDivider()}
-      <ItemWarp
-        {...attributes}
-        className={classNames(styles["lc-item"], {
-          [styles["lc-item__inline"]]: inline,
-          [styles["lc-item__dragging"]]: isDragging,
-          [styles["lc-item__hover"]]: !movingComponent,
-          [styles["lc-item__active"]]: isActive,
-          [styles["lc-item__enter"]]: isEnter,
-        })}
-        inline={inline}
-        {...(isCol && p)}
-        ref={setDragRef}
-        onClick={(e: Event) => {
-          e.stopPropagation();
-          setActiveComponent(item);
+      {isPrev && renderDivider()}
+      <ItemWarpper
+        ref={(ref: HTMLElement) => {
+          setDragRef(ref);
+          setDropRef(ref);
+          setHoverRef(ref);
         }}
+        type={
+          container && onlyContainer
+            ? "selfWarpper"
+            : container
+            ? "warpper"
+            : undefined
+        }
+        Component={Comp}
+        containerWarpperProps={{
+          ...attributes,
+          onClick: setActive,
+          className: classNames(className, {
+            [styles["lc-item__inline"]]: inline,
+          }),
+        }}
+        childrenWarpperProps={{
+          className: classNames({
+            [styles["lc-item__container"]]: container,
+            "min-w-130px important-pt-[20px]": showActions,
+          }),
+        }}
+        selfProps={{
+          ...parseProps(p, global),
+        }}
+        action={
+          showActions && (
+            <div className={styles["lc-item-action"]}>
+              <Space>
+                <Tooltip content="移动">
+                  <IconDragDot
+                    {...listeners}
+                    className="cursor-move hover:bg-[rgba(0,0,0,0.05)]"
+                  />
+                </Tooltip>
+                <span>{title}</span>
+                <Tooltip content="复制">
+                  <IconCopy
+                    className="cursor-pointer hover:bg-[rgba(0,0,0,0.05)]"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onCopy(item);
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip content="粘贴">
+                  <IconPaste
+                    className="cursor-pointer hover:bg-[rgba(0,0,0,0.05)]"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onPaste(item);
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip content="删除">
+                  <IconDelete
+                    className="cursor-pointer hover:bg-[rgba(0,0,0,0.05)]"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(id);
+                    }}
+                  />
+                </Tooltip>
+              </Space>
+            </div>
+          )
+        }
       >
-        {!movingComponent && (
-          <div className={styles["lc-item-action"]}>
-            <Space>
-              <IconDragDot {...listeners} />
-            </Space>
-          </div>
+        {container ? (
+          [
+            !isEmpty(children) &&
+              (children as IComponent[]).map((c, idx) => (
+                <Item item={c} key={idx} index={idx} />
+              )),
+            isMiddle && renderDivider(),
+            <p className={styles["lc-item-tip"]} key="tip">
+              拖动组件到此处
+            </p>,
+          ]
+        ) : (
+          <CommonItem item={item} disabled={true} />
         )}
-        <div
-          ref={setDropRef}
-          className={classNames(styles["lc-item-content"], {
-            [styles["lc-item-content__drop"]]: container,
-          })}
-        >
-          {container ? (
-            <>
-              <Comp
-                {...(isCol ? { span: 24 } : parseProps(p, global))}
-                className={classNames(
-                  styles["lc-item-content-main"],
-                  p?.className
-                )}
-              >
-                {!isEmpty(children) &&
-                  (children as IComponent[]).map((c, idx) => (
-                    <Item item={c} key={idx} index={idx} />
-                  ))}
-              </Comp>
-              {position &&
-                position.id === id &&
-                position.direction === Direction.MIDDLE &&
-                renderDivider()}
-              <p className={styles["lc-item-content-tip"]}>拖动组件到此处</p>
-            </>
-          ) : (
-            <CommonItem item={item} disabled={true} />
-          )}
-        </div>
-      </ItemWarp>
-      {position &&
-        position.id === id &&
-        position.direction === Direction.NEXT &&
-        renderDivider()}
+      </ItemWarpper>
+      {isNext && renderDivider()}
     </ErrorBoundary>
   );
 };

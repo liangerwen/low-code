@@ -1,9 +1,25 @@
-import { cloneDeep, difference, pick } from "lodash";
+import { cloneDeep, cloneDeepWith, difference, pick } from "lodash";
 
 export const produce = <T>(obj: T, update: (obj: T) => void) => {
   const _obj = cloneDeep(obj);
   update(_obj);
   return _obj;
+};
+
+export const deepProduce = <T>(
+  obj: T,
+  update: (
+    value: any,
+    key: number | string | undefined,
+    object: T | undefined
+  ) => void
+) => {
+  return cloneDeepWith(
+    cloneDeep(obj),
+    (value: any, key: number | string | undefined, object: T | undefined) => {
+      update(value, key, object);
+    }
+  );
 };
 
 export const filterDeep = <T extends Record<string, any>, U extends keyof T>(
@@ -46,10 +62,18 @@ export const download = (option: { fileName: string; content: string }) => {
 
 // 复制文字
 export const copy = (content: string) => {
-  const container = document.createElement("textarea");
-  container.innerHTML = JSON.stringify(content);
-  document.body.appendChild(container);
-  container.select();
-  document.execCommand("copy");
-  document.body.removeChild(container);
+  return navigator.clipboard
+    .writeText(content)
+    .then(() => {
+      return;
+    })
+    .catch(() => {
+      const container = document.createElement("textarea");
+      container.innerHTML = JSON.stringify(content);
+      document.body.appendChild(container);
+      container.select();
+      document.execCommand("copy");
+      document.body.removeChild(container);
+      return;
+    });
 };

@@ -1,7 +1,7 @@
-import { Layout } from "@arco-design/web-react";
+import { Layout, Message } from "@arco-design/web-react";
 import classNames from "classnames";
 import { v4 as uuidv4 } from "uuid";
-import { createContext, FC, useCallback, useState } from "react";
+import { createContext, FC, useCallback, useRef, useState } from "react";
 import EditorContainer, { PAGE_FLAG } from "./Container";
 import EditorMenu from "./Menu";
 import styles from "./styles/index.module.less";
@@ -13,8 +13,15 @@ import {
   DragStartEvent,
 } from "@dnd-kit/core";
 import { createPortal } from "react-dom";
-import { isEqual } from "lodash";
-import { produce } from "@/utils";
+import {
+  cloneDeep,
+  cloneDeepWith,
+  isEmpty,
+  isEqual,
+  isPlainObject,
+  omit,
+} from "lodash";
+import { copy, deepProduce, produce } from "@/utils";
 import { filterComponent, findComponent, findWarpper } from "./utils";
 import { isAdd } from "./Menu/ComponentsTab/MenuItem";
 import Viewer from "./Viewer";
@@ -36,6 +43,14 @@ interface IProvider {
   activeComponent: null | IComponent;
   movingComponent: null | IComponent;
   position: PositionType;
+  onCopy: (component: null | IComponent) => void;
+  onPaste: (component: null | IComponent) => void;
+  onDelete: (id: string) => void;
+  onClear: () => void;
+  onForward: () => void;
+  onBack: () => void;
+  onSave: () => void;
+  onPreview: () => void;
 }
 
 export const EditorContext = createContext<IProvider>({
@@ -43,6 +58,14 @@ export const EditorContext = createContext<IProvider>({
   activeComponent: null,
   movingComponent: null,
   position: null,
+  onCopy: () => {},
+  onPaste: () => {},
+  onDelete: () => {},
+  onClear: () => {},
+  onForward: () => {},
+  onBack: () => {},
+  onSave: () => {},
+  onPreview: () => {},
 });
 
 interface IProps {
@@ -97,7 +120,6 @@ const Editor = (props: IProps) => {
           rect: { top, left, height, width },
           data: { current },
         } = over;
-
         // 当前元素是目标元素的祖父
         const currentComponent = findComponent(
           value.body,
@@ -194,7 +216,12 @@ const Editor = (props: IProps) => {
           });
         }
         if (!isEqual(value, newBody)) {
-          onChange({ ...value, body: newBody });
+          const newSchema = { ...value, body: newBody };
+          onChange(newSchema);
+          historyRef.current.unshift(newSchema);
+          if (historyRef.current.length > 30) {
+            historyRef.current.pop();
+          }
           if (isAdd(id)) {
             setActiveComponent(movingComponent);
           }
@@ -207,18 +234,119 @@ const Editor = (props: IProps) => {
     [value, position, movingComponent]
   );
 
-  // const schema = useMemo(
-  //   () => formatSchemaByCustomProps(props.schema, "from"),
-  //   [props.schema]
-  // );
+  const historyRef = useRef<ISchema[]>([value]);
+  const forwardRef = useRef<ISchema[]>([]);
+  const MAXLEN = 30;
+  const stackPush = (stack, val) => {
+    stack.unshift(val);
+    if (stack.length > MAXLEN) {
+      stack.pop();
+    }
+  };
+
+  const copyRef = useRef<IComponent>(null);
+
+  const onCopy = (component: IComponent) => {
+    copyRef.current = cloneDeep(component);
+    copy(
+      JSON.stringify(
+        deepProduce(component, (value) => {
+          if (isPlainObject(value) && value?.id) {
+            delete value.id;
+          }
+        })
+      )
+    );
+    Message.success("复制成功！");
+  };
+
+  const onPaste = () => {
+    if (!copyRef.current) {
+      Message.error("请先复制组件！");
+      return;
+    }
+    const parseComponent = deepProduce(copyRef.current, (value) => {
+      if (isPlainObject(value) && value?.id) {
+        value.id = uuidv4();
+      }
+    });
+    if (!activeComponent) {
+      const newSchema = {
+        ...value,
+        body: [...value.body, parseComponent],
+      };
+      props.onChange(newSchema);
+      stackPush(historyRef.current, newSchema);
+    } else {
+      const newSchema = produce(value, (schema) => {
+        const active = findComponent(
+          schema.body,
+          (component) => component.id === activeComponent.id
+        );
+        if (active.container) {
+          active.children = [...(active.children || []), parseComponent];
+        } else {
+          const { warpper, index } = findWarpper(schema.body, active.id);
+          if (warpper) {
+            warpper.splice(index + 1, 0, parseComponent);
+          }
+        }
+      });
+      stackPush(historyRef.current, newSchema);
+      props.onChange(newSchema);
+    }
+  };
+
+  const onClear = () => {
+    setActiveComponent(null);
+    const newSchema = { ...value, body: [] };
+    props.onChange(newSchema);
+    stackPush(historyRef.current, newSchema);
+  };
+
+  const onDelete = (id: string) => {
+    id === activeComponent?.id && setActiveComponent(null);
+    const newSchema = {
+      ...value,
+      body: filterComponent(value.body, (c) => c.id !== id),
+    };
+    props.onChange(newSchema);
+    stackPush(historyRef.current, newSchema);
+  };
+
+  const onForward = () => {
+    setActiveComponent(null);
+    const forwardSchema = forwardRef.current.shift();
+    if (forwardSchema) {
+      stackPush(historyRef.current, forwardSchema);
+      onChange(forwardSchema);
+    }
+  };
+
+  const onBack = () => {
+    if (isEmpty(historyRef.current)) return;
+    setActiveComponent(null);
+    if (historyRef.current.length > 1) {
+      stackPush(forwardRef.current, historyRef.current.shift());
+      onChange(historyRef.current[0]);
+    }
+  };
 
   return (
     <EditorContext.Provider
       value={{
-        setActiveComponent: (component) => setActiveComponent(component),
+        setActiveComponent,
         activeComponent,
         movingComponent,
         position,
+        onCopy,
+        onPaste,
+        onDelete,
+        onClear,
+        onSave: () => onSave(value),
+        onPreview: () => onPreview(value),
+        onForward,
+        onBack,
       }}
     >
       <DndContext
@@ -234,12 +362,7 @@ const Editor = (props: IProps) => {
             <EditorMenu schema={value} onChange={onChange} />
           </Layout.Sider>
           <Layout.Content className={styles["lc-container"]}>
-            <EditorContainer
-              schema={value}
-              onChange={onChange}
-              onSave={() => onSave(value)}
-              onPreview={() => onPreview(value)}
-            />
+            <EditorContainer schema={value} onChange={onChange} />
           </Layout.Content>
         </Layout>
         {createPortal(

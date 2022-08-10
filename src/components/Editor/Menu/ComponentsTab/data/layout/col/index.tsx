@@ -10,6 +10,7 @@ const defaultSchema = {
   name,
   title: "列",
   container: true,
+  onlyContainer: true,
 };
 
 const Action = (props: {

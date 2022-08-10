@@ -26,6 +26,7 @@ interface IComponent {
   props?: Record<string, any>;
   children?: (string | IconType | BindType | IComponent)[];
   container?: boolean;
+  onlyContainer?: boolean;
   inline?: boolean;
 }
 

@@ -8,6 +8,7 @@ const defaultSchema = {
   name,
   title: "间距",
   container: true,
+  onlyContainer: true,
 };
 
 const Action = (props: {

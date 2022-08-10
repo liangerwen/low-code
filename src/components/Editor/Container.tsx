@@ -4,27 +4,23 @@ import {
   Drawer,
   Grid,
   Layout,
-  Message,
   Space,
   Tooltip,
 } from "@arco-design/web-react";
 import {
   IconClose,
   IconCodeBlock,
-  IconCopy,
-  IconDelete,
   IconEye,
-  IconPaste,
+  IconRedo,
   IconSave,
+  IconUndo,
 } from "@arco-design/web-react/icon";
 import ReactJson from "react-json-view";
-import { v4 as uuidv4 } from "uuid";
 import classNames from "classnames";
 import { useCallback, useContext, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { EditorContext } from ".";
-import { omit } from "lodash";
-import { filterComponent, findComponent, findWarpper } from "./utils";
+import { findComponent } from "./utils";
 import { getRenderActionByName } from "./Menu/ComponentsTab/data";
 import { ModeType, useSettings } from "../Settings";
 import { produce } from "@/utils";
@@ -32,76 +28,27 @@ import Item from "./components/Item";
 
 import styles from "./styles/container.module.less";
 import itemStyles from "./components/styles/item.module.less";
-import { useNavigate } from "react-router-dom";
 
 const { Row } = Grid;
 
 interface IProps {
   schema: ISchema;
   onChange: (schema: ISchema) => void;
-  onSave: () => void;
-  onPreview: () => void;
 }
 
 export const PAGE_FLAG = "page";
 
 export default function EditorContainer(props: IProps) {
-  const navigate = useNavigate();
-
-  const { activeComponent, setActiveComponent, position } =
-    useContext(EditorContext);
-  const [copy, setCopy] = useState<IComponent | null>(null);
-
-  const onClear = () => {
-    setActiveComponent(null);
-    props.onChange({ ...props.schema, body: [] });
-  };
-  const onDelete = () => {
-    props.onChange({
-      ...props.schema,
-      body: filterComponent(
-        props.schema.body,
-        (c) => c.id !== activeComponent?.id
-      ),
-    });
-    setActiveComponent(null);
-  };
-  const onCopy = () => {
-    if (!activeComponent) {
-      Message.error("请选择复制组件");
-      return;
-    }
-    setCopy(omit(activeComponent, "id"));
-  };
-  const onParse = () => {
-    if (!copy) {
-      Message.error("请先复制组件");
-      return;
-    }
-    const parseComponent = { ...copy, id: uuidv4() };
-    if (!activeComponent) {
-      props.onChange({
-        ...props.schema,
-        body: [...props.schema.body, parseComponent],
-      });
-    } else {
-      const newSchema = produce(props.schema, (schema) => {
-        const active = findComponent(
-          schema.body,
-          (component) => component.id === activeComponent.id
-        );
-        if (active.container) {
-          active.children = [...(active.children || []), parseComponent];
-        } else {
-          const { warpper, index } = findWarpper(schema.body, active.id);
-          if (warpper) {
-            warpper.splice(index + 1, 0, parseComponent);
-          }
-        }
-      });
-      props.onChange(newSchema);
-    }
-  };
+  const {
+    activeComponent,
+    setActiveComponent,
+    position,
+    onSave,
+    onPreview,
+    onClear,
+    onBack,
+    onForward,
+  } = useContext(EditorContext);
 
   const [visible, setVisible] = useState(false);
 
@@ -116,32 +63,17 @@ export default function EditorContainer(props: IProps) {
     {
       content: "预览",
       icon: <IconEye />,
-      onClick: props.onPreview,
+      onClick: onPreview,
     },
     {
-      content: "复制",
-      icon: <IconCopy />,
-      onClick: onCopy,
+      content: "撤销",
+      icon: <IconUndo />,
+      onClick: onBack,
     },
     {
-      content: "粘贴",
-      icon: <IconPaste />,
-      onClick: onParse,
-    },
-    // {
-    //   content: "撤销",
-    //   icon: <IconUndo />,
-    //   // onClick:onCopy,
-    // },
-    // {
-    //   content: "重做",
-    //   icon: <IconRedo />,
-    //   // onClick:onCopy,
-    // },
-    {
-      content: "删除",
-      icon: <IconDelete />,
-      onClick: onDelete,
+      content: "恢复",
+      icon: <IconRedo />,
+      onClick: onForward,
     },
     {
       content: "清空",
@@ -151,7 +83,7 @@ export default function EditorContainer(props: IProps) {
     {
       content: "保存",
       icon: <IconSave />,
-      onClick: props.onSave,
+      onClick: onSave,
     },
   ];
 
@@ -167,6 +99,7 @@ export default function EditorContainer(props: IProps) {
       props.schema.body,
       (c) => c.id === activeComponent.id
     );
+    if (!schema) return null;
     return (
       <div className="h-full relative">
         <ComponentAction
@@ -204,12 +137,12 @@ export default function EditorContainer(props: IProps) {
             ))}
           </Space>
         </Row>
-        <Row
-          className={[
+        <div
+          className={classNames(
             styles["lc-content"],
             styles["lc-editor-container"],
-            "p-2 h-full flex-1 content-start",
-          ]}
+            "p-2 h-full flex-1"
+          )}
           onClick={(e) => {
             e.stopPropagation();
             setActiveComponent(null);
@@ -227,7 +160,7 @@ export default function EditorContainer(props: IProps) {
               )}
             />
           )}
-        </Row>
+        </div>
       </Layout.Content>
       <Layout.Sider
         className={classNames(
