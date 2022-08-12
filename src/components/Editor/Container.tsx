@@ -167,7 +167,7 @@ export default function EditorContainer(props: IProps) {
           styles["lc-content-action"],
           !activeComponent ? "ml-0" : "important-ml-[6px]"
         )}
-        width={activeComponent ? 300 : 0}
+        width={activeComponent ? 350 : 0}
       >
         {renderAction()}
       </Layout.Sider>

@@ -52,9 +52,13 @@ export function CommonItem({ item, disabled = false }) {
     >
       <Common
         {...commonProps}
-        className={classNames(commonProps?.className, {
-          "pointer-events-none select-none": disabled,
-        })}
+        className={classNames(
+          commonProps?.className,
+          "important-relative important-top-0 important-left-0 important-right-0 important-bottom-0",
+          {
+            "pointer-events-none select-none": disabled,
+          }
+        )}
       >
         {commonChildren}
       </Common>

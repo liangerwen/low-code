@@ -1,5 +1,6 @@
 import ActionWarp from "@/components/Editor/Menu/components/ActionWarp";
 import EventForm from "@/components/Editor/Menu/components/EventForm";
+import StyleForm from "@/components/Editor/Menu/components/StyleForm";
 import {
   generateEventProps,
   getEventsFromProps,
@@ -7,6 +8,7 @@ import {
 import { produce } from "@/utils";
 import { Typography } from "@arco-design/web-react";
 import { IconH1 } from "@arco-design/web-react/icon";
+import { pick } from "lodash";
 import { useMemo } from "react";
 import PropForm from "./PropForm";
 
@@ -32,6 +34,21 @@ const Action = (props: {
           key: 1,
           Form: PropForm,
           props,
+        },
+        {
+          title: "样式",
+          key: 2,
+          Form: StyleForm,
+          props: {
+            value: pick(props.schema.props, "style", "className"),
+            onChange: (val) => {
+              props.onChange(
+                produce(props.schema, (schema) => {
+                  schema.props = { ...schema.props, ...val };
+                })
+              );
+            },
+          },
         },
         {
           title: "事件",

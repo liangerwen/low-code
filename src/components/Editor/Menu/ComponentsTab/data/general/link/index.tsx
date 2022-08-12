@@ -1,6 +1,9 @@
 import ActionWarp from "@/components/Editor/Menu/components/ActionWarp";
+import StyleForm from "@/components/Editor/Menu/components/StyleForm";
+import { produce } from "@/utils";
 import { Link } from "@arco-design/web-react";
 import { IconLink } from "@arco-design/web-react/icon";
+import { pick } from "lodash";
 import PropForm from "./PropForm";
 
 const name = "link";
@@ -32,6 +35,21 @@ const Action = (props: {
           key: 1,
           Form: PropForm,
           props,
+        },
+        {
+          title: "样式",
+          key: 2,
+          Form: StyleForm,
+          props: {
+            value: pick(props.schema.props, "style", "className"),
+            onChange: (val) => {
+              props.onChange(
+                produce(props.schema, (schema) => {
+                  schema.props = { ...schema.props, ...val };
+                })
+              );
+            },
+          },
         },
       ]}
     />

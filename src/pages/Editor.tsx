@@ -39,7 +39,7 @@ export default () => {
     e.returnValue = "离开后系统不会保存您所做的更改。";
   }, []);
 
-  useEvent("beforeunload", onCloseBoswer);
+  // useEvent("beforeunload", onCloseBoswer);
   return (
     <Editor
       onSave={(newSchema) => {
