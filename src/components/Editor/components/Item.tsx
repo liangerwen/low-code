@@ -1,4 +1,5 @@
 import useHover from "@/hooks/useHover";
+import { produce } from "@/utils";
 import { Divider, Space, Tooltip } from "@arco-design/web-react";
 import {
   IconCopy,
@@ -237,6 +238,14 @@ const Item = (props: IProps) => {
     () => isHover && !movingComponent,
     [movingComponent, isHover]
   );
+  const actions = useMemo(
+    () => [
+      { element: IconCopy, tip: "复制", onClick: () => onCopy(item) },
+      { element: IconPaste, tip: "粘贴", onClick: () => onPaste(item) },
+      { element: IconDelete, tip: "删除", onClick: () => onDelete(id) },
+    ],
+    [item]
+  );
 
   return (
     <ErrorBoundary
@@ -262,7 +271,7 @@ const Item = (props: IProps) => {
           onClick: setActive,
           className: classNames(className, {
             [styles["lc-item__inline"]]: inline,
-            "min-w-130px important-pt-[20px]": showActions,
+            "min-w-160px important-pt-[20px]": showActions,
           }),
         }}
         childrenWarpperProps={{
@@ -277,40 +286,26 @@ const Item = (props: IProps) => {
           showActions && (
             <div className={styles["lc-item-action"]}>
               <Space>
-                <Tooltip content="移动">
-                  <IconDragDot
-                    {...listeners}
-                    className="cursor-move hover:bg-[rgba(0,0,0,0.05)]"
-                  />
-                </Tooltip>
+                <IconDragDot
+                  {...listeners}
+                  className="cursor-move hover:bg-[rgba(0,0,0,0.05)]"
+                />
                 <span>{title}</span>
-                <Tooltip content="复制">
-                  <IconCopy
-                    className="cursor-pointer hover:bg-[rgba(0,0,0,0.05)]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onCopy(item);
-                    }}
-                  />
-                </Tooltip>
-                <Tooltip content="粘贴">
-                  <IconPaste
-                    className="cursor-pointer hover:bg-[rgba(0,0,0,0.05)]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onPaste(item);
-                    }}
-                  />
-                </Tooltip>
-                <Tooltip content="删除">
-                  <IconDelete
-                    className="cursor-pointer hover:bg-[rgba(0,0,0,0.05)]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDelete(id);
-                    }}
-                  />
-                </Tooltip>
+                {actions.map((i, idx) => {
+                  const Icon = i.element;
+                  return (
+                    <Tooltip content={i.tip} mini>
+                      <Icon
+                        key={idx}
+                        className="cursor-pointer hover:bg-[rgba(0,0,0,0.05)]"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          i.onClick();
+                        }}
+                      />
+                    </Tooltip>
+                  );
+                })}
               </Space>
             </div>
           )

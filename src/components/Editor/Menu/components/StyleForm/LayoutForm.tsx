@@ -170,7 +170,7 @@ export default function LayoutForm({ value = {}, onChange }: IProps) {
           }))}
         />
       </Space>
-      {value.display === "flex" && [
+      {["flex", "inline-flex"].includes(value.display) && [
         <Space>
           <label className="arco-form-label-item">主轴方向</label>
           <RadioGroup

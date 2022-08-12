@@ -1,7 +1,7 @@
 import { Layout, Message } from "@arco-design/web-react";
 import classNames from "classnames";
 import { v4 as uuidv4 } from "uuid";
-import { createContext, FC, useCallback, useRef, useState } from "react";
+import { createContext, useCallback, useRef, useState } from "react";
 import EditorContainer, { PAGE_FLAG } from "./Container";
 import EditorMenu from "./Menu";
 import styles from "./styles/index.module.less";
@@ -12,15 +12,9 @@ import {
   DragOverlay,
   DragStartEvent,
 } from "@dnd-kit/core";
+import { restrictToFirstScrollableAncestor } from "@dnd-kit/modifiers";
 import { createPortal } from "react-dom";
-import {
-  cloneDeep,
-  cloneDeepWith,
-  isEmpty,
-  isEqual,
-  isPlainObject,
-  omit,
-} from "lodash";
+import { cloneDeep, isEqual, isPlainObject } from "lodash";
 import { copy, deepProduce, produce } from "@/utils";
 import { filterComponent, findComponent, findWarpper } from "./utils";
 import { isAdd } from "./Menu/ComponentsTab/MenuItem";
@@ -263,7 +257,7 @@ const Editor = (props: IProps) => {
     Message.success("复制成功！");
   };
 
-  const onPaste = () => {
+  const onPaste = (item: IComponent) => {
     if (!copyRef.current) {
       Message.error("请先复制组件！");
       return;
@@ -273,7 +267,7 @@ const Editor = (props: IProps) => {
         value.id = uuidv4();
       }
     });
-    if (!activeComponent) {
+    if (!item) {
       const newSchema = {
         ...value,
         body: [...value.body, parseComponent],
@@ -284,7 +278,7 @@ const Editor = (props: IProps) => {
       const newSchema = produce(value, (schema) => {
         const active = findComponent(
           schema.body,
-          (component) => component.id === activeComponent.id
+          (component) => component.id === item.id
         );
         if (active.container) {
           active.children = [...(active.children || []), parseComponent];
@@ -373,7 +367,7 @@ const Editor = (props: IProps) => {
           </Layout.Content>
         </Layout>
         {createPortal(
-          <DragOverlay>
+          <DragOverlay modifiers={[restrictToFirstScrollableAncestor]}>
             {active ? (
               <div
                 className={classNames(styles["dragging-btn"], "cursor-move")}
