@@ -24,7 +24,7 @@ export default function PageNodeTree(props: IProps) {
           : { switcherIcon: <Icon style={{ fontSize: 12 }} /> };
       return {
         key: t.id,
-        title: <Space>{t.title}</Space>,
+        title: t.title,
         icons,
         children: t.container
           ? createTreeData((t.children as IComponent[]) || [])
@@ -62,7 +62,7 @@ export default function PageNodeTree(props: IProps) {
         color: "rgb(var(--primary-5))",
       },
     ],
-    []
+    [onDelete, onPaste, onCopy]
   );
   return (
     <>
@@ -124,7 +124,7 @@ export default function PageNodeTree(props: IProps) {
                   (c) => c.id === dropId
                 );
                 dropComponent.children = [
-                  ...dropComponent.children,
+                  ...(dropComponent.children || []),
                   dragComponent,
                 ];
               } else {

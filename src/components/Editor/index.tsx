@@ -11,6 +11,9 @@ import {
   DragMoveEvent,
   DragOverlay,
   DragStartEvent,
+  MouseSensor,
+  useSensor,
+  useSensors,
 } from "@dnd-kit/core";
 import { createPortal } from "react-dom";
 import { cloneDeep, isEqual, isPlainObject } from "lodash";
@@ -71,6 +74,8 @@ interface IProps {
   onPreview: (schema: ISchema) => void;
 }
 
+const dragOverlayId = "drag-overlay";
+
 const Editor = (props: IProps) => {
   const { value, onChange, onSave, onPreview } = props;
   const [activeComponent, setActiveComponent] = useState<IComponent | null>(
@@ -102,11 +107,19 @@ const Editor = (props: IProps) => {
     (e: DragMoveEvent) => {
       const {
         activatorEvent,
-        delta,
         over,
         active: { id: activeId },
       } = e;
       const { x, y } = activatorEvent as PointerEvent;
+      const [translateX, translateY] = getComputedStyle(
+        document.getElementById(dragOverlayId).parentElement
+      )
+        .transform.replace(/^matrix\(1, 0, 0, 1, (\d+), (\d+)\)$/, "$1,$2")
+        .split(",");
+      const delta = {
+        x: Number(translateX || 0),
+        y: Number(translateY || 0),
+      };
       // 当前坐标为原始坐标加上拖动的偏移量
       const currentX = x + delta.x,
         currentY = y + delta.y;
@@ -117,16 +130,18 @@ const Editor = (props: IProps) => {
           data: { current },
         } = over;
         // 当前元素是目标元素的祖父
-        const currentComponent = findComponent(
-          value.body,
-          (c) => c?.id === activeId
-        );
-        if (
-          currentComponent &&
-          findComponent([currentComponent], (c) => c?.id === over?.id)
-        ) {
-          setPosition(null);
-          return;
+        if (!isAdd(activeId)) {
+          const currentComponent = findComponent(
+            value.body,
+            (c) => c?.id === activeId
+          );
+          if (
+            currentComponent &&
+            findComponent([currentComponent], (c) => c?.id === overId)
+          ) {
+            setPosition(null);
+            return;
+          }
         }
         // 当前元素的中心位置
         const middleX = left + width / 2,
@@ -334,6 +349,10 @@ const Editor = (props: IProps) => {
 
   const { pageSetting } = useSettings();
 
+  const mouseSensor = useSensor(MouseSensor);
+
+  const sensors = useSensors(mouseSensor);
+
   return (
     <EditorContext.Provider
       value={{
@@ -356,6 +375,7 @@ const Editor = (props: IProps) => {
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         onDragMove={onDragMove}
+        sensors={sensors}
       >
         <Layout className={styles["lc-layout"]}>
           {pageSetting.menu && (
@@ -377,6 +397,7 @@ const Editor = (props: IProps) => {
           <DragOverlay>
             {active ? (
               <div
+                id={dragOverlayId}
                 className={classNames(styles["dragging-btn"], "cursor-move")}
               >
                 {active}

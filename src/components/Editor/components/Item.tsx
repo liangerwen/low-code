@@ -244,7 +244,7 @@ const Item = (props: IProps) => {
       { element: IconPaste, tip: "粘贴", onClick: () => onPaste(item) },
       { element: IconDelete, tip: "删除", onClick: () => onDelete(id) },
     ],
-    [item]
+    [item, onDelete, onPaste, onCopy]
   );
 
   return (
