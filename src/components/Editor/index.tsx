@@ -12,13 +12,13 @@ import {
   DragOverlay,
   DragStartEvent,
 } from "@dnd-kit/core";
-import { restrictToFirstScrollableAncestor } from "@dnd-kit/modifiers";
 import { createPortal } from "react-dom";
 import { cloneDeep, isEqual, isPlainObject } from "lodash";
 import { copy, deepProduce, produce } from "@/utils";
 import { filterComponent, findComponent, findWarpper } from "./utils";
 import { isAdd } from "./Menu/ComponentsTab/MenuItem";
 import Viewer from "./Viewer";
+import { useSettings } from "../Settings";
 
 export enum Direction {
   PREV,
@@ -272,7 +272,7 @@ const Editor = (props: IProps) => {
         ...value,
         body: [...value.body, parseComponent],
       };
-      props.onChange(newSchema);
+      onChange(newSchema);
       stackPush(historyRef.current, newSchema);
     } else {
       const newSchema = produce(value, (schema) => {
@@ -290,14 +290,14 @@ const Editor = (props: IProps) => {
         }
       });
       stackPush(historyRef.current, newSchema);
-      props.onChange(newSchema);
+      onChange(newSchema);
     }
   };
 
   const onClear = () => {
     setActiveComponent(null);
     const newSchema = { ...value, body: [] };
-    props.onChange(newSchema);
+    onChange(newSchema);
     stackPush(historyRef.current, newSchema);
   };
 
@@ -307,7 +307,7 @@ const Editor = (props: IProps) => {
       ...value,
       body: filterComponent(value.body, (c) => c.id !== id),
     };
-    props.onChange(newSchema);
+    onChange(newSchema);
     stackPush(historyRef.current, newSchema);
   };
 
@@ -331,6 +331,8 @@ const Editor = (props: IProps) => {
     stackPush(forwardRef.current, historyRef.current.shift());
     onChange(historyRef.current[0]);
   };
+
+  const { pageSetting } = useSettings();
 
   return (
     <EditorContext.Provider
@@ -356,18 +358,23 @@ const Editor = (props: IProps) => {
         onDragMove={onDragMove}
       >
         <Layout className={styles["lc-layout"]}>
-          <Layout.Sider
-            width={300}
-            className={classNames(styles["lc-container"], "p-0 important-mr-2")}
-          >
-            <EditorMenu schema={value} onChange={onChange} />
-          </Layout.Sider>
+          {pageSetting.menu && (
+            <Layout.Sider
+              width={pageSetting.menuWidth}
+              className={classNames(
+                styles["lc-container"],
+                "p-0 important-mr-2"
+              )}
+            >
+              <EditorMenu schema={value} onChange={onChange} />
+            </Layout.Sider>
+          )}
           <Layout.Content className={styles["lc-container"]}>
             <EditorContainer schema={value} onChange={onChange} />
           </Layout.Content>
         </Layout>
         {createPortal(
-          <DragOverlay modifiers={[restrictToFirstScrollableAncestor]}>
+          <DragOverlay>
             {active ? (
               <div
                 className={classNames(styles["dragging-btn"], "cursor-move")}

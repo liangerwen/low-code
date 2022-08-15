@@ -15,8 +15,11 @@ const defaultSchema = {
 export default {
   name,
   componentMap: { [name]: Card },
-  icon: () => (
-    <i className="arco-icon arco-icon-select-all i-ic:round-credit-card" />
+  icon: (props) => (
+    <i
+      className="arco-icon arco-icon-select-all i-ic:round-credit-card"
+      {...props}
+    />
   ),
   demo: [defaultSchema],
   defaultSchema,

@@ -14,8 +14,11 @@ const defaultSchema = {
 export default {
   name,
   componentMap: { [name]: Input },
-  icon: () => (
-    <i className="arco-icon arco-icon-select-all i-iconoir:input-field" />
+  icon: (props) => (
+    <i
+      className="arco-icon arco-icon-select-all i-iconoir:input-field"
+      {...props}
+    />
   ),
   demo: [defaultSchema],
   defaultSchema,

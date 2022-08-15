@@ -54,7 +54,7 @@ const SettingContext = createContext<SettingsContext>({
     menu: true,
     footer: true,
     themeColor: getCustomOrRgb(),
-    menuWidth: 250,
+    menuWidth: 300,
   },
   setPageSetting: (pageSetting: PageSetting) => {},
   lang: getLocal(LocalKeys.LANG_KEY) || LangType.CN,
@@ -80,7 +80,7 @@ export const SettingProvider = ({ children }) => {
     menu: true,
     footer: true,
     themeColor: getCustomOrRgb(),
-    menuWidth: 250,
+    menuWidth: 300,
   });
   const [mode, setMode] = useLocalStorage<ModeType>(
     LocalKeys.MODE_KEY,

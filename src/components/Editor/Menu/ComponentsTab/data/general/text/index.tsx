@@ -52,7 +52,7 @@ const Action = (props: {
         },
         {
           title: "事件",
-          key: 2,
+          key: 3,
           Form: EventForm,
           props: {
             options: [{ label: "编辑", value: "onChange" }],
@@ -86,8 +86,11 @@ const Action = (props: {
 export default {
   name,
   componentMap: { [name]: Text },
-  icon: () => (
-    <i className="arco-icon arco-icon-select-all i-material-symbols:format-color-text" />
+  icon: (props) => (
+    <i
+      className="arco-icon arco-icon-select-all i-material-symbols:format-color-text"
+      {...props}
+    />
   ),
   demo: [defaultSchema],
   defaultSchema,

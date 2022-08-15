@@ -52,7 +52,7 @@ const Action = (props: {
         },
         {
           title: "事件",
-          key: 2,
+          key: 3,
           Form: EventForm,
           props: {
             options: [
@@ -78,8 +78,11 @@ const Action = (props: {
 export default {
   name,
   componentMap: { [name]: Button },
-  icon: () => (
-    <i className="arco-icon arco-icon-select-all i-teenyicons:button-outline" />
+  icon: (props) => (
+    <i
+      className="arco-icon arco-icon-select-all i-teenyicons:button-outline"
+      {...props}
+    />
   ),
   demo: [defaultSchema],
   defaultSchema,

@@ -1,5 +1,6 @@
 import { Radio, Slider, Space, Tooltip } from "@arco-design/web-react";
 import classNames from "classnames";
+import { has } from "lodash";
 import { CSSProperties } from "react";
 import ColorInput from "./ColorInput";
 import PercentOrFixedInput from "./PercentOrFixedInput";
@@ -123,9 +124,13 @@ export default function FontForm({ value = {}, onChange }: IProps) {
         <label className="arco-form-label-item">可见度</label>
         <Slider
           showInput
-          value={(value.opacity || 100) as number}
+          value={
+            (has(value, "opacity")
+              ? (value.opacity as number) * 100
+              : 100) as number
+          }
           onChange={(val) => {
-            onChange({ ...value, opacity: val as number });
+            onChange({ ...value, opacity: (val as number) / 100 });
           }}
           style={{ width: 220 }}
         />

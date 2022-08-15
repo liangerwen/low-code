@@ -52,7 +52,7 @@ const Action = (props: {
         },
         {
           title: "事件",
-          key: 2,
+          key: 3,
           Form: EventForm,
           props: {
             options: [{ label: "编辑", value: "onChange" }],

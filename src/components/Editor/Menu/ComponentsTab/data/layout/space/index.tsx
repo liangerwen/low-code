@@ -50,8 +50,11 @@ const Action = (props: {
 export default {
   name,
   componentMap: { [name]: Space },
-  icon: () => (
-    <i className="arco-icon arco-icon-select-all i-lucide:align-horizontal-space-around" />
+  icon: (props) => (
+    <i
+      className="arco-icon arco-icon-select-all i-lucide:align-horizontal-space-around"
+      {...props}
+    />
   ),
   demo: [defaultSchema],
   defaultSchema,

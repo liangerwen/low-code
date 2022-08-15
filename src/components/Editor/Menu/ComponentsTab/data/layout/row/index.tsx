@@ -52,8 +52,9 @@ const Action = (props: {
 export default {
   name,
   componentMap: { [name]: Row },
-  icon: () => (
-    <i className="arco-icon arco-icon-select-all i-mdi:land-rows-horizontal" />
+  icon: (props) => (
+    <i className="arco-icon arco-icon-select-all i-mdi:land-rows-horizontal"
+    {...props} />
   ),
   demo: [
     {

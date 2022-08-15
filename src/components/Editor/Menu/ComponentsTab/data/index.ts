@@ -68,6 +68,17 @@ export const getRenderActionByName = (name: string) => {
   return component?.Action;
 };
 
+/**
+ * 根据名称获取对应Icon
+ * @param name
+ * @returns Icon
+ */
+export const getIconByName = (name: string) => {
+  const mappingArr = Object.values(components);
+  const component = mappingArr.find((cur) => cur.name === name);
+  return component?.icon;
+};
+
 export default Object.values(examples)
   .map((e) => e.default)
   .sort((a, b) => a.idx - b.idx);

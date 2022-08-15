@@ -294,7 +294,7 @@ const Item = (props: IProps) => {
                 {actions.map((i, idx) => {
                   const Icon = i.element;
                   return (
-                    <Tooltip content={i.tip} mini>
+                    <Tooltip content={i.tip} mini key={idx}>
                       <Icon
                         key={idx}
                         className="cursor-pointer hover:bg-[rgba(0,0,0,0.05)]"
@@ -312,16 +312,14 @@ const Item = (props: IProps) => {
         }
       >
         {container ? (
-          [
-            !isEmpty(children) &&
+          <>
+            {!isEmpty(children) &&
               (children as IComponent[]).map((c, idx) => (
                 <Item item={c} key={idx} index={idx} />
-              )),
-            isMiddle && renderDivider(),
-            <p className={styles["lc-item-tip"]} key="tip">
-              拖动组件到此处
-            </p>,
-          ]
+              ))}
+            {isMiddle && renderDivider()}
+            <p className={styles["lc-item-tip"]}>拖动组件到此处</p>
+          </>
         ) : (
           <CommonItem item={item} disabled={true} />
         )}

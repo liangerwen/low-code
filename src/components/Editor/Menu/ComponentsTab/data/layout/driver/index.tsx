@@ -48,8 +48,11 @@ const Action = (props: {
 export default {
   name,
   componentMap: { [name]: Divider },
-  icon: () => (
-    <i className="arco-icon arco-icon-select-all i-ic:baseline-safety-divider" />
+  icon: (props) => (
+    <i
+      className="arco-icon arco-icon-select-all i-ic:baseline-safety-divider"
+      {...props}
+    />
   ),
   demo: [defaultSchema],
   defaultSchema,

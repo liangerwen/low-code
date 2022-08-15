@@ -47,8 +47,11 @@ const defaultSchema = {
 export default {
   name,
   componentMap: { [name]: Tree },
-  icon: () => (
-    <i className="arco-icon arco-icon-select-all i-material-symbols:account-tree-outline-rounded" />
+  icon: (props) => (
+    <i
+      className="arco-icon arco-icon-select-all i-material-symbols:account-tree-outline-rounded"
+      {...props}
+    />
   ),
   demo: [defaultSchema],
   defaultSchema,
