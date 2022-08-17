@@ -26,30 +26,36 @@ const Action = (props: {
   schema: IComponent;
   onChange: (schema: IComponent) => void;
 }) => {
+  const defaultOptions = useMemo(
+    () => [
+      {
+        title: "属性",
+        key: 1,
+        Form: PropForm,
+        props,
+      },
+      {
+        title: "样式",
+        key: 2,
+        Form: StyleForm,
+        props: {
+          value: pick(props.schema.props, "style", "className"),
+          onChange: (val) => {
+            props.onChange(
+              produce(props.schema, (schema) => {
+                schema.props = { ...schema.props, ...val };
+              })
+            );
+          },
+        },
+      },
+    ],
+    []
+  );
   const options = useMemo(() => {
     if (props.schema?.props?.editable) {
       return [
-        {
-          title: "属性",
-          key: 1,
-          Form: PropForm,
-          props,
-        },
-        {
-          title: "样式",
-          key: 2,
-          Form: StyleForm,
-          props: {
-            value: pick(props.schema.props, "style", "className"),
-            onChange: (val) => {
-              props.onChange(
-                produce(props.schema, (schema) => {
-                  schema.props = { ...schema.props, ...val };
-                })
-              );
-            },
-          },
-        },
+        ...defaultOptions,
         {
           title: "事件",
           key: 3,
@@ -71,14 +77,7 @@ const Action = (props: {
         },
       ];
     }
-    return [
-      {
-        title: "属性",
-        key: 1,
-        Form: PropForm,
-        props,
-      },
-    ];
+    return defaultOptions;
   }, [props.schema]);
   return <ActionWarp options={options} />;
 };

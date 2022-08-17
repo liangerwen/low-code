@@ -74,8 +74,6 @@ interface IProps {
   onPreview: (schema: ISchema) => void;
 }
 
-const dragOverlayId = "drag-overlay";
-
 const Editor = (props: IProps) => {
   const { value, onChange, onSave, onPreview } = props;
   const [activeComponent, setActiveComponent] = useState<IComponent | null>(
@@ -87,6 +85,8 @@ const Editor = (props: IProps) => {
   const [position, setPosition] = useState<PositionType>(null);
 
   const [active, setActive] = useState<null | string>(null);
+
+  const dragOverlayRef = useRef(null);
 
   const onDragStart = useCallback((e: DragStartEvent) => {
     const {
@@ -111,10 +111,12 @@ const Editor = (props: IProps) => {
         active: { id: activeId },
       } = e;
       const { x, y } = activatorEvent as PointerEvent;
-      const [translateX, translateY] = getComputedStyle(
-        document.getElementById(dragOverlayId).parentElement
-      )
-        .transform.replace(/^matrix\(1, 0, 0, 1, (\d+), (\d+)\)$/, "$1,$2")
+      // 因为DragMoveEvent里的delta会经过滚动处理，当容器滚动后x和y不准确，所以使用此方法获取正确的delta值
+      const [translateX, translateY] = getComputedStyle(dragOverlayRef.current)
+        .transform.replace(
+          /^matrix\(-?\d+, -?\d+, -?\d+, -?\d+, (-?\d+), (-?\d+)\)$/,
+          "$1,$2"
+        )
         .split(",");
       const delta = {
         x: Number(translateX || 0),
@@ -397,7 +399,11 @@ const Editor = (props: IProps) => {
           <DragOverlay>
             {active ? (
               <div
-                id={dragOverlayId}
+                ref={(node) => {
+                  if (node) {
+                    dragOverlayRef.current = node.parentElement;
+                  }
+                }}
                 className={classNames(styles["dragging-btn"], "cursor-move")}
               >
                 {active}

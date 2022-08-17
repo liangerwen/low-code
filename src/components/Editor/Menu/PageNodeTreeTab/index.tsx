@@ -1,5 +1,5 @@
 import { produce } from "@/utils";
-import { Empty, Space, Tooltip, Tree } from "@arco-design/web-react";
+import { Empty, Tooltip, Tree } from "@arco-design/web-react";
 import { IconCopy, IconDelete, IconPaste } from "@arco-design/web-react/icon";
 import { isEmpty } from "lodash";
 import { useCallback, useContext, useMemo } from "react";
@@ -12,7 +12,7 @@ interface IProps {
   onChange: (schema: ISchema) => void;
 }
 
-export default function PageNodeTree(props: IProps) {
+export default function PageNodeTreeTab(props: IProps) {
   const { onDelete, onCopy, onPaste, setActiveComponent, activeComponent } =
     useContext(EditorContext);
   const createTreeData = useCallback((treeNodes: IComponent[]) => {
@@ -80,7 +80,7 @@ export default function PageNodeTree(props: IProps) {
             return actions.map((a, idx) => {
               const Icon = a.element;
               return (
-                <Tooltip content={a.tip}>
+                <Tooltip content={a.tip} key={idx}>
                   <Icon
                     style={{
                       position: "absolute",

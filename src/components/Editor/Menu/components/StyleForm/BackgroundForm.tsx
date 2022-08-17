@@ -73,11 +73,18 @@ export default function BackgroundForm({ value = {}, onChange }: IProps) {
             onChange={(val) => {
               onChange(
                 produce(value, (value) => {
-                  delete value.backgroundColor;
-                  value.backgroundImage = `url(${val})`;
-                  value.backgroundSize = "100%";
-                  value.backgroundRepeat = "no-repeat";
-                  value.backgroundPosition = "center";
+                  if (value) {
+                    delete value.backgroundColor;
+                    value.backgroundImage = `url(${val})`;
+                    value.backgroundSize = "100%";
+                    value.backgroundRepeat = "no-repeat";
+                    value.backgroundPosition = "center";
+                  } else {
+                    delete value.backgroundImage;
+                    delete value.backgroundSize;
+                    delete value.backgroundRepeat;
+                    delete value.backgroundPosition;
+                  }
                 })
               );
             }}

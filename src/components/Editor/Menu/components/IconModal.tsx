@@ -11,7 +11,7 @@ import {
   Button,
   Empty,
 } from "@arco-design/web-react";
-import { IconDown, IconMore } from "@arco-design/web-react/icon";
+import { IconClose, IconDown, IconMore } from "@arco-design/web-react/icon";
 import iconsJson from "@arco-design/web-react/icon/icons.json";
 import classNames from "classnames";
 import { chunk, setWith } from "lodash";
@@ -20,6 +20,7 @@ import EditorIcon from "./EditorIcon";
 
 const Row = Grid.Row;
 const Col = Grid.Col;
+const ButtonGroup = Button.Group;
 
 interface IProps {
   value?: IconType;
@@ -90,12 +91,18 @@ export default (props: IProps) => {
           },
         })
       ) : (
-        <Button
-          onClick={() => setVisible(true)}
-          icon={props.value && <EditorIcon name={props.value.name} />}
-        >
-          点击选择图标
-        </Button>
+        <ButtonGroup>
+          <Button
+            onClick={() => setVisible(true)}
+            icon={props.value && <EditorIcon name={props.value.name} />}
+          >
+            点击选择图标
+          </Button>
+          <Button
+            icon={<IconClose />}
+            onClick={() => props?.onChange(undefined)}
+          />
+        </ButtonGroup>
       )}
       <Modal
         title={
