@@ -1,6 +1,6 @@
 import { Layout, Menu, Message, Modal } from "@arco-design/web-react";
 import { useEffect, useRef, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { generate as uuid } from "shortid";
 import EventFormContent from "./EventFormContent";
 import MENUKEYS from "../keys";
 import menus from "../menus";
@@ -62,7 +62,7 @@ export default function EventModal({
         form.current.validate().then((vaild) => {
           if (vaild) {
             onOk?.({
-              id: uuidv4(),
+              id: uuid(),
               name: selectedKeys[0],
             });
           }

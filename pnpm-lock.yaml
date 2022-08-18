@@ -34,9 +34,9 @@ specifiers:
   react-router-dom: ^6.3.0
   react-transition-group: ^4.4.5
   react-use: ^17.4.0
+  shortid: ^2.2.16
   typescript: ^4.6.3
   unocss: ^0.31.12
-  uuid: ^8.3.2
   vite: ^2.9.9
   vite-plugin-compression: ^0.5.1
   vite-plugin-monaco-editor: ^1.1.0
@@ -62,7 +62,7 @@ dependencies:
   react-router-dom: 6.3.0_ef5jwxihqo6n7gxfmzogljlgcm
   react-transition-group: 4.4.5_ef5jwxihqo6n7gxfmzogljlgcm
   react-use: 17.4.0_ef5jwxihqo6n7gxfmzogljlgcm
-  uuid: 8.3.2
+  shortid: 2.2.16
 
 devDependencies:
   '@arco-plugins/vite-react': 1.1.0
@@ -1892,6 +1892,10 @@ packages:
       stylis: 4.1.1
     dev: false
 
+  /nanoid/2.1.11:
+    resolution: {integrity: sha512-s/snB+WGm6uwi0WjsZdaVcuf3KJXlfGl2LcxgwkEwJF0D/BWzVWAZW/XY4bFaiR7s0Jk3FPvlnepg1H1b1UwlA==}
+    dev: false
+
   /nanoid/3.3.4:
     resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -2365,6 +2369,12 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /shortid/2.2.16:
+    resolution: {integrity: sha512-Ugt+GIZqvGXCIItnsL+lvFJOiN7RYqlGy7QE41O3YC1xbNSeDGIRO7xg2JJXIAj1cAGnOeC1r7/T9pgrtQbv4g==}
+    dependencies:
+      nanoid: 2.1.11
+    dev: false
+
   /signal-exit/3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
     dev: true
@@ -2606,11 +2616,6 @@ packages:
       detect-node-es: 1.1.0
       react: 18.1.0
       tslib: 2.4.0
-    dev: false
-
-  /uuid/8.3.2:
-    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
-    hasBin: true
     dev: false
 
   /vite-plugin-compression/0.5.1_vite@2.9.9:

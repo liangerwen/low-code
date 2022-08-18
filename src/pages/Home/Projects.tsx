@@ -27,7 +27,7 @@ import dayjs from "dayjs";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "react-use";
-import { v4 as uuidv4 } from "uuid";
+import { generate as uuid } from "shortid";
 const { Meta } = Card;
 const { Row, Col } = Grid;
 
@@ -43,13 +43,14 @@ export default function Projects() {
     }[]
   >(LocalKeys.SCHEMA_KEY, [
     {
-      id: uuidv4(),
+      id: uuid(),
       name: "测试",
       schema: {
         name: "page",
         inMenu: true,
         body: [
           {
+            id: uuid(),
             name: "button",
             title: "按钮",
             props: {
@@ -62,15 +63,15 @@ export default function Projects() {
               status: "warning",
               onClick: [
                 {
-                  id: "7968ea8d-1283-439c-89d7-3d0ceecd6564",
+                  id: uuid(),
                   name: "refreshPage",
                 },
               ],
             },
             children: ["刷新页面按钮"],
-            id: "1eb46a8f-da6b-446d-b1e0-467f4deae81a",
           },
           {
+            id: uuid(),
             name: "link",
             title: "链接",
             props: {
@@ -83,7 +84,6 @@ export default function Projects() {
             },
             children: ["Github"],
             inline: true,
-            id: "215e94be-67e4-4b45-9fa1-2626157fbed0",
           },
         ],
       },

@@ -1,6 +1,6 @@
 import { Layout, Message } from "@arco-design/web-react";
 import classNames from "classnames";
-import { v4 as uuidv4 } from "uuid";
+import { generate as uuid } from "shortid";
 import { createContext, useCallback, useRef, useState } from "react";
 import EditorContainer, { PAGE_FLAG } from "./Container";
 import EditorMenu from "./Menu";
@@ -95,7 +95,7 @@ const Editor = (props: IProps) => {
     if (isAdd(id)) {
       setMovingComponent({
         ...(e.active.data.current as IComponent),
-        id: uuidv4(),
+        id: uuid(),
       });
     } else {
       setMovingComponent(e.active.data.current as IComponent);
@@ -281,7 +281,7 @@ const Editor = (props: IProps) => {
     }
     const parseComponent = deepProduce(copyRef.current, (value) => {
       if (isPlainObject(value) && value?.id) {
-        value.id = uuidv4();
+        value.id = uuid();
       }
     });
     if (!item) {

@@ -1,5 +1,5 @@
 import * as monaco from "monaco-editor";
-import { v4 as uuidv4 } from "uuid";
+import { generate as uuid } from "shortid";
 import {
   forwardRef,
   useEffect,
@@ -22,7 +22,7 @@ function JsCodeEditor(props: IProps, ref) {
   const instance = useRef<monaco.editor.IStandaloneCodeEditor>(null);
   const [ready, setReady] = useState(false);
   const {
-    id = uuidv4(),
+    id = uuid(),
     className,
     language = "javascript",
     defaultValue = "",

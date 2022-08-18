@@ -28,7 +28,7 @@
     "react-router-dom": "^6.3.0",
     "react-transition-group": "^4.4.5",
     "react-use": "^17.4.0",
-    "uuid": "^8.3.2"
+    "shortid": "^2.2.16"
   },
   "devDependencies": {
     "@arco-plugins/vite-react": "^1.1.0",

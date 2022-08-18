@@ -3,7 +3,7 @@ import { IconQuestionCircle } from "@arco-design/web-react/icon";
 import { useDraggable } from "@dnd-kit/core";
 import classNames from "classnames";
 import { useHover } from "react-use";
-import { v1 as uuidv1 } from "uuid";
+import { generate as uuid } from "shortid";
 import { CommonItem } from "../../components/Item";
 import { Menu } from "./data";
 import styles from "./styles/menu-item.module.less";
@@ -14,7 +14,7 @@ export const isAdd = (id: string | number) => String(id).startsWith(MENUTYPE);
 
 export default (props: Menu) => {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: `${MENUTYPE}_${uuidv1()}`,
+    id: `${MENUTYPE}_${uuid()}`,
     data: props.defaultSchema,
   });
   const [hoverElement, isHovering] = useHover((isHovering) => (

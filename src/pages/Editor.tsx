@@ -1,6 +1,6 @@
 import Editor from "../components/Editor";
 import { useEvent, useLocalStorage } from "react-use";
-import { v4 as uuidv4 } from "uuid";
+import { generate as uuid } from "shortid";
 import { useNavigate, useParams } from "react-router-dom";
 import { LocalKeys } from "@/utils/storage";
 import { useCallback, useEffect } from "react";
@@ -39,7 +39,7 @@ export default () => {
     e.returnValue = "离开后系统不会保存您所做的更改。";
   }, []);
 
-  // useEvent("beforeunload", onCloseBoswer);
+  useEvent("beforeunload", onCloseBoswer);
   return (
     <Editor
       onSave={(newSchema) => {
@@ -60,7 +60,7 @@ export default () => {
             setSchemas([
               ...schemas,
               {
-                id: uuidv4(),
+                id: uuid(),
                 name: name,
                 schema: newSchema,
                 date: Date.now(),
