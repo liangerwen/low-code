@@ -26,6 +26,7 @@ specifiers:
   less: ^4.1.2
   lodash: ^4.17.21
   monaco-editor: ^0.33.0
+  prettier: ^2.7.1
   react: ^18.0.0
   react-color: ^2.19.3
   react-dom: ^18.0.0
@@ -54,6 +55,7 @@ dependencies:
   dayjs: 1.11.4
   lodash: 4.17.21
   monaco-editor: 0.33.0
+  prettier: 2.7.1
   react: 18.1.0
   react-color: 2.19.3_react@18.1.0
   react-dom: 18.1.0_react@18.1.0
@@ -2024,6 +2026,12 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.0.2
     dev: true
+
+  /prettier/2.7.1:
+    resolution: {integrity: sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
+    dev: false
 
   /promise/7.3.1:
     resolution: {integrity: sha512-nolQXZ/4L+bP/UGlkfaIujX9BKxGwmQ9OT4mOt5yvy8iK1h3wqTEJCijzGANTCCl9nWjY41juyAn2K3Q1hLLTg==}

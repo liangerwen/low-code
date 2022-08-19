@@ -1,4 +1,4 @@
-import { download, produce } from "@/utils";
+import { downloadByContent, produce } from "@/utils";
 import { LocalKeys } from "@/utils/storage";
 import {
   Avatar,
@@ -54,36 +54,37 @@ export default function Projects() {
             name: "button",
             title: "按钮",
             props: {
-              type: "primary",
+              type: "dashed",
               long: true,
               icon: {
                 isIcon: true,
-                name: "IconRefresh",
+                name: "IconCopy",
               },
-              status: "warning",
-              onClick: [
-                {
-                  id: uuid(),
-                  name: "refreshPage",
-                },
-              ],
-            },
-            children: ["刷新页面按钮"],
-          },
-          {
-            id: uuid(),
-            name: "link",
-            title: "链接",
-            props: {
-              href: "https://github.com/liangerwen",
-              icon: {
-                isIcon: true,
-                name: "IconGithub",
+              status: "success",
+              onClick: {
+                isEvent: true,
+                actions: [
+                  {
+                    id: uuid(),
+                    name: "copy",
+                    form: {
+                      content: "Hello Lew Code!",
+                    },
+                  },
+                  {
+                    id: uuid(),
+                    name: "message",
+                    form: {
+                      type: "message",
+                      status: "success",
+                      content: "复制成功",
+                    },
+                  },
+                ],
               },
-              target: "_blank",
             },
-            children: ["Github"],
-            inline: true,
+            children: ["点击复制内容：Hello Lew Code!"],
+            inline: false,
           },
         ],
       },
@@ -173,7 +174,7 @@ export default function Projects() {
                               }
                               break;
                             case "download":
-                              download({
+                              downloadByContent({
                                 fileName: `${p.id}.json`,
                                 content: JSON.stringify(p, null, 2),
                               });

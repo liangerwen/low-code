@@ -160,7 +160,6 @@ export default function Layout(props: IProps) {
                       navigate(path);
                     }
                   }}
-                  // hasCollapseButton
                 >
                   <Row justify="center" className="py-8">
                     <Button

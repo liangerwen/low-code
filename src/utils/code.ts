@@ -37,17 +37,23 @@ export const execFnStrByImport = (code: string) => {
     .catch((e) => {
       Message.error(`解析错误：${e.message}`);
     });
+  URL.revokeObjectURL(fileUrl);
 };
 
 // js字符串转EsModule
-export const fnStr2JsModuleByBabel = (code: string) => {
+export const fnStr2JsModuleByBabel = (
+  code: string,
+  params?: Record<string, any>
+) => {
   try {
     const fnBody = transform(code, {
       presets: ["env"],
     }).code;
-    const fn = new Function("exports", fnBody);
+    const paramsKey = Object.keys(params);
+    const paramsValue = Object.values(params);
+    const fn = new Function("exports", ...paramsKey, fnBody);
     const ret: { default?: Function } = {};
-    fn(ret);
+    fn(ret, ...paramsValue);
     return Promise.resolve(ret);
   } catch (e) {
     return Promise.reject(e);
@@ -64,5 +70,8 @@ export const fnStr2JsModuleByImport = (
     type: "text/javascript",
   });
   const fileUrl = URL.createObjectURL(file);
-  return import(fileUrl);
+  return import(fileUrl).then((res) => {
+    URL.revokeObjectURL(fileUrl);
+    return res;
+  });
 };

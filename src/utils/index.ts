@@ -1,3 +1,4 @@
+import axios from "axios";
 import { cloneDeep, cloneDeepWith, difference, pick } from "lodash";
 
 export const produce = <T>(obj: T, update: (obj: T) => void) => {
@@ -49,8 +50,11 @@ export const deepArrayPick = (arr, deepKeys, pickKeys) => {
   });
 };
 
-// 下载文件
-export const download = (option: { fileName: string; content: string }) => {
+// 根据内容下载文件
+export const downloadByContent = (option: {
+  fileName: string;
+  content: string;
+}) => {
   const { fileName, content } = option;
   const file = new Blob([content], { type: "application/json" });
   const fileUrl = URL.createObjectURL(file);
@@ -58,6 +62,26 @@ export const download = (option: { fileName: string; content: string }) => {
   linkElement.setAttribute("href", fileUrl);
   linkElement.setAttribute("download", fileName);
   linkElement.click();
+  URL.revokeObjectURL(fileUrl);
+};
+
+// 根据链接下载文件
+export const downloadByUrl = (fileName: string, url: string) => {
+  axios
+    .get(url, {
+      responseType: "blob",
+    })
+    .then(({ data, headers }) => {
+      const file = new Blob([data], {
+        type: headers["content-type"] || "text/plain",
+      });
+      const href = URL.createObjectURL(file);
+      const linkElement = document.createElement("a");
+      linkElement.setAttribute("href", href);
+      linkElement.setAttribute("download", fileName);
+      linkElement.click();
+      URL.revokeObjectURL(href);
+    });
 };
 
 // 复制文字

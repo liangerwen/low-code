@@ -4,6 +4,7 @@ import { generate as uuid } from "shortid";
 import EventFormContent from "./EventFormContent";
 import MENUKEYS from "../keys";
 import menus from "../menus";
+import { FormRefType } from "../types";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -28,11 +29,11 @@ export default function EventModal({
   visible: boolean;
   onOk?: (event: ActionType) => void;
   onCancel?: () => void;
-  initialValues?: Record<string, any>;
+  initialValues?: ActionType;
 }) {
-  const form = useRef<{ validate: () => Promise<boolean> }>(null);
-  const [selectedKeys, setSelectedKeys] = useState<MENUKEYS[]>([
-    MENUKEYS.REFRESH_PAGE,
+  const form = useRef<FormRefType>(null);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([
+    MENUKEYS.OPEN_PAGE,
   ]);
 
   useEffect(() => {
@@ -44,7 +45,7 @@ export default function EventModal({
   return (
     <Modal
       title="选择事件"
-      style={{ width: 1200 }}
+      style={{ width: 1050 }}
       simple={false}
       maskClosable={false}
       escToExit={false}
@@ -56,17 +57,23 @@ export default function EventModal({
           return;
         }
         if (!form.current) {
-          Message.error("事件表单配置错误");
-          return;
+          onOk?.({
+            id: uuid(),
+            name: selectedKeys[0],
+          });
         }
-        form.current.validate().then((vaild) => {
-          if (vaild) {
+        form.current
+          .validate()
+          .then((value) => {
             onOk?.({
               id: uuid(),
               name: selectedKeys[0],
+              form: value,
             });
-          }
-        });
+          })
+          .catch((error) => {
+            console.warn(error);
+          });
       }}
     >
       <Layout className="h-[420px] rounded border-[rgb(var(--gray-3))] border-1 overflow-hidden">
@@ -83,7 +90,11 @@ export default function EventModal({
           </Menu>
         </Layout.Sider>
         <Layout.Content className="p-4">
-          <EventFormContent name={selectedKeys[0]} ref={form} />
+          <EventFormContent
+            name={selectedKeys[0] as MENUKEYS}
+            ref={form}
+            value={initialValues?.form}
+          />
         </Layout.Content>
       </Layout>
     </Modal>
