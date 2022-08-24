@@ -1,7 +1,6 @@
 import { isPlainObject } from "lodash";
-import { generate as uuid } from "shortid";
 import { copy, downloadByUrl, produce } from "@/utils";
-import { IGlobal } from "./useGlobal";
+import { generate as uuid } from "shortid";
 import MENUKEYS from "../Menu/components/EventForm/keys";
 import {
   CopyFormType,
@@ -10,75 +9,15 @@ import {
   MessageFormType,
   OpenPageFormType,
 } from "../Menu/components/EventForm/types";
+import { Message, Notification } from "@arco-design/web-react";
+import { NavigateFunction, Params } from "react-router-dom";
 
-function doAction(action: ActionType, global: PowerPartial<IGlobal>) {
-  const { ui, router } = global;
-  switch (action.name) {
-    case MENUKEYS.REFRESH_PAGE:
-      window.location.reload();
-      break;
-    case MENUKEYS.BACK_PAGE:
-      window.history.back();
-      break;
-    case MENUKEYS.OPEN_PAGE: {
-      const { type, url, blank, params } = (action.form ||
-        {}) as OpenPageFormType;
-      const href =
-        url +
-        "?" +
-        params.reduce((pre, cur) => pre + cur.key + "=" + cur.value, "");
-      if (type === "link") {
-        blank ? window.open(href) : window.location.assign(href);
-      }
-      if (type === "page") {
-        router.navigate(href);
-      }
-      break;
-    }
-    case MENUKEYS.MESSAGE: {
-      const { type, status, title, content, duration } = (action.form ||
-        {}) as MessageFormType;
-      if (type === "message") {
-        ui.message[status || "normal"]({
-          content,
-          duration: duration || 3000,
-        });
-      }
-      if (type === "notice") {
-        ui.notifiy[status || "normal"]({
-          title,
-          content,
-          duration: duration || 3000,
-        });
-      }
-      break;
-    }
-    case MENUKEYS.DOWNLOAD_FILE: {
-      const { url } = (action.form || {}) as DownLoadFileFormType;
-      downloadByUrl(uuid(), url);
-      break;
-    }
-    case MENUKEYS.COPY: {
-      const { content } = (action.form || {}) as CopyFormType;
-      copy(content);
-      break;
-    }
-    case MENUKEYS.CUSTOM: {
-      const { content } = (action.form || {}) as CustomFormType;
-      const fn = new Function("doAction", content);
-      fn((a) => {
-        try {
-          doAction(a, global);
-        } catch (error) {
-          console.error(error);
-        }
-      });
-      break;
-    }
-    default:
-      break;
-  }
-}
+const utils = {
+  message: Message,
+  notify: Notification,
+  copy,
+  download: (url) => downloadByUrl(uuid(), url),
+};
 
 /**
  * 根据actions生成方法
@@ -86,13 +25,87 @@ function doAction(action: ActionType, global: PowerPartial<IGlobal>) {
  * @param global 全局方法和变量
  * @returns 根据actions生成的方法
  */
-export function createAction(
+export function doActions(
   actions: ActionType[],
-  global: PowerPartial<IGlobal>
+  options: {
+    navigate: NavigateFunction;
+    params: Params<string>;
+    current: IComponent | null;
+    schema: ISchema;
+  },
+  event = null
 ) {
-  return function () {
-    actions.forEach((action) => doAction(action, global));
+  const { navigate, params, current, schema } = options;
+  const page = {
+    schema,
+    params,
+    navigate,
   };
+  actions.forEach((action) => {
+    switch (action.name) {
+      case MENUKEYS.REFRESH_PAGE:
+        window.location.reload();
+        break;
+      case MENUKEYS.BACK_PAGE:
+        window.history.back();
+        break;
+      case MENUKEYS.OPEN_PAGE: {
+        const { type, url, blank, params } = (action.form ||
+          {}) as OpenPageFormType;
+        const href =
+          url +
+          "?" +
+          params.reduce((pre, cur) => pre + cur.key + "=" + cur.value, "");
+        if (type === "link") {
+          blank ? window.open(href) : window.location.assign(href);
+        }
+        if (type === "page") {
+          navigate(href);
+        }
+        break;
+      }
+      case MENUKEYS.MESSAGE: {
+        const { type, status, title, content, duration } = (action.form ||
+          {}) as MessageFormType;
+        if (type === "message") {
+          Message[status || "normal"]({
+            content,
+            duration: duration || 3000,
+          });
+        }
+        if (type === "notify") {
+          Notification[status || "normal"]({
+            title,
+            content,
+            duration: duration || 3000,
+          });
+        }
+        break;
+      }
+      case MENUKEYS.DOWNLOAD_FILE: {
+        const { url } = (action.form || {}) as DownLoadFileFormType;
+        downloadByUrl(uuid(), url);
+        break;
+      }
+      case MENUKEYS.COPY: {
+        const { content } = (action.form || {}) as CopyFormType;
+        copy(content);
+        break;
+      }
+      case MENUKEYS.CUSTOM: {
+        const { content } = (action.form || {}) as CustomFormType;
+        const fn = new Function("page", "current", "utils", content);
+        try {
+          fn(page, { schema: current, event }, utils);
+        } catch (error) {
+          console.error(error);
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  });
 }
 
 /**

@@ -1,27 +1,17 @@
 import { isArray, isEmpty, isPlainObject } from "lodash";
 import { createElement } from "react";
+import { NavigateFunction, Params } from "react-router-dom";
 import EditorIcon from "../Menu/components/EditorIcon";
-import { createAction } from "./events";
-import { IGlobal } from "./useGlobal";
+import { doActions } from "./events";
 
-const parsePropsFromArray = (arr, global) => {
-  return arr.map((i) =>
-    isPlainObject(i)
-      ? parseProps(i, global)
-      : isArray(i)
-      ? parsePropsFromArray(i, global)
-      : i
-  );
-};
 /**
  * 根据属性转换icon bind event等属性
  * @param props 属性
  * @param global 全局方法与变量
  * @returns 属性
  */
-export const parseProps = (
-  props: Record<string, any>,
-  global: PowerPartial<IGlobal>
+export const parsePropsForEditor = (
+  props: Record<string, any>
 ): Record<string, any> => {
   if (!isPlainObject(props)) return {};
   const ret = {};
@@ -30,13 +20,48 @@ export const parseProps = (
     if (prop?.isIcon) {
       ret[k] = createElement(EditorIcon, { name: (prop as IconType).name });
     } else if (prop?.isEvent) {
-      ret[k] = createAction(prop.actions, global);
+      ret[k] = undefined;
     } else if (prop?.isBind) {
-      ret[k] = global.data?.[prop.name];
+      ret[k] = "${" + prop.name + "}";
     } else if (isPlainObject(prop)) {
-      ret[k] = parseProps(prop, global);
+      ret[k] = parsePropsForEditor(prop);
     } else if (isArray(prop)) {
-      ret[k] = parsePropsFromArray(prop, global);
+      ret[k] = prop.map((i) => parsePropsForEditor(i));
+    } else ret[k] = prop;
+  });
+  return ret;
+};
+
+/**
+ * 根据属性转换icon bind event等属性
+ * @param props 属性
+ * @param global 全局方法与变量
+ * @returns 属性
+ */
+export const parsePropsForViewer = (
+  props: Record<string, any>,
+  options: {
+    navigate: NavigateFunction;
+    params: Params<string>;
+    current: IComponent | null;
+    schema: ISchema;
+    data?: Record<string, any>;
+  }
+): Record<string, any> => {
+  if (!isPlainObject(props)) return {};
+  const ret = {};
+  Object.keys(props).forEach((k) => {
+    const prop = props[k];
+    if (prop?.isIcon) {
+      ret[k] = createElement(EditorIcon, { name: (prop as IconType).name });
+    } else if (prop?.isEvent) {
+      ret[k] = (e) => doActions(prop.actions, options, e);
+    } else if (prop?.isBind) {
+      ret[k] = options.data?.[prop.name];
+    } else if (isPlainObject(prop)) {
+      ret[k] = parsePropsForViewer(prop, options);
+    } else if (isArray(prop)) {
+      ret[k] = prop.map((i) => parsePropsForViewer(i, options));
     } else ret[k] = prop;
   });
   return ret;

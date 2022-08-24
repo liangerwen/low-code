@@ -51,40 +51,84 @@ export default function Projects() {
         body: [
           {
             id: uuid(),
-            name: "button",
-            title: "按钮",
+            name: "space",
+            title: "间距",
+            container: true,
+            onlyContainer: true,
             props: {
-              type: "dashed",
-              long: true,
-              icon: {
-                isIcon: true,
-                name: "IconCopy",
-              },
-              status: "success",
-              onClick: {
-                isEvent: true,
-                actions: [
-                  {
-                    id: uuid(),
-                    name: "copy",
-                    form: {
-                      content: "Hello Lew Code!",
-                    },
-                  },
-                  {
-                    id: uuid(),
-                    name: "message",
-                    form: {
-                      type: "message",
-                      status: "success",
-                      content: "复制成功",
-                    },
-                  },
-                ],
+              direction: "vertical",
+              style: {
+                display: "flex",
               },
             },
-            children: ["点击复制内容：Hello Lew Code!"],
-            inline: false,
+            children: [
+              {
+                id: uuid(),
+                name: "button",
+                title: "按钮",
+                props: {
+                  type: "dashed",
+                  long: true,
+                  icon: {
+                    isIcon: true,
+                    name: "IconCopy",
+                  },
+                  status: "success",
+                  onClick: {
+                    isEvent: true,
+                    actions: [
+                      {
+                        id: uuid(),
+                        name: "copy",
+                        form: {
+                          content: "Hello Lew Code!",
+                        },
+                      },
+                      {
+                        id: uuid(),
+                        name: "message",
+                        form: {
+                          type: "message",
+                          status: "success",
+                          content: "复制成功！",
+                        },
+                      },
+                    ],
+                  },
+                },
+                children: ["点击复制内容：Hello Lew Code!"],
+                inline: false,
+              },
+              {
+                id: uuid(),
+                name: "button",
+                title: "按钮",
+                props: {
+                  type: "dashed",
+                  status: "warning",
+                  icon: {
+                    isIcon: true,
+                    name: "IconCopy",
+                  },
+                  long: true,
+                  onClick: {
+                    isEvent: true,
+                    actions: [
+                      {
+                        id: uuid(),
+                        name: "custom",
+                        form: {
+                          content:
+                            "const { schema, navigate } = page,\r\n  { copy, message } = utils;\r\ncopy(JSON.stringify(schema));\r\nmessage.success('复制成功！');",
+                        },
+                      },
+                    ],
+                  },
+                },
+                children: ["点击复制当前Schema"],
+                inline: false,
+              },
+            ],
           },
         ],
       },

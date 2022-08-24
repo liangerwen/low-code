@@ -30,7 +30,7 @@ const MessageForm = forwardRef<FormRefType, FormPropsType<MessageFormType>>(
           >
             <RadioGroup type="button">
               <Radio value="message">全局提示</Radio>
-              <Radio value="notice">通知提醒框</Radio>
+              <Radio value="notify">通知提醒框</Radio>
             </RadioGroup>
           </FormItem>
 
@@ -57,7 +57,7 @@ const MessageForm = forwardRef<FormRefType, FormPropsType<MessageFormType>>(
             noStyle
           >
             {(value: MessageFormType) =>
-              value.type === "notice" && (
+              value.type === "notify" && (
                 <FormItem
                   field="title"
                   label="消息标题"

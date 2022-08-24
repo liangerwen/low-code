@@ -26,14 +26,17 @@ const forms = Object.values({ ...fileForms, ...folderForms })
   .map((m) => m.default)
   .reduce<
     Record<MENUKEYS, ForwardRefExoticComponent<RefAttributes<FormRefType>>>
-  >((forms, form) => {
-    forms[form.name] = form.Form;
-    return forms;
-  }, {} as Record<MENUKEYS, ForwardRefExoticComponent<RefAttributes<FormRefType>>>);
+  >(
+    (forms, form) => ((forms[form.name] = form.Form), forms),
+    {} as Record<
+      MENUKEYS,
+      ForwardRefExoticComponent<RefAttributes<FormRefType>>
+    >
+  );
 
 const DefaultForm = forwardRef<FormRefType>(function (_, ref) {
   useImperativeHandle(ref, () => ({
-    validate: () => Promise.resolve(true),
+    validate: Promise.resolve,
   }));
   return <EventContentWarp desc="暂未找到事件配置"></EventContentWarp>;
 });

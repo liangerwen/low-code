@@ -14,7 +14,7 @@ export type OpenPageFormType = {
 };
 
 export interface MessageFormType {
-  type: "message" | "notice";
+  type: "message" | "notify";
   status?: "info" | "success" | "warning" | "error" | "loading";
   title?: string;
   content: string;

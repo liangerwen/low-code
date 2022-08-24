@@ -1,11 +1,11 @@
 import { isEmpty } from "lodash";
-import { useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { useNavigate, useParams } from "react-router-dom";
 import ErrorComp from "./components/ErrorComp";
 import { getComponentByName } from "./Menu/ComponentsTab/data";
-import { createAction } from "./utils/events";
-import { parseChildren, parseProps } from "./utils/parse";
-import useGlobal from "./utils/useGlobal";
+import { doActions } from "./utils/events";
+import { parseChildren, parsePropsForViewer } from "./utils/parse";
 
 interface ItemProps {
   item: IComponent;
@@ -13,13 +13,19 @@ interface ItemProps {
   setData: (data: Record<string, any>) => void;
 }
 
+const ViewerContext = createContext(null);
+
 function ViewerCommonItem({ item }) {
   const { id, name, props: p = {}, children } = item as IComponent;
 
-  const global = useGlobal();
+  const options = useContext(ViewerContext);
+  const itemOptions = useMemo(
+    () => ({ ...options, current: item }),
+    [options, item]
+  );
 
   const Common = getComponentByName(name);
-  const commonProps = useMemo(() => parseProps(p, global), [p]);
+  const commonProps = useMemo(() => parsePropsForViewer(p, itemOptions), [p]);
   const commonChildren = useMemo(
     () =>
       parseChildren(children, {
@@ -39,10 +45,18 @@ function ViewerCommonItem({ item }) {
 const ViewerItem = (props: ItemProps) => {
   const { item, ...reset } = props;
   const { id, container, name, props: p = {}, children } = item;
-  const global = useGlobal();
+
+  const options = useContext(ViewerContext);
+  const itemOptions = useMemo(
+    () => ({ ...options, current: item }),
+    [options, item]
+  );
 
   const Comp = getComponentByName(name);
-  const CompProps = useMemo(() => parseProps(p, global), [p, global]);
+  const CompProps = useMemo(
+    () => parsePropsForViewer(p, itemOptions),
+    [p, itemOptions]
+  );
 
   return (
     <ErrorBoundary
@@ -72,37 +86,38 @@ export default function EditorViewer(props: IProps) {
 
   const [pageData, setPageData] = useState(data);
 
+  const navigate = useNavigate();
+  const params = useParams();
+
+  const options = useMemo(
+    () => ({
+      navigate,
+      params,
+      schema,
+      current: null,
+    }),
+    [props.schema]
+  );
+
   useEffect(() => {
     if (onLoad) {
-      createAction(onLoad.actions, {
-        window,
-        data: pageData,
-        setData: setPageData,
-      })();
+      doActions(onLoad.actions, options);
     }
     return () => {
       if (onDestroy) {
-        createAction(onDestroy.actions, {
-          window,
-          data: pageData,
-          setData: setPageData,
-        })();
+        doActions(onDestroy.actions, options);
       }
     };
   }, []);
 
   useEffect(() => {
     if (onUpdate) {
-      createAction(onUpdate.actions, {
-        window,
-        data: pageData,
-        setData: setPageData,
-      })();
+      doActions(onUpdate.actions, options);
     }
   });
 
   return (
-    <>
+    <ViewerContext.Provider value={options}>
       {schema.body.map((component, idx) => (
         <ViewerItem
           key={idx}
@@ -111,6 +126,6 @@ export default function EditorViewer(props: IProps) {
           setData={setPageData}
         />
       ))}
-    </>
+    </ViewerContext.Provider>
   );
 }

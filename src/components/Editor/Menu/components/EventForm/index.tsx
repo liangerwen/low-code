@@ -16,7 +16,7 @@ export default function (props: IProps) {
   const actionValue = useMemo(
     () =>
       Object.entries(value).reduce(
-        (pre, cur) => (pre[cur[0]] = cur[1].actions) && pre,
+        (pre, cur) => ((pre[cur[0]] = cur[1].actions), pre),
         {}
       ),
     [value]
@@ -53,8 +53,9 @@ export default function (props: IProps) {
         onChange={(value) => {
           onChange(
             Object.entries(value).reduce(
-              (pre, cur) =>
-                (pre[cur[0]] = { isEvent: true, actions: cur[1] }) && pre,
+              (pre, cur) => (
+                (pre[cur[0]] = { isEvent: true, actions: cur[1] }), pre
+              ),
               {}
             )
           );

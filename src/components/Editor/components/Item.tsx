@@ -21,8 +21,7 @@ import {
 import { ErrorBoundary } from "react-error-boundary";
 import { Direction, EditorContext } from "..";
 import { getComponentByName } from "../Menu/ComponentsTab/data";
-import { parseChildren, parseProps } from "../utils/parse";
-import useGlobal from "../utils/useGlobal";
+import { parseChildren, parsePropsForEditor } from "../utils/parse";
 import ErrorComp from "./ErrorComp";
 
 import styles from "./styles/item.module.less";
@@ -34,10 +33,9 @@ interface IProps {
 
 export function CommonItem({ item, disabled = false }) {
   const { id, name, props: p = {}, children } = item as IComponent;
-  const global = useGlobal();
 
   const Common = getComponentByName(name);
-  const commonProps = useMemo(() => parseProps(p, global), [p]);
+  const commonProps = useMemo(() => parsePropsForEditor(p), [p]);
   const commonChildren = useMemo(
     () =>
       parseChildren(children, {
@@ -148,8 +146,6 @@ const Item = (props: IProps) => {
     props: p,
     children,
   } = item;
-
-  const global = useGlobal();
 
   const {
     attributes,
@@ -280,7 +276,7 @@ const Item = (props: IProps) => {
           }),
         }}
         selfProps={{
-          ...parseProps(p, global),
+          ...parsePropsForEditor(p),
         }}
         action={
           showActions && (
