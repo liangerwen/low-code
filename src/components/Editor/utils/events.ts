@@ -34,7 +34,7 @@ export function doActions(
     schema: ISchema;
     forms: Record<string, FormInstance>;
     data: Record<string, any>;
-    setData: (data: Record<string, any>) => void;
+    setData: SetDataFunction;
   },
   event = null
 ) {

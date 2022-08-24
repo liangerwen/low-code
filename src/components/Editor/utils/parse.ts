@@ -48,7 +48,7 @@ export const parsePropsForViewer = (
     schema: ISchema;
     forms: Record<string, FormInstance>;
     data: Record<string, any>;
-    setData: (data: Record<string, any>) => void;
+    setData: SetDataFunction;
   }
 ): Record<string, any> => {
   if (!isPlainObject(props)) return {};
