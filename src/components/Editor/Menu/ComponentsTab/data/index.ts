@@ -14,13 +14,19 @@ type Mapping = {
   [key: string]: React.FC<any>;
 };
 
+export interface ActionProps {
+  component: IComponent;
+  schema: ISchema;
+  onChange: (component: IComponent) => void;
+}
+
 export type Menu = {
   name: string;
   componentMap: { [name: string]: FC<any> };
   icon: FC<IconProps>;
   demo: IComponent[];
   defaultSchema: IComponent;
-  Action?: FC<{ schema: IComponent; onChange: (schema: IComponent) => void }>;
+  Action?: FC<ActionProps>;
 };
 
 /**

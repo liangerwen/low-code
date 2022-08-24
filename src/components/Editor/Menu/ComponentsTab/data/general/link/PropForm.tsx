@@ -1,7 +1,9 @@
+import BindFormItem from "@/components/Editor/Menu/components/BindFormItem";
 import { produce } from "@/utils";
 import { Form, Grid, Input, Select, Switch } from "@arco-design/web-react";
 import { omit } from "lodash";
 import { useCallback, useEffect } from "react";
+import { ActionProps } from "../..";
 import IconModal from "../../../../components/IconModal";
 
 const FormItem = Form.Item;
@@ -19,20 +21,17 @@ interface LinkProps {
   target: boolean;
 }
 
-const PropForm = (props: {
-  schema: IComponent;
-  onChange: (schema: IComponent) => void;
-}) => {
+const PropForm = (props: ActionProps) => {
   const [form] = useForm<LinkProps>();
 
   const onChange = useCallback(
     (_, form) => {
-      const newSchema = produce(props.schema, (schema) => {
-        schema.props = {
-          ...schema.props,
+      const newSchema = produce(props.component, (component) => {
+        component.props = {
+          ...component.props,
           ...omit(form, "content"),
         };
-        schema.children = form.content ? [form.content] : null;
+        component.children = form.content ? [form.content] : null;
       });
       props.onChange(newSchema);
     },
@@ -40,22 +39,22 @@ const PropForm = (props: {
   );
 
   useEffect(() => {
-    const { props: p = { hoverable: true } } = props.schema;
+    const { props: p = { hoverable: true } } = props.component;
     form.resetFields();
     form.setFieldsValue({
       ...p,
-      content: props.schema.children?.[0] as string,
+      content: props.component.children?.[0] as string,
     });
-  }, [props.schema]);
+  }, [props.component]);
 
   return (
     <Form form={form} layout="vertical" onChange={onChange}>
-      <FormItem label="链接" field="href">
+      <BindFormItem label="链接" field="href" data={props.schema.data}>
         <Input placeholder="输入链接" allowClear />
-      </FormItem>
-      <FormItem label="显示文字" field="content">
+      </BindFormItem>
+      <BindFormItem label="显示文字" field="content" data={props.schema.data}>
         <Input placeholder="输入显示文字" allowClear />
-      </FormItem>
+      </BindFormItem>
       <FormItem label="状态" field="status">
         <Select
           placeholder="选择状态"

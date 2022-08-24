@@ -3,6 +3,7 @@ import StyleForm from "@/components/Editor/Menu/components/StyleForm";
 import { produce } from "@/utils";
 import { Grid } from "@arco-design/web-react";
 import { pick } from "lodash";
+import { ActionProps } from "../..";
 import PropForm from "./PropForm";
 
 const { Row } = Grid;
@@ -16,10 +17,7 @@ const defaultSchema = {
   onlyContainer: true,
 };
 
-const Action = (props: {
-  schema: IComponent;
-  onChange: (schema: IComponent) => void;
-}) => {
+const Action = (props: ActionProps) => {
   return (
     <ActionWarp
       options={[
@@ -34,11 +32,11 @@ const Action = (props: {
           key: 2,
           Form: StyleForm,
           props: {
-            value: pick(props.schema.props, "style", "className"),
+            value: pick(props.component.props, "style", "className"),
             onChange: (val) => {
               props.onChange(
-                produce(props.schema, (schema) => {
-                  schema.props = { ...schema.props, ...val };
+                produce(props.component, (component) => {
+                  component.props = { ...component.props, ...val };
                 })
               );
             },
@@ -53,8 +51,10 @@ export default {
   name,
   componentMap: { [name]: Row },
   icon: (props) => (
-    <i className="arco-icon arco-icon-select-all i-mdi:land-rows-horizontal"
-    {...props} />
+    <i
+      className="arco-icon arco-icon-select-all i-mdi:land-rows-horizontal"
+      {...props}
+    />
   ),
   demo: [
     {

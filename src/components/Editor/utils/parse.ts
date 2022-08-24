@@ -1,3 +1,4 @@
+import { FormInstance } from "@arco-design/web-react";
 import { isArray, isEmpty, isPlainObject } from "lodash";
 import { createElement } from "react";
 import { NavigateFunction, Params } from "react-router-dom";
@@ -45,7 +46,9 @@ export const parsePropsForViewer = (
     params: Params<string>;
     current: IComponent | null;
     schema: ISchema;
-    data?: Record<string, any>;
+    forms: Record<string, FormInstance>;
+    data: Record<string, any>;
+    setData: (data: Record<string, any>) => void;
   }
 ): Record<string, any> => {
   if (!isPlainObject(props)) return {};
@@ -67,7 +70,7 @@ export const parsePropsForViewer = (
   return ret;
 };
 
-export const parseChildren = (
+export const parseChildrenForEditor = (
   children,
   options: {
     render?: (child: any, idx?: number) => void;
@@ -80,13 +83,39 @@ export const parseChildren = (
       return child;
     }
     if (isArray(child)) {
-      return parseChildren(child, options);
+      return parseChildrenForEditor(child, options);
     }
     if (child?.isIcon) {
       return createElement(EditorIcon, { name: child.name });
     }
     if (child?.isBind) {
-      return child.name;
+      return "${" + child.name + "}";
+    }
+    if (render) return render(child, idx);
+  });
+};
+
+export const parseChildrenForViewer = (
+  children,
+  options: {
+    render?: (child: any, idx?: number) => void;
+    data: Record<string, any>;
+  } = { data: {} }
+) => {
+  const { render } = options;
+  if (isEmpty(children)) return null;
+  return children.map((child, idx) => {
+    if (typeof child === "string") {
+      return child;
+    }
+    if (isArray(child)) {
+      return parseChildrenForEditor(child, options);
+    }
+    if (child?.isIcon) {
+      return createElement(EditorIcon, { name: child.name });
+    }
+    if (child?.isBind) {
+      return options.data[child.name];
     }
     if (render) return render(child, idx);
   });

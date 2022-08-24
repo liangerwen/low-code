@@ -4,6 +4,7 @@ import { produce } from "@/utils";
 import { Link } from "@arco-design/web-react";
 import { IconLink } from "@arco-design/web-react/icon";
 import { pick } from "lodash";
+import { ActionProps } from "../..";
 import PropForm from "./PropForm";
 
 const name = "link";
@@ -23,10 +24,7 @@ const defaultSchema = {
   inline: true,
 };
 
-const Action = (props: {
-  schema: IComponent;
-  onChange: (schema: IComponent) => void;
-}) => {
+const Action = (props: ActionProps) => {
   return (
     <ActionWarp
       options={[
@@ -41,11 +39,11 @@ const Action = (props: {
           key: 2,
           Form: StyleForm,
           props: {
-            value: pick(props.schema.props, "style", "className"),
+            value: pick(props.component.props, "style", "className"),
             onChange: (val) => {
               props.onChange(
-                produce(props.schema, (schema) => {
-                  schema.props = { ...schema.props, ...val };
+                produce(props.component, (component) => {
+                  component.props = { ...component.props, ...val };
                 })
               );
             },

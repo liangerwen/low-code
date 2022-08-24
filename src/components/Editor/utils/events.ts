@@ -9,7 +9,7 @@ import {
   MessageFormType,
   OpenPageFormType,
 } from "../Menu/components/EventForm/types";
-import { Message, Notification } from "@arco-design/web-react";
+import { FormInstance, Message, Notification } from "@arco-design/web-react";
 import { NavigateFunction, Params } from "react-router-dom";
 
 const utils = {
@@ -32,14 +32,20 @@ export function doActions(
     params: Params<string>;
     current: IComponent | null;
     schema: ISchema;
+    forms: Record<string, FormInstance>;
+    data: Record<string, any>;
+    setData: (data: Record<string, any>) => void;
   },
   event = null
 ) {
-  const { navigate, params, current, schema } = options;
+  const { navigate, params, current, schema, forms, data, setData } = options;
   const page = {
     schema,
     params,
     navigate,
+    forms,
+    data,
+    setData,
   };
   actions.forEach((action) => {
     switch (action.name) {

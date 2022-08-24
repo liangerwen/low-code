@@ -95,15 +95,16 @@ export default function EditorContainer(props: IProps) {
     if (!activeComponent) return null;
     const ComponentAction = getRenderActionByName(activeComponent.name);
     if (!ComponentAction) return null;
-    const schema = findComponent(
+    const component = findComponent(
       props.schema.body,
       (c) => c.id === activeComponent.id
     );
-    if (!schema) return null;
+    if (!component) return null;
     return (
       <div className="h-full relative">
         <ComponentAction
-          schema={schema}
+          component={component}
+          schema={props.schema}
           onChange={(component) => {
             const newSchema = produce(props.schema, (schema) => {
               const currentComponent = findComponent(

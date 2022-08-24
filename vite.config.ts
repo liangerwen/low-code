@@ -12,7 +12,7 @@ export default defineConfig({
     react(),
     vitePluginForArco(),
     monacoEditorPlugin({
-      languageWorkers: ["editorWorkerService", "typescript"],
+      languageWorkers: ["editorWorkerService", "typescript", "json", "css"],
     }),
     Unocss({
       presets: [

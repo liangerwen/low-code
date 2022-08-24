@@ -21,7 +21,7 @@ import {
 import { ErrorBoundary } from "react-error-boundary";
 import { Direction, EditorContext } from "..";
 import { getComponentByName } from "../Menu/ComponentsTab/data";
-import { parseChildren, parsePropsForEditor } from "../utils/parse";
+import { parseChildrenForEditor, parsePropsForEditor } from "../utils/parse";
 import ErrorComp from "./ErrorComp";
 
 import styles from "./styles/item.module.less";
@@ -38,7 +38,7 @@ export function CommonItem({ item, disabled = false }) {
   const commonProps = useMemo(() => parsePropsForEditor(p), [p]);
   const commonChildren = useMemo(
     () =>
-      parseChildren(children, {
+      parseChildrenForEditor(children, {
         render: (child, idx) => (
           <CommonItem item={child} disabled={disabled} key={idx} />
         ),

@@ -1,7 +1,9 @@
+import BindFormItem from "@/components/Editor/Menu/components/BindFormItem";
 import { produce } from "@/utils";
 import { Form, Grid, Input, Select, Switch } from "@arco-design/web-react";
 import { omit } from "lodash";
 import { useCallback, useEffect } from "react";
+import { ActionProps } from "../..";
 import IconModal from "../../../../components/IconModal";
 
 const FormItem = Form.Item;
@@ -22,21 +24,18 @@ interface ButtonProps {
   long: boolean;
 }
 
-const PropForm = (props: {
-  schema: IComponent;
-  onChange: (schema: IComponent) => void;
-}) => {
+const PropForm = (props: ActionProps) => {
   const [form] = useForm<ButtonProps>();
 
   const onChange = useCallback(
     (_, form) => {
-      const newSchema = produce(props.schema, (schema) => {
-        schema.props = {
-          ...schema.props,
+      const newSchema = produce(props.component, (component) => {
+        component.props = {
+          ...component.props,
           ...omit(form, "content"),
         };
-        schema.inline = !form.long;
-        schema.children = form.content ? [form.content] : null;
+        component.inline = !form.long;
+        component.children = form.content ? [form.content] : null;
       });
       props.onChange(newSchema);
     },
@@ -46,10 +45,10 @@ const PropForm = (props: {
   useEffect(() => {
     form.resetFields();
     form.setFieldsValue({
-      ...props.schema.props,
-      content: props.schema.children?.[0] as string,
+      ...props.component.props,
+      content: props.component.children?.[0] as string,
     });
-  }, [props.schema]);
+  }, [props.component]);
 
   return (
     <Form form={form} layout="vertical" onChange={onChange}>
@@ -99,9 +98,9 @@ const PropForm = (props: {
           ]}
         />
       </FormItem>
-      <FormItem label="内容" field="content">
+      <BindFormItem label="内容" field="content" data={props.schema.data}>
         <Input placeholder="输入内容" allowClear />
-      </FormItem>
+      </BindFormItem>
       <Row>
         <Col span={12}>
           <FormItem

@@ -10,6 +10,7 @@ import { Typography } from "@arco-design/web-react";
 import { IconH1 } from "@arco-design/web-react/icon";
 import { pick } from "lodash";
 import { useMemo } from "react";
+import { ActionProps } from "../..";
 import PropForm from "./PropForm";
 
 const { Title } = Typography;
@@ -22,10 +23,7 @@ const defaultSchema = {
   children: ["这是一个标题"],
 };
 
-const Action = (props: {
-  schema: IComponent;
-  onChange: (schema: IComponent) => void;
-}) => {
+const Action = (props: ActionProps) => {
   const defaultOptions = useMemo(
     () => [
       {
@@ -39,11 +37,11 @@ const Action = (props: {
         key: 2,
         Form: StyleForm,
         props: {
-          value: pick(props.schema.props, "style", "className"),
+          value: pick(props.component.props, "style", "className"),
           onChange: (val) => {
             props.onChange(
-              produce(props.schema, (schema) => {
-                schema.props = { ...schema.props, ...val };
+              produce(props.component, (component) => {
+                component.props = { ...component.props, ...val };
               })
             );
           },
@@ -53,7 +51,7 @@ const Action = (props: {
     []
   );
   const options = useMemo(() => {
-    if (props.schema?.props?.editable) {
+    if (props.component?.props?.editable) {
       return [
         ...defaultOptions,
         {
@@ -62,12 +60,12 @@ const Action = (props: {
           Form: EventForm,
           props: {
             options: [{ label: "编辑", value: "onChange" }],
-            value: getEventsFromProps(props.schema.props.editable),
+            value: getEventsFromProps(props.component.props.editable),
             onChange: (val) => {
               props.onChange(
-                produce(props.schema, (schema) => {
-                  schema.props.editable = generateEventProps(
-                    schema.props.editable,
+                produce(props.component, (component) => {
+                  component.props.editable = generateEventProps(
+                    component.props.editable,
                     val
                   );
                 })
@@ -78,7 +76,7 @@ const Action = (props: {
       ];
     }
     return defaultOptions;
-  }, [props.schema]);
+  }, [props.component]);
   return <ActionWarp options={options} />;
 };
 

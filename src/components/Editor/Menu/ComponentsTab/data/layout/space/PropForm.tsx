@@ -7,21 +7,19 @@ import {
   Switch,
 } from "@arco-design/web-react";
 import { useCallback, useEffect } from "react";
+import { ActionProps } from "../..";
 
 const FormItem = Form.Item;
 const useForm = Form.useForm;
 
-const PropForm = (props: {
-  schema: IComponent;
-  onChange: (schema: IComponent) => void;
-}) => {
+const PropForm = (props: ActionProps) => {
   const [form] = useForm<SpaceProps>();
 
   const onChange = useCallback(
     (_, form) => {
-      const newSchema = produce(props.schema, (schema) => {
-        schema.props = {
-          ...schema.props,
+      const newSchema = produce(props.component, (component) => {
+        component.props = {
+          ...component.props,
           ...form,
         };
       });
@@ -31,10 +29,10 @@ const PropForm = (props: {
   );
 
   useEffect(() => {
-    const { props: p = { direction: "horizontal" } } = props.schema;
+    const { props: p = { direction: "horizontal" } } = props.component;
     form.resetFields();
     form.setFieldsValue(p);
-  }, [props.schema]);
+  }, [props.component]);
 
   return (
     <Form form={form} layout="vertical" onChange={onChange}>

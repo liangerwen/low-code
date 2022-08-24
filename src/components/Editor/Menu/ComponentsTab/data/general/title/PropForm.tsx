@@ -11,6 +11,7 @@ import {
 } from "@arco-design/web-react";
 import { omit } from "lodash";
 import { useCallback, useEffect } from "react";
+import { ActionProps } from "../..";
 
 const FormItem = Form.Item;
 const useForm = Form.useForm;
@@ -34,20 +35,17 @@ const switchFormItemProps: Partial<FormItemProps> = {
   triggerPropName: "checked",
 };
 
-const PropForm = (props: {
-  schema: IComponent;
-  onChange: (schema: IComponent) => void;
-}) => {
+const PropForm = (props: ActionProps) => {
   const [form] = useForm<TextProps>();
 
   const onChange = useCallback(
     (_, form) => {
-      const newSchema = produce(props.schema, (schema) => {
-        schema.props = {
-          ...schema.props,
+      const newSchema = produce(props.component, (component) => {
+        component.props = {
+          ...component.props,
           ...omit(form, "content"),
         };
-        schema.children = form.content ? [form.content] : null;
+        component.children = form.content ? [form.content] : null;
       });
       props.onChange(newSchema);
     },
@@ -55,17 +53,17 @@ const PropForm = (props: {
   );
 
   useEffect(() => {
-    const { props: p = { heading: 1 }, children } = props.schema;
+    const { props: p = { heading: 1 }, children } = props.component;
     form.resetFields();
     form.setFieldsValue({
       ...p,
       content: children?.[0] as string,
     });
-  }, [props.schema]);
+  }, [props.component]);
 
   return (
     <Form form={form} layout="vertical" onChange={onChange}>
-      <BindFormItem label="内容" field="content" data={{}}>
+      <BindFormItem label="内容" field="content" data={props.schema.data}>
         <Input.TextArea placeholder="输入内容" allowClear />
       </BindFormItem>
       <FormItem label="类型" field="type">
@@ -140,7 +138,7 @@ const PropForm = (props: {
         <Col span={12}>
           <FormItem
             disabled={
-              !Boolean((props.schema.children?.[0] as BindType)?.isBind)
+              !Boolean((props.component.children?.[0] as BindType)?.isBind)
             }
             label="可编辑"
             field="editable"

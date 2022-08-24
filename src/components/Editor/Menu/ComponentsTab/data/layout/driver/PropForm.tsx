@@ -2,26 +2,24 @@ import { produce } from "@/utils";
 import { DividerProps, Form, Input, Select } from "@arco-design/web-react";
 import { omit } from "lodash";
 import { ReactNode, useCallback, useEffect } from "react";
+import { ActionProps } from "../..";
 
 const FormItem = Form.Item;
 const useForm = Form.useForm;
 
-const PropForm = (props: {
-  schema: IComponent;
-  onChange: (schema: IComponent) => void;
-}) => {
+const PropForm = (props: ActionProps) => {
   const [form] = useForm<DividerProps & { content: ReactNode }>();
 
   const onChange = useCallback(
     (_, form) => {
-      const newSchema = produce(props.schema, (schema) => {
-        schema.props = {
-          ...schema.props,
+      const newSchema = produce(props.component, (component) => {
+        component.props = {
+          ...component.props,
           ...omit(form, "content"),
         };
-        schema.inline = form.type === "vertical";
-        schema.children =
-          !schema.inline && (form.content ? [form.content] : null);
+        component.inline = form.type === "vertical";
+        component.children =
+          !component.inline && (form.content ? [form.content] : null);
       });
       props.onChange(newSchema);
     },
@@ -29,13 +27,13 @@ const PropForm = (props: {
   );
 
   useEffect(() => {
-    const { props: p = { type: "horizontal" } } = props.schema;
+    const { props: p = { type: "horizontal" } } = props.component;
     form.resetFields();
     form.setFieldsValue({
       ...p,
-      content: props.schema.children?.[0] as string,
+      content: props.component.children?.[0] as string,
     });
-  }, [props.schema]);
+  }, [props.component]);
 
   return (
     <Form form={form} layout="vertical" onChange={onChange}>
@@ -49,12 +47,12 @@ const PropForm = (props: {
           ]}
         />
       </FormItem>
-      {props.schema.props?.type === "horizontal" && (
+      {props.component.props?.type === "horizontal" && (
         <FormItem label="内容" field="content">
           <Input placeholder="输入内容" allowClear />
         </FormItem>
       )}
-      {props.schema.children?.[0] && (
+      {props.component.children?.[0] && (
         <FormItem label="位置" field="orientation">
           <Select
             placeholder="选择位置"

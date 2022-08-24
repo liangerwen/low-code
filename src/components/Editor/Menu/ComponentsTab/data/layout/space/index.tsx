@@ -3,6 +3,7 @@ import StyleForm from "@/components/Editor/Menu/components/StyleForm";
 import { produce } from "@/utils";
 import { Space } from "@arco-design/web-react";
 import { pick } from "lodash";
+import { ActionProps } from "../..";
 import PropForm from "./PropForm";
 
 const name = "space";
@@ -14,10 +15,7 @@ const defaultSchema = {
   onlyContainer: true,
 };
 
-const Action = (props: {
-  schema: IComponent;
-  onChange: (schema: IComponent) => void;
-}) => {
+const Action = (props: ActionProps) => {
   return (
     <ActionWarp
       options={[
@@ -32,11 +30,11 @@ const Action = (props: {
           key: 2,
           Form: StyleForm,
           props: {
-            value: pick(props.schema.props, "style", "className"),
+            value: pick(props.component.props, "style", "className"),
             onChange: (val) => {
               props.onChange(
-                produce(props.schema, (schema) => {
-                  schema.props = { ...schema.props, ...val };
+                produce(props.component, (component) => {
+                  component.props = { ...component.props, ...val };
                 })
               );
             },

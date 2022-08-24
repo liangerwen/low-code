@@ -1,19 +1,41 @@
-import { isEmpty } from "lodash";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import useSyncState from "@/hooks/useSyncState";
+import { FormInstance } from "@arco-design/web-react";
+import { isEmpty, noop } from "lodash";
+import { createContext, useContext, useEffect, useMemo, useRef } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  NavigateFunction,
+  Params,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import ErrorComp from "./components/ErrorComp";
+import ProFormProvider from "./Menu/components/ProFormProvider";
 import { getComponentByName } from "./Menu/ComponentsTab/data";
 import { doActions } from "./utils/events";
-import { parseChildren, parsePropsForViewer } from "./utils/parse";
+import { parseChildrenForViewer, parsePropsForViewer } from "./utils/parse";
 
 interface ItemProps {
   item: IComponent;
-  data: Record<string, any>;
-  setData: (data: Record<string, any>) => void;
 }
 
-const ViewerContext = createContext(null);
+const ViewerContext = createContext<{
+  navigate: NavigateFunction;
+  params: Params<string>;
+  current: IComponent | null;
+  schema: ISchema;
+  forms: Record<string, FormInstance>;
+  data: Record<string, any>;
+  setData: (data: Record<string, any>) => void;
+}>({
+  navigate: noop,
+  params: {},
+  current: null,
+  schema: null,
+  forms: {},
+  data: {},
+  setData: noop,
+});
 
 function ViewerCommonItem({ item }) {
   const { id, name, props: p = {}, children } = item as IComponent;
@@ -25,13 +47,17 @@ function ViewerCommonItem({ item }) {
   );
 
   const Common = getComponentByName(name);
-  const commonProps = useMemo(() => parsePropsForViewer(p, itemOptions), [p]);
+  const commonProps = useMemo(
+    () => parsePropsForViewer(p, itemOptions),
+    [p, itemOptions]
+  );
   const commonChildren = useMemo(
     () =>
-      parseChildren(children, {
+      parseChildrenForViewer(children, {
         render: (child, idx) => <ViewerCommonItem item={child} key={idx} />,
+        data: options.data,
       }),
-    [children]
+    [children, options.data]
   );
   return (
     <ErrorBoundary
@@ -84,7 +110,9 @@ export default function EditorViewer(props: IProps) {
   const { schema } = props;
   const { onDestroy, onLoad, onUpdate, data = {} } = schema;
 
-  const [pageData, setPageData] = useState(data);
+  const formRef = useRef({});
+
+  const [pageData, setPageData] = useSyncState(data);
 
   const navigate = useNavigate();
   const params = useParams();
@@ -95,8 +123,11 @@ export default function EditorViewer(props: IProps) {
       params,
       schema,
       current: null,
+      forms: formRef.current,
+      data: pageData,
+      setData: setPageData,
     }),
-    [props.schema]
+    [schema, pageData, setPageData]
   );
 
   useEffect(() => {
@@ -114,18 +145,15 @@ export default function EditorViewer(props: IProps) {
     if (onUpdate) {
       doActions(onUpdate.actions, options);
     }
-  });
+  }, [options]);
 
   return (
     <ViewerContext.Provider value={options}>
-      {schema.body.map((component, idx) => (
-        <ViewerItem
-          key={idx}
-          item={component}
-          data={pageData}
-          setData={setPageData}
-        />
-      ))}
+      <ProFormProvider ref={formRef}>
+        {schema.body.map((component, idx) => (
+          <ViewerItem key={idx} item={component} />
+        ))}
+      </ProFormProvider>
     </ViewerContext.Provider>
   );
 }

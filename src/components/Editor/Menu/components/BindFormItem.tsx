@@ -1,59 +1,48 @@
-import {
-  Form,
-  FormItemProps,
-  Radio,
-  Select,
-  Space,
-} from "@arco-design/web-react";
+import { Form, FormItemProps, Select, Tooltip } from "@arco-design/web-react";
+import { IconSwap } from "@arco-design/web-react/icon";
 import { cloneElement, useMemo, useState } from "react";
-const RadioGroup = Radio.Group;
 
 function BindFormItemChildrenWarpper({
   children,
-  data,
+  data = {},
   triggerPropName,
   ...rest
 }) {
-  const value = useMemo(() => {
-    const v = triggerPropName ? rest[triggerPropName] : rest.value;
-    return Object.values(data).includes(v) ? v : undefined;
-  }, [triggerPropName, rest]);
-  const [isBind, setIsBind] = useState(false);
+  const value = useMemo(
+    () => (triggerPropName ? rest[triggerPropName] : rest.value),
+    [triggerPropName, rest]
+  );
+  const [isBind, setIsBind] = useState(!!value?.isBind);
+  const displayValue = useMemo(
+    () => (isBind ? value?.name : value?.name || value),
+    [value, isBind]
+  );
   return (
     // @ts-ignore
-    <Space direction="vertical" className="w-full">
-      <RadioGroup
-        type="button"
-        value={isBind}
-        options={[
-          {
-            label: "固定值",
-            value: false,
-          },
-          {
-            label: "绑定变量",
-            value: "true",
-          },
-        ]}
-        onChange={setIsBind}
-      />
+    <div className="w-full flex items-center">
       {isBind ? (
         <Select
           placeholder="选择变量"
-          value={value}
+          value={displayValue}
           allowClear
           onChange={(v) => {
             rest?.onChange(v && { isBind: true, name: v });
           }}
           options={Object.keys(data).map((i) => ({
             label: i,
-            value: data[i],
+            value: i,
           }))}
         />
       ) : (
-        cloneElement(children, rest)
+        cloneElement(children, { ...rest, value: displayValue })
       )}
-    </Space>
+      <Tooltip content={isBind ? "切换为固定值" : "切换为绑定变量"}>
+        <IconSwap
+          className="ml-2 cursor-pointer"
+          onClick={() => setIsBind(!isBind)}
+        />
+      </Tooltip>
+    </div>
   );
 }
 
@@ -68,7 +57,6 @@ export default function BindFormItem({
   return (
     <Form.Item
       {...rest}
-      formatter={(v) => (v?.isBind ? v.name : formatter(v))}
       normalize={(v, prevValue, allValues) =>
         v?.isBind ? v : normalize(v, prevValue, allValues)
       }

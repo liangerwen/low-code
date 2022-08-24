@@ -6,6 +6,7 @@ import {
 import { produce } from "@/utils";
 import { Button } from "@arco-design/web-react";
 import { pick } from "lodash";
+import { ActionProps } from "../..";
 import ActionWarp from "../../../../components/ActionWarp";
 import EventForm from "../../../../components/EventForm";
 import PropForm from "./PropForm";
@@ -22,10 +23,7 @@ const defaultSchema = {
   inline: true,
 };
 
-const Action = (props: {
-  schema: IComponent;
-  onChange: (schema: IComponent) => void;
-}) => {
+const Action = (props: ActionProps) => {
   return (
     <ActionWarp
       options={[
@@ -40,11 +38,11 @@ const Action = (props: {
           key: 2,
           Form: StyleForm,
           props: {
-            value: pick(props.schema.props, "style", "className"),
+            value: pick(props.component.props, "style", "className"),
             onChange: (val) => {
               props.onChange(
-                produce(props.schema, (schema) => {
-                  schema.props = { ...schema.props, ...val };
+                produce(props.component, (component) => {
+                  component.props = { ...component.props, ...val };
                 })
               );
             },
@@ -60,11 +58,11 @@ const Action = (props: {
               // { label: "鼠标移入", value: "onMouseEnter" },
               // { label: "鼠标移出", value: "onMouseLeave" },
             ],
-            value: getEventsFromProps(props.schema.props),
+            value: getEventsFromProps(props.component.props),
             onChange: (val) => {
               props.onChange(
-                produce(props.schema, (schema) => {
-                  schema.props = generateEventProps(schema.props, val);
+                produce(props.component, (component) => {
+                  component.props = generateEventProps(component.props, val);
                 })
               );
             },

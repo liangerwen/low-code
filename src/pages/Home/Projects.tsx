@@ -68,43 +68,6 @@ export default function Projects() {
                 title: "按钮",
                 props: {
                   type: "dashed",
-                  long: true,
-                  icon: {
-                    isIcon: true,
-                    name: "IconCopy",
-                  },
-                  status: "success",
-                  onClick: {
-                    isEvent: true,
-                    actions: [
-                      {
-                        id: uuid(),
-                        name: "copy",
-                        form: {
-                          content: "Hello Lew Code!",
-                        },
-                      },
-                      {
-                        id: uuid(),
-                        name: "message",
-                        form: {
-                          type: "message",
-                          status: "success",
-                          content: "复制成功！",
-                        },
-                      },
-                    ],
-                  },
-                },
-                children: ["点击复制内容：Hello Lew Code!"],
-                inline: false,
-              },
-              {
-                id: uuid(),
-                name: "button",
-                title: "按钮",
-                props: {
-                  type: "dashed",
                   status: "warning",
                   icon: {
                     isIcon: true,
@@ -119,7 +82,7 @@ export default function Projects() {
                         name: "custom",
                         form: {
                           content:
-                            "const { schema, navigate } = page,\r\n  { copy, message } = utils;\r\ncopy(JSON.stringify(schema));\r\nmessage.success('复制成功！');",
+                            "const { schema, navigate } = page,\r\n  { copy, message } = utils;\r\ncopy(JSON.stringify(schema));\r\n\r\nmessage.success('复制成功！');\r\n",
                         },
                       },
                     ],
@@ -128,9 +91,48 @@ export default function Projects() {
                 children: ["点击复制当前Schema"],
                 inline: false,
               },
+              {
+                name: "button",
+                title: "按钮",
+                props: {
+                  type: "primary",
+                  onClick: {
+                    isEvent: true,
+                    actions: [
+                      {
+                        id: uuid(),
+                        name: "custom",
+                        form: {
+                          content:
+                            'const { data, setData } = page\r\nsetData((data)=>{\r\n    data.text = "改变了吧哈哈哈"\r\n})',
+                        },
+                      },
+                    ],
+                  },
+                },
+                children: ["点击我改变文字"],
+                inline: true,
+                id: "ksp9e2Ik1c",
+              },
+              {
+                id: uuid(),
+                name: "text",
+                title: "文字",
+                children: [
+                  {
+                    isBind: true,
+                    name: "text",
+                  },
+                ],
+                inline: true,
+                props: {},
+              },
             ],
           },
         ],
+        data: {
+          text: "这是一段文字",
+        },
       },
       date: Date.now(),
       publish: false,

@@ -16,7 +16,6 @@ export default (props: IProps) => {
         { title: "组件", key: 1, Form: ComponentsTab },
         { title: "大纲", key: 2, Form: PageNodeTreeTab, props },
         { title: "页面设置", key: 3, Form: PageSettingTab, props },
-        { title: "接口信息", key: 4 },
         {
           title: "模板",
           key: 5,

@@ -34,12 +34,6 @@ export default () => {
     return clearSchema;
   }, []);
 
-  const onCloseBoswer = useCallback((e) => {
-    e.preventDefault();
-    e.returnValue = "离开后系统不会保存您所做的更改。";
-  }, []);
-
-  useEvent("beforeunload", onCloseBoswer);
   return (
     <Editor
       onSave={(newSchema) => {
