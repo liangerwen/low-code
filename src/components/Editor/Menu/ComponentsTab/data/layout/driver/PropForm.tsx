@@ -1,3 +1,4 @@
+import BindFormItem from "@/components/Editor/Menu/components/BindFormItem";
 import { produce } from "@/utils";
 import { DividerProps, Form, Input, Select } from "@arco-design/web-react";
 import { omit } from "lodash";
@@ -37,7 +38,7 @@ const PropForm = (props: ActionProps) => {
 
   return (
     <Form form={form} layout="vertical" onChange={onChange}>
-      <FormItem label="类型" field="type">
+      <BindFormItem data={props.schema.data} label="类型" field="type">
         <Select
           placeholder="选择类型"
           allowClear
@@ -46,14 +47,14 @@ const PropForm = (props: ActionProps) => {
             { label: "vertical", value: "vertical" },
           ]}
         />
-      </FormItem>
+      </BindFormItem>
       {props.component.props?.type === "horizontal" && (
-        <FormItem label="内容" field="content">
+        <BindFormItem data={props.schema.data} label="内容" field="content">
           <Input placeholder="输入内容" allowClear />
-        </FormItem>
+        </BindFormItem>
       )}
       {props.component.children?.[0] && (
-        <FormItem label="位置" field="orientation">
+        <BindFormItem data={props.schema.data} label="位置" field="orientation">
           <Select
             placeholder="选择位置"
             allowClear
@@ -63,7 +64,7 @@ const PropForm = (props: ActionProps) => {
               { label: "center", value: "center" },
             ]}
           />
-        </FormItem>
+        </BindFormItem>
       )}
     </Form>
   );

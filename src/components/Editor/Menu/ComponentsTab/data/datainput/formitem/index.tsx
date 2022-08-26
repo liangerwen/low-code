@@ -1,27 +1,17 @@
 import ActionWarp from "@/components/Editor/Menu/components/ActionWarp";
 import StyleForm from "@/components/Editor/Menu/components/StyleForm";
 import { produce } from "@/utils";
-import { Link } from "@arco-design/web-react";
-import { IconLink } from "@arco-design/web-react/icon";
+import { Form } from "@arco-design/web-react";
 import { pick } from "lodash";
 import { ActionProps } from "../..";
 import PropForm from "./PropForm";
 
-const name = "link";
+const name = "formitem";
 
 const defaultSchema = {
   name,
-  title: "链接",
-  props: {
-    href: "https://www.baidu.com",
-    icon: {
-      isIcon: true,
-      name: "IconLink",
-    },
-    target: "_blank",
-  },
-  children: ["链接"],
-  inline: true,
+  title: "表单项",
+  container: true,
 };
 
 const Action = (props: ActionProps) => {
@@ -56,9 +46,14 @@ const Action = (props: ActionProps) => {
 
 export default {
   name,
-  componentMap: { [name]: Link },
-  icon: IconLink,
-  desc: "跳转到其他网站。",
+  componentMap: { [name]: Form.Item },
+  icon: (props) => (
+    <i
+      className="arco-icon arco-icon-select-all i-icon-park-twotone:add-item"
+      {...props}
+    />
+  ),
+  desc: "表单中复选框、单选框、输入框、下拉选择框等元素的容器，用于收集数据给表单。",
   defaultSchema,
   Action,
 };

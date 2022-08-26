@@ -1,3 +1,4 @@
+import BindFormItem from "@/components/Editor/Menu/components/BindFormItem";
 import { produce } from "@/utils";
 import { ColProps, Form, InputNumber } from "@arco-design/web-react";
 import { useCallback, useEffect } from "react";
@@ -30,33 +31,33 @@ const PropForm = (props: ActionProps) => {
 
   return (
     <Form form={form} layout="vertical" onChange={onChange}>
-      <FormItem label="占位格数" field="span">
+      <BindFormItem data={props.schema.data} label="占位格数" field="span">
         <InputNumber
           placeholder="输入占位格数"
           min={0}
           max={24}
           precision={0}
         />
-      </FormItem>
-      <FormItem label="右偏移格数" field="push">
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="右偏移格数" field="push">
         <InputNumber
           placeholder="输入右偏移格数"
           min={0}
           max={23}
           precision={0}
         />
-      </FormItem>
-      <FormItem label="左偏移格数" field="pull">
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="左偏移格数" field="pull">
         <InputNumber
           placeholder="输入左偏移格数"
           min={0}
           max={23}
           precision={0}
         />
-      </FormItem>
-      <FormItem label="排序" field="order">
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="排序" field="order">
         <InputNumber placeholder="输入排序" min={0} precision={0} />
-      </FormItem>
+      </BindFormItem>
     </Form>
   );
 };

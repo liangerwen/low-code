@@ -47,7 +47,6 @@ export default function Projects() {
       name: "测试",
       schema: {
         name: "page",
-        inMenu: true,
         body: [
           {
             id: uuid(),
@@ -186,10 +185,9 @@ export default function Projects() {
                         onClickMenuItem={(key) => {
                           switch (key) {
                             case "preview":
-                              const url = p.schema.inMenu
-                                ? `/preview-menu/${p.id}`
-                                : `/preview/${p.id}`;
-                              window.open(`${window.location.origin}/#${url}`);
+                              window.open(
+                                `${window.location.origin}/#/preview/${p.id}`
+                              );
                               break;
                             case "publish":
                               setSchemas(

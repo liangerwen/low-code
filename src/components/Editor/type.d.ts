@@ -32,7 +32,6 @@ interface IComponent {
 
 interface ISchema {
   name: "page";
-  inMenu: boolean;
   onLoad?: EventType;
   onDestroy?: EventType;
   onUpdate?: EventType;

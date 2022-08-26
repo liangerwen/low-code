@@ -58,7 +58,7 @@ export const parsePropsForViewer = (
     if (prop?.isIcon) {
       ret[k] = createElement(EditorIcon, { name: (prop as IconType).name });
     } else if (prop?.isEvent) {
-      ret[k] = (e) => doActions(prop.actions, options, e);
+      ret[k] = (...args) => doActions(prop.actions, options, args);
     } else if (prop?.isBind) {
       ret[k] = options.data?.[prop.name];
     } else if (isPlainObject(prop)) {
@@ -78,12 +78,9 @@ export const parseChildrenForEditor = (
 ) => {
   const { render } = options;
   if (isEmpty(children)) return null;
-  return children.map((child, idx) => {
+  const ret = children.map((child, idx) => {
     if (typeof child === "string") {
       return child;
-    }
-    if (isArray(child)) {
-      return parseChildrenForEditor(child, options);
     }
     if (child?.isIcon) {
       return createElement(EditorIcon, { name: child.name });
@@ -93,6 +90,10 @@ export const parseChildrenForEditor = (
     }
     if (render) return render(child, idx);
   });
+  if (ret.length === 1) {
+    return ret[0];
+  }
+  return ret;
 };
 
 export const parseChildrenForViewer = (
@@ -104,12 +105,9 @@ export const parseChildrenForViewer = (
 ) => {
   const { render } = options;
   if (isEmpty(children)) return null;
-  return children.map((child, idx) => {
+  const ret = children.map((child, idx) => {
     if (typeof child === "string") {
       return child;
-    }
-    if (isArray(child)) {
-      return parseChildrenForEditor(child, options);
     }
     if (child?.isIcon) {
       return createElement(EditorIcon, { name: child.name });
@@ -119,4 +117,8 @@ export const parseChildrenForViewer = (
     }
     if (render) return render(child, idx);
   });
+  if (ret.length === 1) {
+    return ret[0];
+  }
+  return ret;
 };

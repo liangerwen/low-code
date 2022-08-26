@@ -38,6 +38,6 @@ export default {
       {...props}
     />
   ),
-  demo: [defaultSchema],
+  desc: "用于数据收集展示、分析整理、操作处理。",
   defaultSchema,
 };

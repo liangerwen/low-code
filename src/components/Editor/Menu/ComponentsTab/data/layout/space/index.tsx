@@ -54,7 +54,7 @@ export default {
       {...props}
     />
   ),
-  demo: [defaultSchema],
+  desc: "设置组件之间的间距。",
   defaultSchema,
   Action,
 };

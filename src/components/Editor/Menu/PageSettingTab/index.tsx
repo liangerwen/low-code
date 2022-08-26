@@ -8,7 +8,6 @@ const FormItem = Form.Item;
 const useForm = Form.useForm;
 
 interface FormProps {
-  inMenu: boolean;
   lifecycle: {
     onLoad?: EventType;
     onDestroy?: EventType;
@@ -30,14 +29,12 @@ export default (props: IProps) => {
       form={form}
       layout="vertical"
       initialValues={{
-        inMenu: props.schema.inMenu,
         lifecycle: pick(props.schema, "onLoad", "onDestroy", "onUpdate"),
         data: props.schema?.data,
       }}
       onChange={(_, form) => {
         props.onChange({
           ...generateEventProps(props.schema, form.lifecycle),
-          inMenu: !!form.inMenu,
           data: form.data,
         });
       }}
@@ -61,9 +58,6 @@ export default (props: IProps) => {
         formatter={(data) => JSON.stringify(data || {}, null, 4)}
       >
         <JsonInput />
-      </FormItem>
-      <FormItem label="在菜单中" field="inMenu" triggerPropName="checked">
-        <Switch />
       </FormItem>
     </Form>
   );

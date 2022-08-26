@@ -18,7 +18,12 @@ import {
 import { createPortal } from "react-dom";
 import { cloneDeep, isEqual, isPlainObject } from "lodash";
 import { copy, deepProduce, produce } from "@/utils";
-import { filterComponent, findComponent, findWarpper } from "./utils";
+import {
+  filterComponent,
+  findComponent,
+  findWarpper,
+  isParentComponent,
+} from "./utils";
 import { isAdd } from "./Menu/ComponentsTab/MenuItem";
 import Viewer from "./Viewer";
 import { useSettings } from "../Settings";
@@ -319,7 +324,12 @@ const Editor = (props: IProps) => {
   };
 
   const onDelete = (id: string) => {
-    id === activeComponent?.id && setActiveComponent(null);
+    if (
+      id === activeComponent?.id ||
+      isParentComponent(value.body, id, activeComponent?.id)
+    ) {
+      setActiveComponent(null);
+    }
     const newSchema = {
       ...value,
       body: filterComponent(value.body, (c) => c.id !== id),

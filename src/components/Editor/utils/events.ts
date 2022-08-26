@@ -36,7 +36,7 @@ export function doActions(
     data: Record<string, any>;
     setData: SetDataFunction;
   },
-  event = null
+  args = []
 ) {
   const { navigate, params, current, schema, forms, data, setData } = options;
   const page = {
@@ -102,7 +102,7 @@ export function doActions(
         const { content } = (action.form || {}) as CustomFormType;
         const fn = new Function("page", "current", "utils", content);
         try {
-          fn(page, { schema: current, event }, utils);
+          fn(page, { schema: current, arguments: args }, utils);
         } catch (error) {
           console.error(error);
         }

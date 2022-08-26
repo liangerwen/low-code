@@ -84,7 +84,7 @@ export default {
   name,
   componentMap: { [name]: Title },
   icon: IconH1,
-  demo: [defaultSchema],
+  desc: "标明文章、作品等内容的简短语句。",
   defaultSchema,
   Action,
 };

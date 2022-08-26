@@ -24,7 +24,7 @@ export type Menu = {
   name: string;
   componentMap: { [name: string]: FC<any> };
   icon: FC<IconProps>;
-  demo: IComponent[];
+  desc: string;
   defaultSchema: IComponent;
   Action?: FC<ActionProps>;
 };

@@ -8,7 +8,6 @@ import { produce } from "@/utils";
 
 const defaultSchema: ISchema = {
   name: "page",
-  inMenu: true,
   body: [],
 };
 
@@ -67,9 +66,8 @@ export default () => {
       }}
       value={schema}
       onChange={setSchema}
-      onPreview={(schema) => {
-        const url = schema.inMenu ? `/preview-menu` : `/preview`;
-        window.open(`${window.location.origin}/#${url}`);
+      onPreview={() => {
+        window.open(`${window.location.origin}/#/preview`);
       }}
     />
   );

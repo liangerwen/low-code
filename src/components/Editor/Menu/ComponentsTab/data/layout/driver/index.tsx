@@ -52,7 +52,7 @@ export default {
       {...props}
     />
   ),
-  demo: [defaultSchema],
+  desc: "划分内容区域，对模块做分隔。",
   defaultSchema,
   Action,
 };

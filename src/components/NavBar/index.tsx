@@ -45,7 +45,7 @@ export default function () {
         onClickMenuItem={(key) => {
           switch (key) {
             case MenuKeys.GITHUB:
-              window.open("https://github.com/liangerwen");
+              window.open("https://github.com/liangerwen/low-code");
               break;
             case MenuKeys.SETTING:
               break;

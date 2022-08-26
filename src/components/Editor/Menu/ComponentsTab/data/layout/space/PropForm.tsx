@@ -1,3 +1,4 @@
+import BindFormItem from "@/components/Editor/Menu/components/BindFormItem";
 import { produce } from "@/utils";
 import {
   Form,
@@ -36,7 +37,7 @@ const PropForm = (props: ActionProps) => {
 
   return (
     <Form form={form} layout="vertical" onChange={onChange}>
-      <FormItem label="间距方向" field="direction">
+      <BindFormItem data={props.schema.data} label="间距方向" field="direction">
         <Select
           placeholder="选择间距方向"
           allowClear
@@ -45,8 +46,8 @@ const PropForm = (props: ActionProps) => {
             { label: "vertical", value: "vertical" },
           ]}
         />
-      </FormItem>
-      <FormItem label="对齐方式" field="align">
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="对齐方式" field="align">
         <Select
           placeholder="选择对齐方式"
           allowClear
@@ -57,11 +58,11 @@ const PropForm = (props: ActionProps) => {
             { label: "baseline", value: "baseline" },
           ]}
         />
-      </FormItem>
-      <FormItem label="分隔符" field="split">
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="分隔符" field="split">
         <Input placeholder="输入分隔符" allowClear />
-      </FormItem>
-      <FormItem label="大小" field="size">
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="大小" field="size">
         <Select
           placeholder="选择大小"
           allowClear
@@ -72,16 +73,15 @@ const PropForm = (props: ActionProps) => {
             { label: "large", value: "large" },
           ]}
         />
-      </FormItem>
-      <FormItem
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
         label="环绕"
         field="wrap"
-        layout="inline"
-        labelAlign="left"
         triggerPropName="checked"
       >
         <Switch />
-      </FormItem>
+      </BindFormItem>
     </Form>
   );
 };

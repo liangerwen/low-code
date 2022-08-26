@@ -1,5 +1,4 @@
 import useHover from "@/hooks/useHover";
-import { produce } from "@/utils";
 import { Divider, Space, Tooltip } from "@arco-design/web-react";
 import {
   IconCopy,
@@ -9,10 +8,11 @@ import {
 } from "@arco-design/web-react/icon";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import classNames from "classnames";
-import { isEmpty, mergeWith } from "lodash";
+import { isEmpty } from "lodash";
 import {
-  FC,
+  cloneElement,
   forwardRef,
+  ReactElement,
   ReactNode,
   useCallback,
   useContext,
@@ -31,7 +31,7 @@ interface IProps {
   index: number;
 }
 
-export function CommonItem({ item, disabled = false }) {
+export function CommonItem({ item }) {
   const { id, name, props: p = {}, children } = item as IComponent;
 
   const Common = getComponentByName(name);
@@ -39,12 +39,11 @@ export function CommonItem({ item, disabled = false }) {
   const commonChildren = useMemo(
     () =>
       parseChildrenForEditor(children, {
-        render: (child, idx) => (
-          <CommonItem item={child} disabled={disabled} key={idx} />
-        ),
+        render: (child, idx) => <CommonItem item={child} key={idx} />,
       }),
     [children]
   );
+
   return (
     <ErrorBoundary
       fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
@@ -53,10 +52,7 @@ export function CommonItem({ item, disabled = false }) {
         {...commonProps}
         className={classNames(
           commonProps?.className,
-          "important-relative important-top-0 important-left-0 important-right-0 important-bottom-0",
-          {
-            "pointer-events-none select-none": disabled,
-          }
+          "important-relative important-top-0 important-left-0 important-right-0 important-bottom-0 pointer-events-none select-none"
         )}
       >
         {commonChildren}
@@ -68,67 +64,40 @@ export function CommonItem({ item, disabled = false }) {
 const ItemWarpper = forwardRef(
   (
     props: {
-      type?: "warpper" | "selfWarpper";
-      Component: FC<any>;
       children?: ReactNode;
-      containerWarpperProps: Record<string, any>;
-      childrenWarpperProps: Record<string, any>;
-      selfProps: Record<string, any>;
       action?: ReactNode;
+      divider?: ReactNode;
+      type?: "container" | "onlyContainer";
+      warpper: ReactElement;
     },
     ref: React.LegacyRef<HTMLDivElement>
   ) => {
-    const {
-      type,
-      Component,
-      children,
-      containerWarpperProps,
-      childrenWarpperProps,
-      selfProps,
-      action,
-    } = props;
-    if (type === "selfWarpper") {
-      const p = mergeWith(
-        containerWarpperProps,
-        childrenWarpperProps,
-        selfProps,
-        (oldV, newV, key) => {
-          if (key === "className") {
-            return classNames(oldV, newV);
-          }
-        }
-      );
+    const { type, children, action, divider, warpper, ...rest } = props;
+    if (type === "container") {
       return (
-        <Component {...p} ref={ref}>
+        <div {...rest} ref={ref}>
           {action}
-          {children}
-        </Component>
-      );
-    }
-    if (type === "warpper") {
-      return (
-        <div {...containerWarpperProps} ref={ref}>
-          {action}
-          <Component {...selfProps}>
-            <div {...childrenWarpperProps}>{children}</div>
-          </Component>
+          {cloneElement(warpper, {}, children)}
+          {divider}
+          <p className={styles["lc-item-tip"]}>拖动组件到此处</p>
         </div>
       );
     }
-
-    const p = mergeWith(
-      containerWarpperProps,
-      childrenWarpperProps,
-      (oldV, newV, key) => {
-        if (key === "className") {
-          return classNames(oldV, newV);
-        }
-      }
-    );
+    if (type === "onlyContainer") {
+      return cloneElement(
+        warpper,
+        { ...rest, ref: ref },
+        action,
+        children,
+        divider,
+        <p className={styles["lc-item-tip"]}>拖动组件到此处</p>
+      );
+    }
     return (
-      <div {...p} ref={ref}>
+      <div {...rest} ref={ref}>
         {action}
-        {children}
+        {cloneElement(warpper, {}, children)}
+        {divider}
       </div>
     );
   }
@@ -161,7 +130,16 @@ const Item = (props: IProps) => {
     id,
     data: item,
   });
+
   const Comp = getComponentByName(name);
+  const displayProps = useMemo(() => parsePropsForEditor(p), [p]);
+  const displayChildren = useMemo(() => {
+    const RenderItem = container ? Item : CommonItem;
+    return parseChildrenForEditor(children, {
+      render: (child, idx) => <RenderItem item={child} index={idx} key={idx} />,
+    });
+  }, [children, container]);
+
   const {
     activeComponent,
     setActiveComponent,
@@ -243,6 +221,19 @@ const Item = (props: IProps) => {
     [item, onDelete, onPaste, onCopy]
   );
 
+  const warpperProps = useMemo(
+    () => ({
+      ...attributes,
+      onClick: setActive,
+      className: classNames(className, {
+        [styles["lc-item__container"]]: container,
+        [styles["lc-item__inline"]]: inline,
+        "min-w-160px important-pt-[20px]": showActions,
+      }),
+    }),
+    [attributes, setActive, className, inline, showActions]
+  );
+
   return (
     <ErrorBoundary
       fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
@@ -255,29 +246,17 @@ const Item = (props: IProps) => {
           setHoverRef(ref);
         }}
         type={
-          container && onlyContainer
-            ? "selfWarpper"
-            : container
-            ? "warpper"
-            : undefined
+          onlyContainer ? "onlyContainer" : container ? "container" : undefined
         }
-        Component={Comp}
-        containerWarpperProps={{
-          ...attributes,
-          onClick: setActive,
-          className: classNames(className, {
-            [styles["lc-item__inline"]]: inline,
-            "min-w-160px important-pt-[20px]": showActions,
-          }),
-        }}
-        childrenWarpperProps={{
-          className: classNames({
-            [styles["lc-item__container"]]: container,
-          }),
-        }}
-        selfProps={{
-          ...parsePropsForEditor(p),
-        }}
+        warpper={
+          <Comp
+            {...displayProps}
+            className={classNames(
+              displayProps?.className,
+              "pointer-events-none select-none"
+            )}
+          />
+        }
         action={
           showActions && (
             <div className={styles["lc-item-action"]}>
@@ -306,19 +285,10 @@ const Item = (props: IProps) => {
             </div>
           )
         }
+        divider={isMiddle && renderDivider()}
+        {...warpperProps}
       >
-        {container ? (
-          <>
-            {!isEmpty(children) &&
-              (children as IComponent[]).map((c, idx) => (
-                <Item item={c} key={idx} index={idx} />
-              ))}
-            {isMiddle && renderDivider()}
-            <p className={styles["lc-item-tip"]}>拖动组件到此处</p>
-          </>
-        ) : (
-          <CommonItem item={item} disabled={true} />
-        )}
+        {displayChildren}
       </ItemWarpper>
       {isNext && renderDivider()}
     </ErrorBoundary>

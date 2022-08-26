@@ -89,7 +89,7 @@ export default {
       {...props}
     />
   ),
-  demo: [defaultSchema],
+  desc: "用表义符号记录表达信息以传之久远的方式和工具。",
   defaultSchema,
   Action,
 };

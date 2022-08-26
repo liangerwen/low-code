@@ -21,6 +21,6 @@ export default {
       {...props}
     />
   ),
-  demo: [defaultSchema],
+  desc: "将信息分类后分标题、详情等区域聚合展现，一般作为简洁介绍或者信息的大盘和入口。",
   defaultSchema,
 };

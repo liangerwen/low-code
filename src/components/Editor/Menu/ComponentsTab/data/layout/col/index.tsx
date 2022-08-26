@@ -56,16 +56,7 @@ export default {
       {...props}
     />
   ),
-  demo: [
-    {
-      name,
-      title: "列",
-      container: true,
-      props: {
-        className: "py-10 border border-dashed border-[rgb(var(--gray-4))]",
-      },
-    },
-  ],
+  desc: "栅格列容器。",
   defaultSchema,
   Action,
 };

@@ -55,7 +55,6 @@ interface IComponent {
 }
 interface ISchema {
   name: "page";
-  inMenu: boolean;
   onLoad?: EventType;
   onDestroy?: EventType;
   onUpdate?: EventType;
@@ -131,22 +130,22 @@ interface SetDataFunction {
   (data: Record<string, any>, callback?: SetDataCallback): void;
 }
 interface IPage {
-  schema: ISchema;
-  forms: Record<string, IFormInstance>;
-  navigate: NavigateFunction;
-  params: Params<string>;
-  data: Record<string, any>;
-  setData: SetDataFunction;
+  schema: ISchema; //当前页面的schema
+  forms: Record<string, IFormInstance>; //当前页面所有的表单实例
+  navigate: NavigateFunction; //路由跳转方法
+  params: Params<string>; //当前路由的params参数
+  data: Record<string, any>; //当前页面的全局变量
+  setData: SetDataFunction; //设置当前页面的全局变量
 }
 interface IUtils {
-  copy: (content: string) => void;
-  download: (url: string) => void;
-  message: MessageType;
-  notify: NotifyType;
+  copy: (content: string) => void; // 根据内容复制到剪切板
+  download: (url: string) => void; // 根据链接下载内容
+  message: MessageType; // 调用消息提醒
+  notify: NotifyType; // 调用消息通知
 }
 interface ICurrent {
-  schema: IComponent | null;
-  event: Event | null;
+  schema: IComponent | null; // 当前组件的schema
+  arguments: any[]; // 当前组件事件的参数
 }
 
 declare const current: DeepReadonly<ICurrent>;

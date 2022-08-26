@@ -92,19 +92,6 @@ const routes: CustomRoutes[] = [
   {
     path: "/preview/*",
     element: (
-      <Layout footer={false}>
-        <ArcoLayout className="h-full important-p-[6px] box-border">
-          <ArcoLayout.Content className="bg-[var(--color-bg-2)] rounded-[8px] shadow-[rgba(0,0,0,0.08)] shadow p-2">
-            {lazyload(() => import("./pages/Preview"))}
-          </ArcoLayout.Content>
-        </ArcoLayout>
-      </Layout>
-    ),
-    inMenu: false,
-  },
-  {
-    path: "/preview-menu/*",
-    element: (
       <Layout footer={false} menu>
         {lazyload(() => import("./pages/Preview"))}
       </Layout>

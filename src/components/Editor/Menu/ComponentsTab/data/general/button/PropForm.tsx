@@ -52,7 +52,7 @@ const PropForm = (props: ActionProps) => {
 
   return (
     <Form form={form} layout="vertical" onChange={onChange}>
-      <FormItem label="尺寸" field="size">
+      <BindFormItem data={props.schema.data} label="尺寸" field="size">
         <Select
           placeholder="选择尺寸"
           allowClear
@@ -62,8 +62,8 @@ const PropForm = (props: ActionProps) => {
             { label: "large", value: "large" },
           ]}
         />
-      </FormItem>
-      <FormItem label="类型" field="type">
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="类型" field="type">
         <Select
           placeholder="选择类型"
           allowClear
@@ -75,8 +75,18 @@ const PropForm = (props: ActionProps) => {
             { label: "outline", value: "outline" },
           ]}
         />
-      </FormItem>
-      <FormItem label="状态" field="status">
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="动作类型" field="htmlType">
+        <Select
+          placeholder="选择动作类型"
+          allowClear
+          options={[
+            { label: "提交", value: "submit" },
+            { label: "重置", value: "reset" },
+          ]}
+        />
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="状态" field="status">
         <Select
           placeholder="选择状态"
           allowClear
@@ -86,8 +96,8 @@ const PropForm = (props: ActionProps) => {
             { label: "success", value: "success" },
           ]}
         />
-      </FormItem>
-      <FormItem label="形状" field="shape">
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="形状" field="shape">
         <Select
           placeholder="选择形状"
           allowClear
@@ -97,61 +107,45 @@ const PropForm = (props: ActionProps) => {
             { label: "square", value: "square" },
           ]}
         />
-      </FormItem>
+      </BindFormItem>
       <BindFormItem label="内容" field="content" data={props.schema.data}>
         <Input placeholder="输入内容" allowClear />
       </BindFormItem>
-      <Row>
-        <Col span={12}>
-          <FormItem
-            label="禁用"
-            field="disabled"
-            layout="inline"
-            labelAlign="left"
-            triggerPropName="checked"
-          >
-            <Switch />
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem
-            label="加载"
-            field="loading"
-            layout="inline"
-            labelAlign="left"
-            triggerPropName="checked"
-          >
-            <Switch />
-          </FormItem>
-        </Col>
-      </Row>
-      <FormItem label="图标" field="icon">
+      <BindFormItem
+        data={props.schema.data}
+        label="禁用"
+        field="disabled"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="加载"
+        field="loading"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="图标" field="icon">
         <IconModal />
-      </FormItem>
-      <Row>
-        <Col span={12}>
-          <FormItem
-            label="只有图标"
-            field="iconOnly"
-            layout="inline"
-            labelAlign="left"
-            triggerPropName="checked"
-          >
-            <Switch />
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem
-            label="块级"
-            field="long"
-            layout="inline"
-            labelAlign="left"
-            triggerPropName="checked"
-          >
-            <Switch />
-          </FormItem>
-        </Col>
-      </Row>
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="只有图标"
+        field="iconOnly"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="块级"
+        field="long"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
     </Form>
   );
 };

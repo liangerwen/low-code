@@ -1,6 +1,6 @@
 import { Form, FormItemProps, Select, Tooltip } from "@arco-design/web-react";
 import { IconSwap } from "@arco-design/web-react/icon";
-import { cloneElement, useMemo, useState } from "react";
+import { cloneElement, useEffect, useMemo, useState } from "react";
 
 function BindFormItemChildrenWarpper({
   children,
@@ -12,11 +12,16 @@ function BindFormItemChildrenWarpper({
     () => (triggerPropName ? rest[triggerPropName] : rest.value),
     [triggerPropName, rest]
   );
-  const [isBind, setIsBind] = useState(!!value?.isBind);
-  const displayValue = useMemo(
-    () => (isBind ? value?.name : value?.name || value),
-    [value, isBind]
-  );
+  const [isBind, setIsBind] = useState(false);
+  const displayValue = useMemo(() => {
+    if (isBind) {
+      return value?.isBind && value?.name;
+    }
+    return value?.isBind ? data[value.name] : value;
+  }, [value, isBind, data]);
+  useEffect(() => {
+    setIsBind(!!value?.isBind);
+  }, [value]);
   return (
     // @ts-ignore
     <div className="w-full flex items-center">
@@ -34,11 +39,14 @@ function BindFormItemChildrenWarpper({
           }))}
         />
       ) : (
-        cloneElement(children, { ...rest, value: displayValue })
+        cloneElement(children, {
+          ...rest,
+          [triggerPropName || "value"]: displayValue,
+        })
       )}
       <Tooltip content={isBind ? "切换为固定值" : "切换为绑定变量"}>
         <IconSwap
-          className="ml-2 cursor-pointer"
+          className="ml-2 cursor-pointer color-[var(--color-text-1)]"
           onClick={() => setIsBind(!isBind)}
         />
       </Tooltip>
@@ -51,16 +59,8 @@ export default function BindFormItem({
   data,
   ...rest
 }: FormItemProps & { data: Record<string, any> }) {
-  const noop = (v) => v;
-  const formatter = rest.formatter || noop;
-  const normalize = rest.normalize || noop;
   return (
-    <Form.Item
-      {...rest}
-      normalize={(v, prevValue, allValues) =>
-        v?.isBind ? v : normalize(v, prevValue, allValues)
-      }
-    >
+    <Form.Item {...rest}>
       <BindFormItemChildrenWarpper
         triggerPropName={rest.triggerPropName}
         data={data}

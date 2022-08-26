@@ -1,7 +1,14 @@
 import useSyncState from "@/hooks/useSyncState";
 import { FormInstance } from "@arco-design/web-react";
 import { isEmpty, noop } from "lodash";
-import { createContext, useContext, useEffect, useMemo, useRef } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import {
   NavigateFunction,
@@ -37,7 +44,7 @@ const ViewerContext = createContext<{
   setData: noop,
 });
 
-function ViewerCommonItem({ item }) {
+function ViewerCommonItem({ item, ...rest }) {
   const { id, name, props: p = {}, children } = item as IComponent;
 
   const options = useContext(ViewerContext);
@@ -63,13 +70,15 @@ function ViewerCommonItem({ item }) {
     <ErrorBoundary
       fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
     >
-      <Common {...commonProps}>{commonChildren}</Common>
+      <Common {...commonProps} {...rest}>
+        {commonChildren}
+      </Common>
     </ErrorBoundary>
   );
 }
 
 const ViewerItem = (props: ItemProps) => {
-  const { item, ...reset } = props;
+  const { item, ...rest } = props;
   const { id, container, name, props: p = {}, children } = item;
 
   const options = useContext(ViewerContext);
@@ -84,20 +93,21 @@ const ViewerItem = (props: ItemProps) => {
     [p, itemOptions]
   );
 
+  const renderChildren = useCallback(() => {
+    const Item = container ? ViewerItem : ViewerCommonItem;
+    return parseChildrenForViewer(children, {
+      render: (child, idx) => <Item item={child} key={idx} />,
+      data: options.data,
+    });
+  }, [children, container]);
+
   return (
     <ErrorBoundary
       fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
     >
-      {container ? (
-        <Comp {...CompProps}>
-          {!isEmpty(children) &&
-            (children as IComponent[]).map((c, idx) => (
-              <ViewerItem item={c} key={idx} {...reset} />
-            ))}
-        </Comp>
-      ) : (
-        <ViewerCommonItem item={item} />
-      )}
+      <Comp {...CompProps} {...rest}>
+        {renderChildren()}
+      </Comp>
     </ErrorBoundary>
   );
 };

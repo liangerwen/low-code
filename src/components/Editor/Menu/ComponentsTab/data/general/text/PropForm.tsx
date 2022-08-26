@@ -26,14 +26,6 @@ type TextProps = Omit<
   "className" | "style" | "children" | "ellipsis"
 >;
 
-const switchFormItemProps: Partial<FormItemProps> = {
-  layout: "horizontal",
-  labelAlign: "left",
-  labelCol: { span: 12 },
-  wrapperCol: { span: 12 },
-  triggerPropName: "checked",
-};
-
 const PropForm = (props: ActionProps) => {
   const [form] = useForm<TextProps>();
 
@@ -65,7 +57,7 @@ const PropForm = (props: ActionProps) => {
       <BindFormItem label="内容" field="content" data={props.schema.data}>
         <Input.TextArea placeholder="输入内容" allowClear />
       </BindFormItem>
-      <FormItem label="类型" field="type">
+      <BindFormItem data={props.schema.data} label="类型" field="type">
         <Select
           placeholder="选择类型"
           allowClear
@@ -77,64 +69,74 @@ const PropForm = (props: ActionProps) => {
             { label: "success", value: "success" },
           ]}
         />
-      </FormItem>
-      <Row>
-        <Col span={12}>
-          <FormItem label="内容" field="content" {...switchFormItemProps}>
-            <Switch />
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="标记" field="mark" {...switchFormItemProps}>
-            <Switch />
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem label="加粗" field="bold" {...switchFormItemProps}>
-            <Switch />
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="代码块" field="code" {...switchFormItemProps}>
-            <Switch />
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem label="下划线" field="underline" {...switchFormItemProps}>
-            <Switch />
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="删除线" field="delete" {...switchFormItemProps}>
-            <Switch />
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem label="可复制" field="copyable" {...switchFormItemProps}>
-            <Switch />
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem
-            disabled={
-              !Boolean((props.component.children?.[0] as BindType)?.isBind)
-            }
-            label="可编辑"
-            field="editable"
-            {...switchFormItemProps}
-            normalize={(val) => (val ? {} : false)}
-            formatter={(val) => Boolean(val)}
-          >
-            <Switch />
-          </FormItem>
-        </Col>
-      </Row>
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="内容"
+        field="content"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="标记"
+        field="mark"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="加粗"
+        field="bold"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="代码块"
+        field="code"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="下划线"
+        field="underline"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="删除线"
+        field="delete"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="可复制"
+        field="copyable"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        disabled={!Boolean((props.component.children?.[0] as BindType)?.isBind)}
+        label="可编辑"
+        field="editable"
+        triggerPropName="checked"
+        normalize={(val) => (val ? {} : false)}
+        formatter={(val) => Boolean(val)}
+      >
+        <Switch />
+      </BindFormItem>
     </Form>
   );
 };

@@ -88,7 +88,7 @@ export default {
       {...props}
     />
   ),
-  demo: [defaultSchema],
+  desc: "根据文章或事情的内容、阶段划分的相对独立的部分。",
   defaultSchema,
   Action,
 };

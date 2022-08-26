@@ -29,6 +29,6 @@ export default {
   name,
   componentMap: { [name]: List, "list-item": List.Item },
   icon: IconList,
-  demo: [defaultSchema],
+  desc: "最基础的列表展示，可承载文字、列表、图片、段落，常用于后台数据展示页面。",
   defaultSchema,
 };

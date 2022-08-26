@@ -1,26 +1,25 @@
+import ActionWarp from "@/components/Editor/Menu/components/ActionWarp";
+import EventForm from "@/components/Editor/Menu/components/EventForm";
 import StyleForm from "@/components/Editor/Menu/components/StyleForm";
 import {
-  generateEventProps,
   getEventsFromProps,
+  generateEventProps,
 } from "@/components/Editor/utils/events";
 import { produce } from "@/utils";
-import { Button } from "@arco-design/web-react";
+import { Input } from "@arco-design/web-react";
 import { pick } from "lodash";
 import { ActionProps } from "../..";
-import ActionWarp from "../../../../components/ActionWarp";
-import EventForm from "../../../../components/EventForm";
 import PropForm from "./PropForm";
 
-const name = "button";
+const name = "password";
 
 const defaultSchema = {
   name,
-  title: "按钮",
+  title: "密码框",
   props: {
-    type: "primary",
+    placeholder: "请输入内容",
+    allowClear: true,
   },
-  children: ["按钮"],
-  inline: true,
 };
 
 const Action = (props: ActionProps) => {
@@ -54,9 +53,10 @@ const Action = (props: ActionProps) => {
           Form: EventForm,
           props: {
             options: [
-              { label: "点击", value: "onClick" },
-              // { label: "鼠标移入", value: "onMouseEnter" },
-              // { label: "鼠标移出", value: "onMouseLeave" },
+              { label: "改变", value: "onChange" },
+              { label: "清除", value: "onClear" },
+              { label: "回车", value: "onPressEnter" },
+              { label: "显示状态改变", value: "onVisibilityChange" },
             ],
             value: getEventsFromProps(props.component.props),
             onChange: (val) => {
@@ -75,14 +75,14 @@ const Action = (props: ActionProps) => {
 
 export default {
   name,
-  componentMap: { [name]: Button },
+  componentMap: { [name]: Input.Password },
   icon: (props) => (
     <i
-      className="arco-icon arco-icon-select-all i-teenyicons:button-outline"
+      className="arco-icon arco-icon-select-all i-material-symbols:password"
       {...props}
     />
   ),
-  desc: "按钮是一种命令组件，可发起一个即时操作。",
+  desc: "用于输入密码信息。",
   defaultSchema,
   Action,
 };

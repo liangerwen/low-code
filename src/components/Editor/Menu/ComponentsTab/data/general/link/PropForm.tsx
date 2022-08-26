@@ -55,7 +55,7 @@ const PropForm = (props: ActionProps) => {
       <BindFormItem label="显示文字" field="content" data={props.schema.data}>
         <Input placeholder="输入显示文字" allowClear />
       </BindFormItem>
-      <FormItem label="状态" field="status">
+      <BindFormItem data={props.schema.data} label="状态" field="status">
         <Select
           placeholder="选择状态"
           allowClear
@@ -65,35 +65,28 @@ const PropForm = (props: ActionProps) => {
             { label: "success", value: "success" },
           ]}
         />
-      </FormItem>
-      <Row>
-        <Col span={12}>
-          <FormItem
-            label="禁用"
-            field="disabled"
-            layout="inline"
-            labelAlign="left"
-            triggerPropName="checked"
-          >
-            <Switch />
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem
-            label="悬浮"
-            field="hoverable"
-            layout="inline"
-            labelAlign="left"
-            triggerPropName="checked"
-          >
-            <Switch />
-          </FormItem>
-        </Col>
-      </Row>
-      <FormItem label="图标" field="icon">
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="禁用"
+        field="disabled"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="悬浮"
+        field="hoverable"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="图标" field="icon">
         <IconModal />
-      </FormItem>
-      <FormItem
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
         label="新标签打开"
         field="target"
         triggerPropName="checked"
@@ -101,7 +94,7 @@ const PropForm = (props: ActionProps) => {
         formatter={(val) => val === "_blank"}
       >
         <Switch />
-      </FormItem>
+      </BindFormItem>
     </Form>
   );
 };

@@ -23,6 +23,19 @@ export const findComponent = (
   return null;
 };
 
+export const isParentComponent = (schema: IComponent[], parentId, childId) => {
+  if (!parentId || !childId || schema.length === 0) return false;
+  const parentComponent = findComponent(schema, (c) => c.id === parentId);
+  if (parentComponent.children) {
+    const childConponent = findComponent(
+      parentComponent.children as IComponent[],
+      (c) => c.id === childId
+    );
+    if (childConponent) return true;
+  }
+  return false;
+};
+
 /**
  * 递归组件执行方法
  * @param schema 组件数组
@@ -74,11 +87,15 @@ export const findWarpper = (schema: IComponent[], id: string | number) => {
     (c) =>
       !!c.container &&
       !!c.children &&
-      (c.children as IComponent[]).find((child) => child.id === id) !== undefined
+      (c.children as IComponent[]).find((child) => child.id === id) !==
+        undefined
   );
   if (!warpperComponent) return null;
   const warpperIdx = (warpperComponent.children as IComponent[])!.findIndex(
     (component) => component.id === id
   );
-  return { warpper: warpperComponent.children as IComponent[], index: warpperIdx };
+  return {
+    warpper: warpperComponent.children as IComponent[],
+    index: warpperIdx,
+  };
 };

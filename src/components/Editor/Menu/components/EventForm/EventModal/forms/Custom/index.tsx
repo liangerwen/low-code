@@ -39,9 +39,6 @@ const CustomForm = forwardRef<FormRefType, FormPropsType<CustomFormType>>(
     useImperativeHandle(ref, () => ({
       validate: () => {
         return new Promise((resolve, reject) => {
-          console.log(
-            monaco.languages.typescript.typescriptDefaults.getExtraLibs()
-          );
           const makers = monaco.editor.getModelMarkers({});
           if (isEmpty(makers)) {
             resolve({ content: instance.current?.getValue() });

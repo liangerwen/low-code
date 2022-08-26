@@ -1,26 +1,39 @@
+import ActionWarp from "@/components/Editor/Menu/components/ActionWarp";
+import EventForm from "@/components/Editor/Menu/components/EventForm";
 import StyleForm from "@/components/Editor/Menu/components/StyleForm";
 import {
   generateEventProps,
   getEventsFromProps,
 } from "@/components/Editor/utils/events";
 import { produce } from "@/utils";
-import { Button } from "@arco-design/web-react";
+import { Form } from "@arco-design/web-react";
 import { pick } from "lodash";
+import { generate as uuid } from "shortid";
 import { ActionProps } from "../..";
-import ActionWarp from "../../../../components/ActionWarp";
-import EventForm from "../../../../components/EventForm";
 import PropForm from "./PropForm";
 
-const name = "button";
+const name = "form";
 
 const defaultSchema = {
   name,
-  title: "按钮",
+  title: "表单",
   props: {
-    type: "primary",
+    id: uuid(),
+    onSubmit: {
+      isEvent: true,
+      actions: [
+        {
+          id: uuid(),
+          name: "custom",
+          form: {
+            content:
+              "console.log(page.forms[current.schema.props?.id]?.getFieldsValue())",
+          },
+        },
+      ],
+    },
   },
-  children: ["按钮"],
-  inline: true,
+  container: true,
 };
 
 const Action = (props: ActionProps) => {
@@ -54,9 +67,9 @@ const Action = (props: ActionProps) => {
           Form: EventForm,
           props: {
             options: [
-              { label: "点击", value: "onClick" },
-              // { label: "鼠标移入", value: "onMouseEnter" },
-              // { label: "鼠标移出", value: "onMouseLeave" },
+              { label: "提交", value: "onSubmit" },
+              { label: "重置", value: "onReset" },
+              { label: "改变", value: "onChange" },
             ],
             value: getEventsFromProps(props.component.props),
             onChange: (val) => {
@@ -75,14 +88,14 @@ const Action = (props: ActionProps) => {
 
 export default {
   name,
-  componentMap: { [name]: Button },
+  componentMap: { [name]: Form },
   icon: (props) => (
     <i
-      className="arco-icon arco-icon-select-all i-teenyicons:button-outline"
+      className="arco-icon arco-icon-select-all i-material-symbols:dynamic-form-outline"
       {...props}
     />
   ),
-  desc: "按钮是一种命令组件，可发起一个即时操作。",
+  desc: "具有数据收集、校验和提交功能的表单，包含复选框、单选框、输入框、下拉选择框等元素。",
   defaultSchema,
   Action,
 };
