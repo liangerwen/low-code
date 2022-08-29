@@ -105,7 +105,7 @@ const PropForm = (props: ActionProps) => {
             { label: "medium", value: "medium" },
             { label: "large", value: "large" },
           ]}
-          placeholder="选择布局"
+          placeholder="选择尺寸"
           allowClear
         />
       </BindFormItem>

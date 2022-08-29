@@ -24,6 +24,8 @@ export const parsePropsForEditor = (
       ret[k] = undefined;
     } else if (prop?.isBind) {
       ret[k] = "${" + prop.name + "}";
+    } else if (prop?.isRegExp) {
+      ret[k] = new RegExp(prop.source);
     } else if (isPlainObject(prop)) {
       ret[k] = parsePropsForEditor(prop);
     } else if (isArray(prop)) {
@@ -61,6 +63,9 @@ export const parsePropsForViewer = (
       ret[k] = (...args) => doActions(prop.actions, options, args);
     } else if (prop?.isBind) {
       ret[k] = options.data?.[prop.name];
+    } else if (prop?.isRegExp) {
+      ret[k] = new RegExp(prop.source);
+      JSON.stringify;
     } else if (isPlainObject(prop)) {
       ret[k] = parsePropsForViewer(prop, options);
     } else if (isArray(prop)) {

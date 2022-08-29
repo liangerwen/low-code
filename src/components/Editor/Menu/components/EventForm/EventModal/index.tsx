@@ -50,6 +50,7 @@ export default function EventModal({
       maskClosable={false}
       escToExit={false}
       visible={visible}
+      mountOnEnter={false}
       onCancel={onCancel}
       onOk={() => {
         if (selectedKeys.length === 0) {

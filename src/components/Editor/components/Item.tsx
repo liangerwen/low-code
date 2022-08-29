@@ -61,23 +61,23 @@ export function CommonItem({ item }) {
   );
 }
 
-const ItemWarpper = forwardRef(
+const ItemWrapper = forwardRef(
   (
     props: {
       children?: ReactNode;
       action?: ReactNode;
       divider?: ReactNode;
       type?: "container" | "onlyContainer";
-      warpper: ReactElement;
+      wrapper: ReactElement;
     },
     ref: React.LegacyRef<HTMLDivElement>
   ) => {
-    const { type, children, action, divider, warpper, ...rest } = props;
+    const { type, children, action, divider, wrapper, ...rest } = props;
     if (type === "container") {
       return (
         <div {...rest} ref={ref}>
           {action}
-          {cloneElement(warpper, {}, children)}
+          {cloneElement(wrapper, {}, children)}
           {divider}
           <p className={styles["lc-item-tip"]}>拖动组件到此处</p>
         </div>
@@ -85,7 +85,7 @@ const ItemWarpper = forwardRef(
     }
     if (type === "onlyContainer") {
       return cloneElement(
-        warpper,
+        wrapper,
         { ...rest, ref: ref },
         action,
         children,
@@ -96,7 +96,7 @@ const ItemWarpper = forwardRef(
     return (
       <div {...rest} ref={ref}>
         {action}
-        {cloneElement(warpper, {}, children)}
+        {cloneElement(wrapper, {}, children)}
         {divider}
       </div>
     );
@@ -221,7 +221,7 @@ const Item = (props: IProps) => {
     [item, onDelete, onPaste, onCopy]
   );
 
-  const warpperProps = useMemo(
+  const wrapperProps = useMemo(
     () => ({
       ...attributes,
       onClick: setActive,
@@ -239,7 +239,7 @@ const Item = (props: IProps) => {
       fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
     >
       {isPrev && renderDivider()}
-      <ItemWarpper
+      <ItemWrapper
         ref={(ref: HTMLElement) => {
           setDragRef(ref);
           setDropRef(ref);
@@ -248,7 +248,7 @@ const Item = (props: IProps) => {
         type={
           onlyContainer ? "onlyContainer" : container ? "container" : undefined
         }
-        warpper={
+        wrapper={
           <Comp
             {...displayProps}
             className={classNames(
@@ -286,10 +286,10 @@ const Item = (props: IProps) => {
           )
         }
         divider={isMiddle && renderDivider()}
-        {...warpperProps}
+        {...wrapperProps}
       >
         {displayChildren}
-      </ItemWarpper>
+      </ItemWrapper>
       {isNext && renderDivider()}
     </ErrorBoundary>
   );

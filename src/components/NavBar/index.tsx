@@ -91,7 +91,7 @@ export default function () {
 
   return navbar ? (
     <Row
-      className={styles["toolbar-warpper"]}
+      className={styles["toolbar-wrapper"]}
       justify="space-between"
       align="center"
     >

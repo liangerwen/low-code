@@ -28,6 +28,7 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 import { generate as uuid } from "shortid";
+import defaultSchema from "./defaultSchema.json";
 const { Meta } = Card;
 const { Row, Col } = Grid;
 
@@ -45,94 +46,7 @@ export default function Projects() {
     {
       id: uuid(),
       name: "测试",
-      schema: {
-        name: "page",
-        body: [
-          {
-            id: uuid(),
-            name: "space",
-            title: "间距",
-            container: true,
-            onlyContainer: true,
-            props: {
-              direction: "vertical",
-              style: {
-                display: "flex",
-              },
-            },
-            children: [
-              {
-                id: uuid(),
-                name: "button",
-                title: "按钮",
-                props: {
-                  type: "dashed",
-                  status: "warning",
-                  icon: {
-                    isIcon: true,
-                    name: "IconCopy",
-                  },
-                  long: true,
-                  onClick: {
-                    isEvent: true,
-                    actions: [
-                      {
-                        id: uuid(),
-                        name: "custom",
-                        form: {
-                          content:
-                            "const { schema, navigate } = page,\r\n  { copy, message } = utils;\r\ncopy(JSON.stringify(schema));\r\n\r\nmessage.success('复制成功！');\r\n",
-                        },
-                      },
-                    ],
-                  },
-                },
-                children: ["点击复制当前Schema"],
-                inline: false,
-              },
-              {
-                name: "button",
-                title: "按钮",
-                props: {
-                  type: "primary",
-                  onClick: {
-                    isEvent: true,
-                    actions: [
-                      {
-                        id: uuid(),
-                        name: "custom",
-                        form: {
-                          content:
-                            'const { data, setData } = page\r\nsetData((data)=>{\r\n    data.text = "改变了吧哈哈哈"\r\n})',
-                        },
-                      },
-                    ],
-                  },
-                },
-                children: ["点击我改变文字"],
-                inline: true,
-                id: "ksp9e2Ik1c",
-              },
-              {
-                id: uuid(),
-                name: "text",
-                title: "文字",
-                children: [
-                  {
-                    isBind: true,
-                    name: "text",
-                  },
-                ],
-                inline: true,
-                props: {},
-              },
-            ],
-          },
-        ],
-        data: {
-          text: "这是一段文字",
-        },
-      },
+      schema: defaultSchema as ISchema,
       date: Date.now(),
       publish: false,
     },

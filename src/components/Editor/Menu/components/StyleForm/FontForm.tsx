@@ -23,12 +23,12 @@ const alignOptions = [
   {
     icon: "i-material-symbols:format-align-center",
     title: "居中对齐",
-    value: "right",
+    value: "center",
   },
   {
     icon: "i-material-symbols:format-align-right",
     title: "右对齐",
-    value: "center",
+    value: "right",
   },
   {
     icon: "i-material-symbols:format-align-justify",

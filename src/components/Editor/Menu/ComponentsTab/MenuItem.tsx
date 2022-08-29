@@ -31,7 +31,7 @@ export default (props: Menu) => {
       popupVisible={isHovering}
       showArrow
       popup={() => (
-        <div className={styles["demo-warpper"]}>
+        <div className={styles["demo-wrapper"]}>
           <Typography.Title heading={6}>
             {props.defaultSchema.title}
           </Typography.Title>

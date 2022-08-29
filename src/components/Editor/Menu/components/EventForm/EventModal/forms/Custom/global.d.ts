@@ -9,6 +9,7 @@ interface NavigateFunction {
 type Params<Key extends string = string> = {
   readonly [key in Key]: string | undefined;
 };
+type RemoveMessageFunction = () => void;
 interface MessageConfig {
   content: string;
   showIcon?: boolean;
@@ -17,14 +18,16 @@ interface MessageConfig {
   closable?: boolean;
 }
 type MessageType = {
-  normal: (config: string | MessageConfig) => void;
-  info: (config: string | MessageConfig) => void;
-  success: (config: string | MessageConfig) => void;
-  warning: (config: string | MessageConfig) => void;
-  error: (config: string | MessageConfig) => void;
-  loading: (config: string | MessageConfig) => void;
+  normal: (config: string | MessageConfig) => RemoveMessageFunction;
+  info: (config: string | MessageConfig) => RemoveMessageFunction;
+  success: (config: string | MessageConfig) => RemoveMessageFunction;
+  warning: (config: string | MessageConfig) => RemoveMessageFunction;
+  error: (config: string | MessageConfig) => RemoveMessageFunction;
+  loading: (config: string | MessageConfig) => RemoveMessageFunction;
+  clear: () => void;
 };
 interface NotifyConfig {
+  id?: string;
   title: string;
   content: string;
   showIcon?: boolean;
@@ -38,6 +41,8 @@ type NotifyType = {
   success: (config: NotifyConfig) => void;
   warning: (config: NotifyConfig) => void;
   error: (config: NotifyConfig) => void;
+  remove: (id: string) => void;
+  clear: () => void;
 };
 type ActionType = { id: string; name: string; form?: Record<string, any> };
 type EventType = { isEvent: true; actions: ActionType[] };

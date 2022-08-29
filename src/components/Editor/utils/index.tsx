@@ -77,12 +77,12 @@ export const filterComponent = (
  * @param id 子组件id
  * @returns 父组件孩子数组和子组件对应索引 | 空
  */
-export const findWarpper = (schema: IComponent[], id: string | number) => {
+export const findWrapper = (schema: IComponent[], id: string | number) => {
   const rootIdx = schema.findIndex((component) => component.id === id);
   if (rootIdx >= 0) {
-    return { warpper: schema, index: rootIdx };
+    return { wrapper: schema, index: rootIdx };
   }
-  const warpperComponent = findComponent(
+  const wrapperComponent = findComponent(
     schema,
     (c) =>
       !!c.container &&
@@ -90,12 +90,12 @@ export const findWarpper = (schema: IComponent[], id: string | number) => {
       (c.children as IComponent[]).find((child) => child.id === id) !==
         undefined
   );
-  if (!warpperComponent) return null;
-  const warpperIdx = (warpperComponent.children as IComponent[])!.findIndex(
+  if (!wrapperComponent) return null;
+  const wrapperIdx = (wrapperComponent.children as IComponent[])!.findIndex(
     (component) => component.id === id
   );
   return {
-    warpper: warpperComponent.children as IComponent[],
-    index: warpperIdx,
+    wrapper: wrapperComponent.children as IComponent[],
+    index: wrapperIdx,
   };
 };

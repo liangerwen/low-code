@@ -31,18 +31,6 @@ const PropForm = (props: ActionProps) => {
 
   return (
     <Form form={form} layout="vertical" onChange={onChange}>
-      <BindFormItem data={props.schema.data} label="竖直对齐方式" field="align">
-        <Select
-          placeholder="选择竖直对齐方式"
-          allowClear
-          options={[
-            { label: "start", value: "start" },
-            { label: "center", value: "center" },
-            { label: "end", value: "end" },
-            { label: "stretch", value: "stretch" },
-          ]}
-        />
-      </BindFormItem>
       <BindFormItem
         data={props.schema.data}
         label="水平对齐方式"
@@ -56,6 +44,18 @@ const PropForm = (props: ActionProps) => {
             { label: "end", value: "end" },
             { label: "space-around", value: "space-around" },
             { label: "space-between", value: "space-between" },
+          ]}
+        />
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="竖直对齐方式" field="align">
+        <Select
+          placeholder="选择竖直对齐方式"
+          allowClear
+          options={[
+            { label: "start", value: "start" },
+            { label: "center", value: "center" },
+            { label: "end", value: "end" },
+            { label: "stretch", value: "stretch" },
           ]}
         />
       </BindFormItem>

@@ -47,7 +47,7 @@ const Action = (props: ActionProps) => {
         },
       },
     ],
-    []
+    [props]
   );
   const options = useMemo(() => {
     if (props.component?.props?.editable) {
@@ -75,7 +75,7 @@ const Action = (props: ActionProps) => {
       ];
     }
     return defaultOptions;
-  }, [props.component]);
+  }, [props.component, defaultOptions]);
   return <ActionWarp options={options} />;
 };
 

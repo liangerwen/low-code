@@ -41,7 +41,7 @@ const PropForm = (props: ActionProps) => {
       });
       props.onChange(newSchema);
     },
-    [props]
+    [props.component]
   );
 
   useEffect(() => {

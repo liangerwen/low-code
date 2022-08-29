@@ -21,7 +21,7 @@ import { copy, deepProduce, produce } from "@/utils";
 import {
   filterComponent,
   findComponent,
-  findWarpper,
+  findWrapper,
   isParentComponent,
 } from "./utils";
 import { isAdd } from "./Menu/ComponentsTab/MenuItem";
@@ -219,15 +219,15 @@ const Editor = (props: IProps) => {
                   movingComponent!,
                 ];
               } else {
-                // 找到目标组件的warpper组件并根据方向进行前插或后插
-                const warpperInfo = findWarpper(schema, targetId);
-                if (warpperInfo) {
-                  const { warpper, index } = warpperInfo;
+                // 找到目标组件的wrapper组件并根据方向进行前插或后插
+                const wrapperInfo = findWrapper(schema, targetId);
+                if (wrapperInfo) {
+                  const { wrapper, index } = wrapperInfo;
                   if (targetDirection === Direction.PREV) {
-                    warpper.splice(index, 0, movingComponent);
+                    wrapper.splice(index, 0, movingComponent);
                     // 放置到目标组件的后一个
                   } else if (targetDirection === Direction.NEXT) {
-                    warpper.splice(index + 1, 0, movingComponent);
+                    wrapper.splice(index + 1, 0, movingComponent);
                   }
                 }
               }
@@ -305,9 +305,9 @@ const Editor = (props: IProps) => {
         if (active.container) {
           active.children = [...(active.children || []), parseComponent];
         } else {
-          const { warpper, index } = findWarpper(schema.body, active.id);
-          if (warpper) {
-            warpper.splice(index + 1, 0, parseComponent);
+          const { wrapper, index } = findWrapper(schema.body, active.id);
+          if (wrapper) {
+            wrapper.splice(index + 1, 0, parseComponent);
           }
         }
       });

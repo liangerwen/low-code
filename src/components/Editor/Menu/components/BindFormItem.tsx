@@ -2,7 +2,7 @@ import { Form, FormItemProps, Select, Tooltip } from "@arco-design/web-react";
 import { IconSwap } from "@arco-design/web-react/icon";
 import { cloneElement, useEffect, useMemo, useState } from "react";
 
-function BindFormItemChildrenWarpper({
+function BindFormItemChildrenWrapper({
   children,
   data = {},
   triggerPropName,
@@ -39,6 +39,7 @@ function BindFormItemChildrenWarpper({
           }))}
         />
       ) : (
+        children &&
         cloneElement(children, {
           ...rest,
           [triggerPropName || "value"]: displayValue,
@@ -61,12 +62,12 @@ export default function BindFormItem({
 }: FormItemProps & { data: Record<string, any> }) {
   return (
     <Form.Item {...rest}>
-      <BindFormItemChildrenWarpper
+      <BindFormItemChildrenWrapper
         triggerPropName={rest.triggerPropName}
         data={data}
       >
         {children}
-      </BindFormItemChildrenWarpper>
+      </BindFormItemChildrenWrapper>
     </Form.Item>
   );
 }

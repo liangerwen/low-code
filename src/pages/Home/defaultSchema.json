@@ -1,0 +1,218 @@
+{
+	"name": "page",
+	"body": [
+		{
+			"name": "row",
+			"title": "行",
+			"container": true,
+			"onlyContainer": true,
+			"id": "Xpbznu2cE",
+			"children": [
+				{
+					"name": "form",
+					"title": "表单",
+					"props": {
+						"id": "KPx2ElqTc",
+						"layout": "vertical",
+						"disabled": {
+							"isBind": true,
+							"name": "loginLoading"
+						},
+						"style": {
+							"width": 500
+						},
+						"colon": true,
+						"onSubmit": {
+							"isEvent": true,
+							"actions": [
+								{
+									"id": "TGvaS-L4Y",
+									"name": "custom",
+									"form": {
+										"content": "const remove = utils.message.loading({ content: '登陆中...', duration: 0 });\r\npage.setData({ loginLoading: true });\r\nsetTimeout(() => {\r\n  remove();\r\n  page.setData({ loginLoading: false });\r\n  utils.message.success('登陆成功！');\r\n  console.log(page.forms['KPx2ElqTc']?.getFieldsValue());\r\n}, 3000);\r\n"
+									}
+								}
+							]
+						}
+					},
+					"container": true,
+					"id": "AagyK_-vLK",
+					"children": [
+						{
+							"name": "title",
+							"title": "标题",
+							"children": [
+								"登陆表单"
+							],
+							"id": "2lighn5Yr",
+							"props": {
+								"heading": 4,
+								"style": {
+									"textAlign": "center"
+								},
+								"type": "primary"
+							}
+						},
+						{
+							"name": "formitem",
+							"title": "表单项",
+							"container": true,
+							"id": "NuFJAM7jM",
+							"children": [
+								{
+									"name": "input",
+									"title": "输入框",
+									"props": {
+										"placeholder": "请输入用户名",
+										"allowClear": true
+									},
+									"id": "VXCkPnp4L"
+								}
+							],
+							"props": {
+								"field": "username",
+								"label": "用户名",
+								"rules": [
+									{
+										"type": "string",
+										"required": true,
+										"message": "请输入用户名",
+										"id": "jehH1IWAR"
+									}
+								]
+							}
+						},
+						{
+							"name": "formitem",
+							"title": "表单项",
+							"container": true,
+							"id": "i-tb_q5It",
+							"children": [
+								{
+									"name": "password",
+									"title": "密码框",
+									"props": {
+										"placeholder": "请输入密码",
+										"allowClear": true
+									},
+									"id": "PCMSj8UvA"
+								}
+							],
+							"props": {
+								"field": "password",
+								"label": "密码",
+								"rules": [
+									{
+										"type": "string",
+										"required": true,
+										"message": "请输入密码",
+										"id": "llVH-IW9L"
+									},
+									{
+										"type": "string",
+										"message": "密码必须为6到12位的字母数字.或_组成",
+										"match": {
+											"isRegExp": true,
+											"source": "^[a-zA-Z0-9._]{6,12}$"
+										},
+										"id": "XnVNkKcBC"
+									}
+								]
+							}
+						},
+						{
+							"name": "formitem",
+							"title": "表单项",
+							"container": true,
+							"id": "c7f1m6djOf",
+							"children": [
+								{
+									"name": "space",
+									"title": "间距",
+									"container": true,
+									"onlyContainer": true,
+									"id": "Fcsqto0t9af",
+									"children": [
+										{
+											"name": "button",
+											"title": "按钮",
+											"props": {
+												"type": "primary",
+												"long": true,
+												"icon": {
+													"isIcon": true,
+													"name": "IconCheck"
+												},
+												"loading": {
+													"isBind": true,
+													"name": "loginLoading"
+												},
+												"htmlType": "submit"
+											},
+											"children": [
+												"登 录"
+											],
+											"inline": false,
+											"id": "yMEvbAW8v"
+										},
+										{
+											"name": "button",
+											"title": "按钮",
+											"props": {
+												"type": "secondary",
+												"long": true,
+												"htmlType": "reset",
+												"icon": {
+													"isIcon": true,
+													"name": "IconRefresh"
+												},
+												"loading": {
+													"isBind": true,
+													"name": "loginLoading"
+												},
+												"onClick": {
+													"isEvent": true,
+													"actions": [
+														{
+															"id": "FeRDA948_",
+															"name": "custom",
+															"form": {
+																"content": "page.forms['KPx2ElqTc']?.resetFields()"
+															}
+														}
+													]
+												}
+											},
+											"children": [
+												"重 置"
+											],
+											"inline": false,
+											"id": "SZB5UgOpa"
+										}
+									],
+									"props": {
+										"direction": "vertical",
+										"style": {
+											"display": "flex"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			],
+			"props": {
+				"align": "center",
+				"justify": "center",
+				"gutter": 0,
+				"style": {
+					"height": "100%"
+				}
+			}
+		}
+	],
+	"data": {
+		"loginLoading": false
+	}
+}

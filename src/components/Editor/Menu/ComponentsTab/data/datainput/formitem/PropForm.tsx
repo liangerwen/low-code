@@ -11,6 +11,7 @@ import { useCallback, useEffect } from "react";
 import { ActionProps } from "../..";
 import BindFormItem from "@/components/Editor/Menu/components/BindFormItem";
 import { omit } from "lodash";
+import RuleList from "./RuleList";
 
 const useForm = Form.useForm;
 
@@ -24,7 +25,7 @@ const PropForm = (props: ActionProps) => {
         component.props = {
           ...component.props,
           ...omit(form, "isChecked"),
-          triggerPropName: isChecked === true ? "checked" : "value",
+          triggerPropName: isChecked === true ? "checked" : undefined,
         };
         if (!labelCol?.span && !labelCol?.offset) {
           delete component.props.labelCol;
@@ -40,10 +41,11 @@ const PropForm = (props: ActionProps) => {
 
   useEffect(() => {
     form.resetFields();
-    form.setFieldsValue({
-      ...props.component.props,
-      isChecked: props.component.props?.triggerPropName === "checked",
-    });
+    form.setFieldsValue(
+      produce(props.component.props, (cprops) => {
+        cprops.isChecked = cprops?.triggerPropName === "checked";
+      })
+    );
   }, [props.component]);
 
   return (
@@ -62,6 +64,9 @@ const PropForm = (props: ActionProps) => {
       </BindFormItem>
       <BindFormItem data={props.schema.data} label="标签名称" field="label">
         <Input placeholder="输入标签名称" allowClear />
+      </BindFormItem>
+      <BindFormItem data={props.schema.data} label="规则校验" field="rules">
+        <RuleList />
       </BindFormItem>
       <BindFormItem data={props.schema.data} label="布局" field="layout">
         <Select

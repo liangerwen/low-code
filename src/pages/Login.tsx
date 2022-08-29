@@ -132,7 +132,7 @@ export default function Login() {
       </Layout.Header>
       <Layout.Content className="flex justify-center items-center">
         <Form<LoginFormProps>
-          className="important-w-[350px] frosted-glass-warpper-[rgba(var(--gray-2),0.8)] before-frosted-glass-mask-[rgba(var(--gray-2),0.3)] p-6 rounded"
+          className="important-w-[350px] frosted-glass-wrapper-[rgba(var(--gray-2),0.8)] before-frosted-glass-mask-[rgba(var(--gray-2),0.3)] p-6 rounded"
           layout="vertical"
           form={form}
           onSubmit={(form) => {

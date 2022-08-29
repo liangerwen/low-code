@@ -4,7 +4,7 @@ import { IconCopy, IconDelete, IconPaste } from "@arco-design/web-react/icon";
 import { isEmpty } from "lodash";
 import { useCallback, useContext, useMemo } from "react";
 import { EditorContext } from "../..";
-import { findComponent, findWarpper } from "../../utils";
+import { findComponent, findWrapper } from "../../utils";
 import { getIconByName } from "../ComponentsTab/data";
 
 interface IProps {
@@ -115,9 +115,9 @@ export default function PageNodeTreeTab(props: IProps) {
             const newSchema = produce(props.schema, (schema) => {
               const body = schema.body;
               const dragComponent = findComponent(body, (c) => c.id === dragId);
-              const { warpper: dragComponentWarpper, index: dragWarpperIdx } =
-                findWarpper(body, dragId);
-              dragComponentWarpper.splice(dragWarpperIdx, 1);
+              const { wrapper: dragComponentWrapper, index: dragWrapperIdx } =
+                findWrapper(body, dragId);
+              dragComponentWrapper.splice(dragWrapperIdx, 1);
               if (dropPosition === 0) {
                 const dropComponent = findComponent(
                   body,
@@ -128,10 +128,10 @@ export default function PageNodeTreeTab(props: IProps) {
                   dragComponent,
                 ];
               } else {
-                const { warpper: dropComponentWarpper, index: dropWarpperIdx } =
-                  findWarpper(body, dropId);
-                dropComponentWarpper.splice(
-                  dropPosition === -1 ? dropWarpperIdx : dropWarpperIdx + 1,
+                const { wrapper: dropComponentWrapper, index: dropWrapperIdx } =
+                  findWrapper(body, dropId);
+                dropComponentWrapper.splice(
+                  dropPosition === -1 ? dropWrapperIdx : dropWrapperIdx + 1,
                   0,
                   dragComponent
                 );
