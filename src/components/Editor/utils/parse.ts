@@ -1,5 +1,5 @@
 import { FormInstance } from "@arco-design/web-react";
-import { isArray, isEmpty, isPlainObject } from "lodash";
+import { get, isArray, isEmpty, isPlainObject } from "lodash";
 import { createElement } from "react";
 import { NavigateFunction, Params } from "react-router-dom";
 import EditorIcon from "../Menu/components/EditorIcon";
@@ -23,7 +23,7 @@ export const parsePropsForEditor = (
     } else if (prop?.isEvent) {
       ret[k] = undefined;
     } else if (prop?.isBind) {
-      ret[k] = "${" + prop.name + "}";
+      ret[k] = "${" + prop.path.join(".") + "}";
     } else if (prop?.isRegExp) {
       ret[k] = new RegExp(prop.source);
     } else if (isPlainObject(prop)) {
@@ -62,7 +62,7 @@ export const parsePropsForViewer = (
     } else if (prop?.isEvent) {
       ret[k] = (...args) => doActions(prop.actions, options, args);
     } else if (prop?.isBind) {
-      ret[k] = options.data?.[prop.name];
+      ret[k] = get(options.data, prop.path);
     } else if (prop?.isRegExp) {
       ret[k] = new RegExp(prop.source);
       JSON.stringify;

@@ -16,10 +16,12 @@
 						"layout": "vertical",
 						"disabled": {
 							"isBind": true,
-							"name": "loginLoading"
+							"path": [
+								"loginLoading"
+							]
 						},
 						"style": {
-							"width": 500
+							"width": 350
 						},
 						"colon": true,
 						"onSubmit": {
@@ -145,7 +147,9 @@
 												},
 												"loading": {
 													"isBind": true,
-													"name": "loginLoading"
+													"path": [
+														"loginLoading"
+													]
 												},
 												"htmlType": "submit"
 											},
@@ -168,7 +172,9 @@
 												},
 												"loading": {
 													"isBind": true,
-													"name": "loginLoading"
+													"path": [
+														"loginLoading"
+													]
 												},
 												"onClick": {
 													"isEvent": true,

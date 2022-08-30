@@ -1,6 +1,22 @@
-import { Form, FormItemProps, Select, Tooltip } from "@arco-design/web-react";
+import { Cascader, Form, FormItemProps, Tooltip } from "@arco-design/web-react";
 import { IconSwap } from "@arco-design/web-react/icon";
+import { isEmpty, isPlainObject } from "lodash";
 import { cloneElement, useEffect, useMemo, useState } from "react";
+
+const objToOptions = (data) =>
+  Object.keys(data).map((i) => {
+    const value = data[i];
+    return isPlainObject(value) && !isEmpty(value)
+      ? {
+          label: i,
+          value: i,
+          children: objToOptions(value),
+        }
+      : {
+          label: i,
+          value: i,
+        };
+  });
 
 function BindFormItemChildrenWrapper({
   children,
@@ -15,28 +31,28 @@ function BindFormItemChildrenWrapper({
   const [isBind, setIsBind] = useState(false);
   const displayValue = useMemo(() => {
     if (isBind) {
-      return value?.isBind && value?.name;
+      return value?.isBind && value?.path;
     }
-    return value?.isBind ? data[value.name] : value;
+    return value?.isBind ? value?.path?.join(".") : value;
   }, [value, isBind, data]);
+  const options = useMemo(() => objToOptions(data), [data]);
   useEffect(() => {
-    setIsBind(!!value?.isBind);
+    value && setIsBind(!!value?.isBind);
   }, [value]);
   return (
     // @ts-ignore
     <div className="w-full flex items-center">
       {isBind ? (
-        <Select
+        <Cascader
           placeholder="选择变量"
-          value={displayValue}
+          options={options}
+          showSearch
+          changeOnSelect
           allowClear
+          value={displayValue}
           onChange={(v) => {
-            rest?.onChange(v && { isBind: true, name: v });
+            rest?.onChange(v && { isBind: true, path: v });
           }}
-          options={Object.keys(data).map((i) => ({
-            label: i,
-            value: i,
-          }))}
         />
       ) : (
         children &&

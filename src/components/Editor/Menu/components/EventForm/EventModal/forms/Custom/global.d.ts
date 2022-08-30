@@ -46,7 +46,7 @@ type NotifyType = {
 };
 type ActionType = { id: string; name: string; form?: Record<string, any> };
 type EventType = { isEvent: true; actions: ActionType[] };
-type BindType = { isBind: true; name: string };
+type BindType = { isBind: true; path: string[] };
 type IconType = { isIcon: true; name: string };
 interface IComponent {
   id?: string;
@@ -64,6 +64,7 @@ interface ISchema {
   onDestroy?: EventType;
   onUpdate?: EventType;
   data?: Record<string, any>;
+  css?: string;
   body: IComponent[];
 }
 type FieldKeyType = string | number | symbol;
