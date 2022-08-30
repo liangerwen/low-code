@@ -1,6 +1,6 @@
 import useSyncState from "@/hooks/useSyncState";
 import { FormInstance } from "@arco-design/web-react";
-import { isEmpty, noop } from "lodash";
+import { noop } from "lodash";
 import {
   createContext,
   useCallback,
@@ -16,6 +16,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
+import { render } from "less";
 import ErrorComp from "./components/ErrorComp";
 import ProFormProvider from "./Menu/components/ProFormProvider";
 import { getComponentByName } from "./Menu/ComponentsTab/data";
@@ -118,7 +119,7 @@ export interface IProps {
 
 export default function EditorViewer(props: IProps) {
   const { schema } = props;
-  const { onDestroy, onLoad, onUpdate, data = {} } = schema;
+  const { onDestroy, onLoad, onUpdate, data = {}, css = "" } = schema;
 
   const formRef = useRef({});
 
@@ -144,10 +145,21 @@ export default function EditorViewer(props: IProps) {
     if (onLoad) {
       doActions(onLoad.actions, options);
     }
+    let url, stylesheet;
+    if (css.trim()) {
+      stylesheet = document.createElement("link");
+      stylesheet.setAttribute("rel", "stylesheet");
+      render(css).then((res) => {
+        const file = new Blob([res.css], { type: "text/css" });
+        url = URL.createObjectURL(file);
+        stylesheet.setAttribute("href", url);
+        document.head.appendChild(stylesheet);
+      });
+    }
     return () => {
-      if (onDestroy) {
-        doActions(onDestroy.actions, options);
-      }
+      onDestroy && doActions(onDestroy.actions, options);
+      url && URL.revokeObjectURL(url);
+      stylesheet && document.head.removeChild(stylesheet);
     };
   }, []);
 

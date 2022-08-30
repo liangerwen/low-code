@@ -19,6 +19,7 @@ import { Switch } from "@arco-design/web-react";
 import { CustomFormType, FormPropsType, FormRefType } from "../../../types";
 import EventContentWarp from "../../EventContentWarp";
 import MENUKEYS from "../../../keys";
+import CodeEditor from "@/components/CodeEditor";
 
 const baseType = import.meta.globEager<string>("./base.d.ts", { as: "raw" })[
   "./base.d.ts"
@@ -30,7 +31,6 @@ const globalType = import.meta.globEager<string>("./global.d.ts", {
 const CustomForm = forwardRef<FormRefType, FormPropsType<CustomFormType>>(
   function ({ value = { content: "" } }, ref) {
     const instance = useRef<monaco.editor.IStandaloneCodeEditor>(null);
-    const container = useRef<HTMLDivElement>(null);
     const [visible, setVisible] = useState(true);
 
     const { mode: ThemeMode } = useMode();
@@ -39,6 +39,7 @@ const CustomForm = forwardRef<FormRefType, FormPropsType<CustomFormType>>(
     useImperativeHandle(ref, () => ({
       validate: () => {
         return new Promise((resolve, reject) => {
+          instance.current.getAction("editor.action.formatDocument").run();
           const makers = monaco.editor.getModelMarkers({});
           if (isEmpty(makers)) {
             resolve({ content: instance.current?.getValue() });
@@ -54,56 +55,6 @@ const CustomForm = forwardRef<FormRefType, FormPropsType<CustomFormType>>(
         instance.current.setValue(value.content);
       }
     }, [value.content]);
-
-    useEffect(() => {
-      instance.current = monaco.editor.create(container.current, {
-        value: value.content,
-        language: "typescript",
-        contextmenu: false,
-        minimap: {
-          enabled: false,
-        },
-        autoDetectHighContrast: false,
-        wordWrap: "wordWrapColumn",
-      });
-      const globalExtraLib =
-        monaco.languages.typescript.typescriptDefaults.addExtraLib(
-          baseType + globalType,
-          "lowcode.d.ts"
-        );
-      monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-        noSuggestionDiagnostics: true,
-        onlyVisible: true,
-      });
-      const documentFormattingEditProvider =
-        monaco.languages.registerDocumentFormattingEditProvider("typescript", {
-          async provideDocumentFormattingEdits(model) {
-            const prettier = await import("prettier/standalone");
-            const babel = await import("prettier/parser-babel");
-            const text = prettier.format(model.getValue(), {
-              parser: "babel",
-              plugins: [babel],
-              singleQuote: true,
-              tabWidth: 2,
-            });
-            return [
-              {
-                range: model.getFullModelRange(),
-                text,
-              },
-            ];
-          },
-        });
-      return () => {
-        globalExtraLib.dispose();
-        documentFormattingEditProvider.dispose();
-        instance.current && instance.current.dispose();
-      };
-    }, []);
-
-    useEffect(() => {
-      monaco.editor.setTheme(realMode === ModeType.DARK ? "vs-dark" : "vs");
-    }, [realMode]);
 
     return (
       <EventContentWarp
@@ -131,9 +82,12 @@ const CustomForm = forwardRef<FormRefType, FormPropsType<CustomFormType>>(
           </>
         }
       >
-        <div
-          className="h-300px border-[rgb(var(--gray-3))] border-1"
-          ref={container}
+        <CodeEditor
+          ref={instance}
+          language="typescript"
+          extraLib={[
+            { filename: "lowcode.d.ts", content: baseType + globalType },
+          ]}
         />
       </EventContentWarp>
     );

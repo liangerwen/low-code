@@ -1,8 +1,9 @@
-import { Form, Switch } from "@arco-design/web-react";
+import { Form } from "@arco-design/web-react";
 import { pick } from "lodash";
 import { generateEventProps } from "../../utils/events";
 import EventForm from "../components/EventForm";
-import JsonInput from "../components/JsonInput";
+import GlobalCssEditor from "./GlobalCssEditor";
+import GlobalDataEditor from "./GlobalDataEditor";
 
 const FormItem = Form.Item;
 const useForm = Form.useForm;
@@ -14,6 +15,7 @@ interface FormProps {
     onUpdate?: EventType;
   };
   data: Record<string, any>;
+  css: string;
 }
 
 interface IProps {
@@ -31,11 +33,13 @@ export default (props: IProps) => {
       initialValues={{
         lifecycle: pick(props.schema, "onLoad", "onDestroy", "onUpdate"),
         data: props.schema?.data,
+        css: props.schema?.css,
       }}
       onChange={(_, form) => {
         props.onChange({
           ...generateEventProps(props.schema, form.lifecycle),
           data: form.data,
+          css: form.css,
         });
       }}
     >
@@ -57,7 +61,10 @@ export default (props: IProps) => {
         }}
         formatter={(data) => JSON.stringify(data || {}, null, 4)}
       >
-        <JsonInput />
+        <GlobalDataEditor />
+      </FormItem>
+      <FormItem label="全局样式" field="css">
+        <GlobalCssEditor />
       </FormItem>
     </Form>
   );

@@ -1,4 +1,4 @@
-import { Collapse, Form, Select } from "@arco-design/web-react";
+import { Collapse, Form, InputTag } from "@arco-design/web-react";
 import { CSSProperties, useEffect } from "react";
 import BackgroundForm from "./BackgroundForm";
 import BorderForm from "./BorderForm";
@@ -31,8 +31,13 @@ export default function StyleForm(props) {
       labelCol={{ span: 0 }}
       wrapperCol={{ span: 24 }}
     >
-      <FormItem label="类名绑定" field="className">
-        <Select></Select>
+      <FormItem
+        label="类名绑定"
+        field="className"
+        normalize={(v) => v && v.join(" ")}
+        formatter={(v) => v && v.split(" ")}
+      >
+        <InputTag placeholder="输入类名" />
       </FormItem>
       <FormItem label="行内样式">
         <Collapse

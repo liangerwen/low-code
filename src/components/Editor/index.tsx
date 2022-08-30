@@ -1,7 +1,8 @@
 import { Layout, Message } from "@arco-design/web-react";
 import classNames from "classnames";
 import { generate as uuid } from "shortid";
-import { createContext, useCallback, useRef, useState } from "react";
+import { createContext, useCallback, useEffect, useRef, useState } from "react";
+import { render } from "less";
 import EditorContainer, { PAGE_FLAG } from "./Container";
 import EditorMenu from "./Menu";
 import styles from "./styles/index.module.less";
@@ -364,6 +365,25 @@ const Editor = (props: IProps) => {
   const mouseSensor = useSensor(MouseSensor);
 
   const sensors = useSensors(mouseSensor);
+
+  useEffect(() => {
+    const { css = "" } = value;
+    let url, stylesheet;
+    if (css.trim()) {
+      stylesheet = document.createElement("link");
+      stylesheet.setAttribute("rel", "stylesheet");
+      render(css).then((res) => {
+        const file = new Blob([res.css], { type: "text/css" });
+        url = URL.createObjectURL(file);
+        stylesheet.setAttribute("href", url);
+        document.head.appendChild(stylesheet);
+      });
+    }
+    return () => {
+      url && URL.revokeObjectURL(url);
+      stylesheet && document.head.removeChild(stylesheet);
+    };
+  }, [value.css]);
 
   return (
     <EditorContext.Provider
