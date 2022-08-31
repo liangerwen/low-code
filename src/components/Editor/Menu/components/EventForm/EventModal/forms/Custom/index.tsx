@@ -84,6 +84,7 @@ const CustomForm = forwardRef<FormRefType, FormPropsType<CustomFormType>>(
       >
         <CodeEditor
           ref={instance}
+          initialValue={value.content}
           language="typescript"
           extraLib={[
             { filename: "lowcode.d.ts", content: baseType + globalType },

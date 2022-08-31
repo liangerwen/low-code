@@ -31,10 +31,6 @@ const CodeEditor = forwardRef<monaco.editor.IStandaloneCodeEditor, IProps>(
     useImperativeHandle(ref, () => instance.current);
 
     useEffect(() => {
-      instance.current && instance.current.setValue(initialValue);
-    }, [initialValue]);
-
-    useEffect(() => {
       instance.current = monaco.editor.create(container.current, {
         value: initialValue,
         language,
