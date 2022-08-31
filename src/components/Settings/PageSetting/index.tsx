@@ -1,4 +1,4 @@
-import { cloneElement, useState } from "react";
+import { cloneElement, ReactElement, useState } from "react";
 import { Drawer } from "@arco-design/web-react";
 import { IconSettings } from "@arco-design/web-react/icon";
 import Block from "./block";
@@ -7,7 +7,7 @@ import useLocale from "@/hooks/useLocale";
 import IconButton from "@/components/IconButton";
 
 interface SettingProps {
-  trigger?: React.ReactElement;
+  trigger?: ReactElement;
 }
 
 export default function PageSetting(props: SettingProps) {
@@ -18,7 +18,7 @@ export default function PageSetting(props: SettingProps) {
   return (
     <>
       {trigger ? (
-        cloneElement(trigger as React.ReactElement, {
+        cloneElement(trigger as ReactElement, {
           onClick: () => {
             setVisible(true);
           },

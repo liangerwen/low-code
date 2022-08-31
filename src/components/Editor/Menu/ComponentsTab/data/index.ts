@@ -11,7 +11,7 @@ const components = Object.values(examples)
   .flat();
 
 type Mapping = {
-  [key: string]: React.FC<any>;
+  [key: string]: FC<any>;
 };
 
 export interface ActionProps {

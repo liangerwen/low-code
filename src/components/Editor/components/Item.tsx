@@ -8,10 +8,10 @@ import {
 } from "@arco-design/web-react/icon";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import classNames from "classnames";
-import { isEmpty } from "lodash";
 import {
   cloneElement,
   forwardRef,
+  LegacyRef,
   ReactElement,
   ReactNode,
   useCallback,
@@ -70,7 +70,7 @@ const ItemWrapper = forwardRef(
       type?: "container" | "onlyContainer";
       wrapper: ReactElement;
     },
-    ref: React.LegacyRef<HTMLDivElement>
+    ref: LegacyRef<HTMLDivElement>
   ) => {
     const { type, children, action, divider, wrapper, ...rest } = props;
     if (type === "container") {

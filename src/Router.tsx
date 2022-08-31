@@ -1,18 +1,18 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, ReactElement, Suspense, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Spin, Layout as ArcoLayout } from "@arco-design/web-react";
+import { Spin } from "@arco-design/web-react";
 import { IconApps } from "@arco-design/web-react/icon";
 import NotFind from "./pages/404";
 import Login from "./pages/Login";
 import Layout from "./components/Layout";
 
-const lazyload = (importFn, props = {}) => {
+export const lazyload = (importFn, props = {}) => {
   const LazyComp = lazy(importFn);
   return (
     <Suspense
       fallback={
         <div className="w-full h-full flex items-center justify-center">
-          <Spin />
+          <Spin tip="拼命加载中..." />
         </div>
       }
     >
@@ -33,8 +33,8 @@ export interface CustomRoutes {
   name?: string;
   path: string;
   children?: CustomRoutes[];
-  element?: React.ReactElement;
-  icon?: React.ReactElement;
+  element?: ReactElement;
+  icon?: ReactElement;
   inMenu?: boolean;
   breadcrumb?: boolean;
 }

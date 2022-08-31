@@ -3,7 +3,7 @@ import { Button, Modal } from "@arco-design/web-react";
 import { IconClose } from "@arco-design/web-react/icon";
 import { isEmpty } from "lodash";
 import CodeEditor from "@/components/CodeEditor";
-import { editor } from "monaco-editor";
+import * as monaco from "monaco-editor";
 
 interface IProps {
   value?: string;
@@ -11,7 +11,7 @@ interface IProps {
 }
 
 export default function ({ value = "", onChange }: IProps) {
-  const instance = useRef<editor.IStandaloneCodeEditor>(null);
+  const instance = useRef<monaco.editor.IStandaloneCodeEditor>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function ({ value = "", onChange }: IProps) {
         mountOnEnter={false}
         onOk={() => {
           instance.current.getAction("editor.action.formatDocument").run();
-          const makers = editor.getModelMarkers({});
+          const makers = monaco.editor.getModelMarkers({});
           if (isEmpty(makers)) {
             onChange?.(instance.current.getValue());
             setVisible(false);

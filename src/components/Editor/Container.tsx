@@ -15,7 +15,6 @@ import {
   IconSave,
   IconUndo,
 } from "@arco-design/web-react/icon";
-import ReactJson from "react-json-view";
 import classNames from "classnames";
 import { useCallback, useContext, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
@@ -28,6 +27,7 @@ import Item from "./components/Item";
 
 import styles from "./styles/container.module.less";
 import itemStyles from "./components/styles/item.module.less";
+import { lazyload } from "@/Router";
 
 const { Row } = Grid;
 
@@ -180,13 +180,13 @@ export default function EditorContainer(props: IProps) {
         width={500}
         placement="left"
       >
-        <ReactJson
-          src={props.schema as object}
-          indentWidth={2}
-          iconStyle="square"
-          displayDataTypes={false}
-          theme={elementMode === ModeType.DARK ? "mocha" : undefined}
-        />
+        {lazyload(() => import("react-json-view"), {
+          src: props.schema as object,
+          indentWidth: 2,
+          iconStyle: "square",
+          displayDataTypes: false,
+          theme: elementMode === ModeType.DARK ? "mocha" : undefined,
+        })}
       </Drawer>
     </Layout>
   );

@@ -15,7 +15,15 @@ import { IconClose, IconDown, IconMore } from "@arco-design/web-react/icon";
 import iconsJson from "@arco-design/web-react/icon/icons.json";
 import classNames from "classnames";
 import { chunk, setWith } from "lodash";
-import { cloneElement, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  cloneElement,
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import EditorIcon from "./EditorIcon";
 
 const Row = Grid.Row;
@@ -25,7 +33,7 @@ const ButtonGroup = Button.Group;
 interface IProps {
   value?: IconType;
   onChange?: (val: IconType) => void;
-  trigger?: React.ReactNode;
+  trigger?: ReactNode;
 }
 
 export default (props: IProps) => {
@@ -85,7 +93,7 @@ export default (props: IProps) => {
   return (
     <>
       {props.trigger ? (
-        cloneElement(props.trigger as React.ReactElement, {
+        cloneElement(props.trigger as ReactElement, {
           onClick: () => {
             setVisible(true);
           },

@@ -1,13 +1,19 @@
 import ActionWarp from "@/components/Editor/Menu/components/ActionWarp";
 import EventForm from "@/components/Editor/Menu/components/EventForm";
+import { FormProviderContext } from "@/components/Editor/Menu/components/ProFormProvider";
 import StyleForm from "@/components/Editor/Menu/components/StyleForm";
 import {
   generateEventProps,
   getEventsFromProps,
 } from "@/components/Editor/utils/events";
 import { produce } from "@/utils";
-import { Form } from "@arco-design/web-react";
+import {
+  Form as ArcoForm,
+  FormInstance,
+  FormProps,
+} from "@arco-design/web-react";
 import { pick } from "lodash";
+import { forwardRef, useContext, useEffect, useImperativeHandle } from "react";
 import { generate as uuid } from "shortid";
 import { ActionProps } from "../..";
 import PropForm from "./PropForm";
@@ -85,6 +91,20 @@ const Action = (props: ActionProps) => {
     />
   );
 };
+
+const Form = forwardRef<FormInstance, FormProps>((props, ref) => {
+  const [form] = ArcoForm.useForm();
+  const { collect } = useContext(FormProviderContext);
+
+  useImperativeHandle(ref, () => form);
+
+  useEffect(() => {
+    const dispose = props?.id && collect(props.id, form);
+    return dispose;
+  }, []);
+
+  return <ArcoForm {...props} form={form} />;
+});
 
 export default {
   name,

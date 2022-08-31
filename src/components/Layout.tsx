@@ -51,8 +51,8 @@ export default function Layout(props: IProps) {
     children,
   } = props;
 
-  const [breadcrumb, setBreadcrumb] = useState<React.ReactNode[]>([]);
-  const breadcrumbMap = useRef<Map<string, React.ReactNode[]>>(new Map());
+  const [breadcrumb, setBreadcrumb] = useState<ReactNode[]>([]);
+  const breadcrumbMap = useRef<Map<string, ReactNode[]>>(new Map());
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [openKeys, setOpenKeys] = useState([]);
 
