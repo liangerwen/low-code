@@ -19,7 +19,7 @@ import { Switch } from "@arco-design/web-react";
 import { CustomFormType, FormPropsType, FormRefType } from "../../../types";
 import EventContentWarp from "../../EventContentWarp";
 import MENUKEYS from "../../../keys";
-import CodeEditor from "@/components/CodeEditor";
+import CodeEditor, { CodeEditorInstance } from "@/components/CodeEditor";
 
 const baseType = import.meta.globEager<string>("./base.d.ts", { as: "raw" })[
   "./base.d.ts"
@@ -30,7 +30,7 @@ const globalType = import.meta.globEager<string>("./global.d.ts", {
 
 const CustomForm = forwardRef<FormRefType, FormPropsType<CustomFormType>>(
   function ({ value = { content: "" } }, ref) {
-    const instance = useRef<monaco.editor.IStandaloneCodeEditor>(null);
+    const instance = useRef<CodeEditorInstance>(null);
     const [visible, setVisible] = useState(true);
 
     const { mode: ThemeMode } = useMode();
@@ -39,12 +39,13 @@ const CustomForm = forwardRef<FormRefType, FormPropsType<CustomFormType>>(
     useImperativeHandle(ref, () => ({
       validate: () => {
         return new Promise((resolve, reject) => {
-          instance.current.getAction("editor.action.formatDocument").run();
-          const makers = monaco.editor.getModelMarkers({});
-          if (isEmpty(makers)) {
-            resolve({ content: instance.current?.getValue() });
+          const errors = instance.current?.getErrors();
+          if (isEmpty(errors)) {
+            instance.current?.formatCode().then(() => {
+              resolve({ content: instance.current?.getValue() });
+            });
           } else {
-            reject(makers);
+            reject(errors);
           }
         });
       },

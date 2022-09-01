@@ -154,6 +154,6 @@ interface ICurrent {
   arguments: any[]; // 当前组件事件的参数
 }
 
-declare const current: DeepReadonly<ICurrent>;
-declare const page: DeepReadonly<IPage>;
-declare const utils: DeepReadonly<IUtils>;
+declare var current: DeepReadonly<ICurrent>;
+declare var page: DeepReadonly<IPage>;
+declare var utils: DeepReadonly<IUtils>;
