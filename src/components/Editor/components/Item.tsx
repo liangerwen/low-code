@@ -67,7 +67,7 @@ const ItemWrapper = forwardRef(
       children?: ReactNode;
       action?: ReactNode;
       divider?: ReactNode;
-      type?: "container" | "onlyContainer";
+      type?: "inner" | "outside" | "self";
       wrapper: ReactElement;
       [key: string]: any;
     },
@@ -75,7 +75,7 @@ const ItemWrapper = forwardRef(
   ) => {
     const { type, children, action, divider, wrapper, ...rest } = props;
 
-    if (type === "container") {
+    if (type === "inner") {
       return (
         <div {...rest} ref={ref}>
           {action}
@@ -89,7 +89,17 @@ const ItemWrapper = forwardRef(
         </div>
       );
     }
-    if (type === "onlyContainer") {
+    if (type === "outside") {
+      return (
+        <div {...rest} ref={ref}>
+          {action}
+          {cloneElement(wrapper, {}, children)}
+          {divider}
+          <p className={styles["lc-item-tip"]}>拖动组件到此处</p>
+        </div>
+      );
+    }
+    if (type === "self") {
       const className = classNames(wrapper.props?.className, rest.className);
       return cloneElement(
         wrapper,
@@ -112,16 +122,7 @@ const ItemWrapper = forwardRef(
 
 const Item = (props: IProps) => {
   const { item, index } = props;
-  const {
-    id,
-    inline,
-    container,
-    onlyContainer,
-    name,
-    title,
-    props: p,
-    children,
-  } = item;
+  const { id, inline, container, name, title, props: p, children } = item;
 
   const {
     attributes,
@@ -141,11 +142,11 @@ const Item = (props: IProps) => {
   const Comp = getComponentByName(name);
   const displayProps = useMemo(() => parsePropsForEditor(p), [p]);
   const displayChildren = useMemo(() => {
-    const RenderItem = container ? Item : CommonItem;
+    const RenderItem = !!container ? Item : CommonItem;
     return parseChildrenForEditor(children, {
       render: (child, idx) => <RenderItem item={child} index={idx} key={idx} />,
     });
-  }, [children, container]);
+  }, [children, !!container]);
 
   const {
     activeComponent,
@@ -234,6 +235,8 @@ const Item = (props: IProps) => {
       onClick: setActive,
       className: classNames(className, {
         "min-w-160px important-pt-[20px]": showActions,
+        [styles["lc-item__inline"]]: inline,
+        "important-pb-25px": container,
       }),
     }),
     [attributes, setActive, className, inline, showActions]
@@ -250,17 +253,15 @@ const Item = (props: IProps) => {
           setDropRef(ref);
           setHoverRef(ref);
         }}
-        type={
-          onlyContainer ? "onlyContainer" : container ? "container" : undefined
-        }
+        type={container}
         wrapper={
           <Comp
             {...displayProps}
             className={classNames(
               displayProps?.className,
               {
-                [styles["lc-item__container"]]: container,
-                [styles["lc-item__inline"]]: inline,
+                [styles["lc-item__container"]]: !!container,
+                "important-min-h-[90px]": container === "self",
               },
               "pointer-events-none select-none"
             )}

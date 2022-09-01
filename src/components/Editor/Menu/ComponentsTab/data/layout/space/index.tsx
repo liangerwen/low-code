@@ -11,8 +11,8 @@ const name = "space";
 const defaultSchema = {
   name,
   title: "间距",
-  container: true,
-  onlyContainer: true,
+  container: "outside",
+  inline: true,
 };
 
 const Action = (props: ActionProps) => {

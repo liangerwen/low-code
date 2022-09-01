@@ -11,7 +11,7 @@ const name = "formitem";
 const defaultSchema = {
   name,
   title: "表单项",
-  container: true,
+  container: "outside",
 };
 
 const Action = (props: ActionProps) => {

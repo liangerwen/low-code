@@ -151,28 +151,31 @@ const Editor = (props: IProps) => {
             return;
           }
         }
-        // 当前元素的中心位置
-        const middleX = left + width / 2,
-          middleY = top + height / 2;
-        const edgeHeight = height / 4 > 15 ? 15 : height / 4;
-        // 当前元素y坐标分为上中下 上1/4 中1/2 下1/4
-        const middleTop = top + edgeHeight,
-          middleBottom = top + height - edgeHeight;
         let direction: Direction;
-        if ((current as IComponent)?.inline && movingComponent?.inline) {
-          // inline组件以x轴区分方向
-          direction = middleX > currentX ? Direction.PREV : Direction.NEXT;
-        } else if ((current as IComponent)?.container) {
-          // container组件以y轴分为上中下分方向
-          direction =
-            currentY < middleTop
-              ? Direction.PREV
-              : currentY > middleBottom
-              ? Direction.NEXT
-              : Direction.MIDDLE;
+        const percentX = (currentX - left) / width,
+          percentY = (currentY - top) / height;
+        if (current?.inline && movingComponent?.inline) {
+          if (current?.container) {
+            direction =
+              percentX < 1 / 4
+                ? Direction.PREV
+                : percentX > 3 / 4
+                ? Direction.NEXT
+                : Direction.MIDDLE;
+          } else {
+            direction = percentX < 1 / 2 ? Direction.PREV : Direction.NEXT;
+          }
         } else {
-          // 其他组件以y轴分方向
-          direction = middleY > currentY ? Direction.PREV : Direction.NEXT;
+          if (current?.container) {
+            direction =
+              percentY < 1 / 4
+                ? Direction.PREV
+                : percentY > 3 / 4
+                ? Direction.NEXT
+                : Direction.MIDDLE;
+          } else {
+            direction = percentY < 1 / 2 ? Direction.PREV : Direction.NEXT;
+          }
         }
         const currentPosition = {
           id: overId,

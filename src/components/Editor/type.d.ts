@@ -25,8 +25,10 @@ interface IComponent {
   title?: string;
   props?: Record<string, any>;
   children?: (string | IconType | BindType | IComponent)[];
-  container?: boolean;
-  onlyContainer?: boolean;
+  // inner: 需要额外的wrapper，divider和容器tip放在组件children里
+  // outside: 需要额外的wrapper，divider和容器tip放在wrapper里
+  // self: 不需要额外的wrapper，divider和容器tip放在组件children里
+  container?: "inner" | "outside" | "self";
   inline?: boolean;
 }
 

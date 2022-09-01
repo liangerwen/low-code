@@ -13,8 +13,7 @@ const name = "row";
 const defaultSchema = {
   name,
   title: "行",
-  container: true,
-  onlyContainer: true,
+  container: "self",
 };
 
 const Action = (props: ActionProps) => {

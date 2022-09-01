@@ -95,12 +95,12 @@ const ViewerItem = (props: ItemProps) => {
   );
 
   const renderChildren = useCallback(() => {
-    const Item = container ? ViewerItem : ViewerCommonItem;
+    const Item = !!container ? ViewerItem : ViewerCommonItem;
     return parseChildrenForViewer(children, {
       render: (child, idx) => <Item item={child} key={idx} />,
       data: options.data,
     });
-  }, [children, container]);
+  }, [children, !!container]);
 
   return (
     <ErrorBoundary

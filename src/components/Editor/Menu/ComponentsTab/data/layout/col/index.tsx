@@ -13,8 +13,7 @@ const name = "col";
 const defaultSchema = {
   name,
   title: "列",
-  container: true,
-  onlyContainer: true,
+  container: "self",
 };
 
 const Action = (props: ActionProps) => {

@@ -15,7 +15,7 @@ const defaultSchema = {
     title: "卡片标题",
   },
   children: [],
-  container: true,
+  container: "inner",
 };
 
 const Action = (props: ActionProps) => {

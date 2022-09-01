@@ -4,8 +4,7 @@
 		{
 			"name": "row",
 			"title": "行",
-			"container": true,
-			"onlyContainer": true,
+			"container": "self",
 			"id": "Xpbznu2cE",
 			"children": [
 				{
@@ -37,7 +36,7 @@
 							]
 						}
 					},
-					"container": true,
+					"container": "outside",
 					"id": "AagyK_-vLK",
 					"children": [
 						{
@@ -58,7 +57,7 @@
 						{
 							"name": "formitem",
 							"title": "表单项",
-							"container": true,
+							"container": "outside",
 							"id": "NuFJAM7jM",
 							"children": [
 								{
@@ -87,7 +86,7 @@
 						{
 							"name": "formitem",
 							"title": "表单项",
-							"container": true,
+							"container": "outside",
 							"id": "i-tb_q5It",
 							"children": [
 								{
@@ -125,14 +124,13 @@
 						{
 							"name": "formitem",
 							"title": "表单项",
-							"container": true,
+							"container": "outside",
 							"id": "c7f1m6djOf",
 							"children": [
 								{
 									"name": "space",
 									"title": "间距",
-									"container": true,
-									"onlyContainer": true,
+									"container": "outside",
 									"id": "Fcsqto0t9af",
 									"children": [
 										{

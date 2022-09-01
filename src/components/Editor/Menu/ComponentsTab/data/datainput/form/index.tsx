@@ -39,7 +39,7 @@ const defaultSchema = {
       ],
     },
   },
-  container: true,
+  container: "outside",
 };
 
 const Action = (props: ActionProps) => {

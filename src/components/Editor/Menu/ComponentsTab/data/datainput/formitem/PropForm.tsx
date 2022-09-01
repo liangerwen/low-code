@@ -40,11 +40,16 @@ const PropForm = (props: ActionProps) => {
   );
 
   useEffect(() => {
+    const {
+      component: { props: cp },
+    } = props;
     form.resetFields();
     form.setFieldsValue(
-      produce(props.component.props, (cprops) => {
-        cprops.isChecked = cprops?.triggerPropName === "checked";
-      })
+      cp
+        ? produce(cp, (cprops) => {
+            cprops.isChecked = cprops?.triggerPropName === "checked";
+          })
+        : {}
     );
   }, [props.component]);
 
