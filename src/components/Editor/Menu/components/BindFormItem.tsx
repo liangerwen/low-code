@@ -1,6 +1,6 @@
 import { Cascader, Form, FormItemProps, Tooltip } from "@arco-design/web-react";
 import { IconSwap } from "@arco-design/web-react/icon";
-import { isEmpty, isPlainObject } from "lodash";
+import { isEmpty, isPlainObject, pick } from "lodash";
 import { cloneElement, useEffect, useMemo, useState } from "react";
 
 const objToOptions = (data) =>
@@ -22,19 +22,21 @@ function BindFormItemChildrenWrapper({
   children,
   data = {},
   triggerPropName,
+  field,
   ...rest
+}: Pick<FormItemProps, "triggerPropName" | "field" | "children"> & {
+  data: Record<string, any>;
+  [key: string]: any;
 }) {
   const value = useMemo(
     () => (triggerPropName ? rest[triggerPropName] : rest.value),
     [triggerPropName, rest]
   );
   const [isBind, setIsBind] = useState(false);
-  const displayValue = useMemo(() => {
-    if (isBind) {
-      return value?.isBind && value?.path;
-    }
-    return value?.isBind ? value?.path?.join(".") : value;
-  }, [value, isBind, data]);
+  const displayValue = useMemo(
+    () => value?.isBind && value?.path,
+    [value, isBind]
+  );
   const options = useMemo(() => objToOptions(data), [data]);
   useEffect(() => {
     value && setIsBind(!!value?.isBind);
@@ -55,11 +57,19 @@ function BindFormItemChildrenWrapper({
           }}
         />
       ) : (
-        children &&
-        cloneElement(children, {
-          ...rest,
-          [triggerPropName || "value"]: displayValue,
-        })
+        <Form.Item
+          noStyle
+          triggerPropName={triggerPropName}
+          field={field}
+          formatter={(v) => {
+            if (v?.isBind) {
+              return "${" + v.path.join(".") + "}";
+            }
+            return v;
+          }}
+        >
+          {children}
+        </Form.Item>
       )}
       <Tooltip content={isBind ? "切换为固定值" : "切换为绑定变量"}>
         <IconSwap
@@ -76,12 +86,13 @@ export default function BindFormItem({
   data,
   ...rest
 }: FormItemProps & { data: Record<string, any> }) {
+  const wrapperProps = useMemo(
+    () => pick(rest, "triggerPropName", "field"),
+    [rest]
+  );
   return (
     <Form.Item {...rest}>
-      <BindFormItemChildrenWrapper
-        triggerPropName={rest.triggerPropName}
-        data={data}
-      >
+      <BindFormItemChildrenWrapper data={data} {...wrapperProps}>
         {children}
       </BindFormItemChildrenWrapper>
     </Form.Item>

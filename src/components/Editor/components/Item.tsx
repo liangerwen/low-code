@@ -69,24 +69,31 @@ const ItemWrapper = forwardRef(
       divider?: ReactNode;
       type?: "container" | "onlyContainer";
       wrapper: ReactElement;
+      [key: string]: any;
     },
     ref: LegacyRef<HTMLDivElement>
   ) => {
     const { type, children, action, divider, wrapper, ...rest } = props;
+
     if (type === "container") {
       return (
         <div {...rest} ref={ref}>
           {action}
-          {cloneElement(wrapper, {}, children)}
-          {divider}
-          <p className={styles["lc-item-tip"]}>拖动组件到此处</p>
+          {cloneElement(
+            wrapper,
+            {},
+            children,
+            divider,
+            <p className={styles["lc-item-tip"]}>拖动组件到此处</p>
+          )}
         </div>
       );
     }
     if (type === "onlyContainer") {
+      const className = classNames(wrapper.props?.className, rest.className);
       return cloneElement(
         wrapper,
-        { ...rest, ref: ref },
+        { ...rest, className, ref: ref },
         action,
         children,
         divider,
@@ -226,8 +233,6 @@ const Item = (props: IProps) => {
       ...attributes,
       onClick: setActive,
       className: classNames(className, {
-        [styles["lc-item__container"]]: container,
-        [styles["lc-item__inline"]]: inline,
         "min-w-160px important-pt-[20px]": showActions,
       }),
     }),
@@ -253,6 +258,10 @@ const Item = (props: IProps) => {
             {...displayProps}
             className={classNames(
               displayProps?.className,
+              {
+                [styles["lc-item__container"]]: container,
+                [styles["lc-item__inline"]]: inline,
+              },
               "pointer-events-none select-none"
             )}
           />

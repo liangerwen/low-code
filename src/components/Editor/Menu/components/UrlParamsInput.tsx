@@ -2,7 +2,7 @@ import { produce } from "@/utils";
 import { Button, Empty, Grid, Input, InputProps } from "@arco-design/web-react";
 import { IconDelete, IconPlus } from "@arco-design/web-react/icon";
 
-const { Row, Col } = Grid;
+const { Row } = Grid;
 
 interface IProps {
   value?: { key: string; value: string }[];

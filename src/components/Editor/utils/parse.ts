@@ -14,7 +14,7 @@ import { doActions } from "./events";
 export const parsePropsForEditor = (
   props: Record<string, any>
 ): Record<string, any> => {
-  if (!isPlainObject(props)) return {};
+  if (!isPlainObject(props)) return props;
   const ret = {};
   Object.keys(props).forEach((k) => {
     const prop = props[k];
@@ -53,7 +53,7 @@ export const parsePropsForViewer = (
     setData: SetDataFunction;
   }
 ): Record<string, any> => {
-  if (!isPlainObject(props)) return {};
+  if (!isPlainObject(props)) return props;
   const ret = {};
   Object.keys(props).forEach((k) => {
     const prop = props[k];
@@ -91,7 +91,7 @@ export const parseChildrenForEditor = (
       return createElement(EditorIcon, { name: child.name });
     }
     if (child?.isBind) {
-      return "${" + child.name + "}";
+      return "${" + child.path.join(".") + "}";
     }
     if (render) return render(child, idx);
   });
@@ -108,7 +108,7 @@ export const parseChildrenForViewer = (
     data: Record<string, any>;
   } = { data: {} }
 ) => {
-  const { render } = options;
+  const { render, data } = options;
   if (isEmpty(children)) return null;
   const ret = children.map((child, idx) => {
     if (typeof child === "string") {
@@ -118,7 +118,7 @@ export const parseChildrenForViewer = (
       return createElement(EditorIcon, { name: child.name });
     }
     if (child?.isBind) {
-      return options.data[child.name];
+      return get(data, child.path);
     }
     if (render) return render(child, idx);
   });
