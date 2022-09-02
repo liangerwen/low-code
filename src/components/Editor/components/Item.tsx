@@ -1,5 +1,5 @@
 import useHover from "@/hooks/useHover";
-import { Divider, Space, Tooltip } from "@arco-design/web-react";
+import { Space, Tooltip } from "@arco-design/web-react";
 import {
   IconCopy,
   IconDelete,
@@ -158,40 +158,6 @@ const Item = (props: IProps) => {
     onPaste,
   } = useContext(EditorContext);
 
-  const isPrev = useMemo(
-    () => position?.id === id && position?.direction === Direction.PREV,
-    [position, id]
-  );
-  const isMiddle = useMemo(
-    () => position?.id === id && position?.direction === Direction.MIDDLE,
-    [position, id]
-  );
-  const isNext = useMemo(
-    () => position?.id === id && position?.direction === Direction.NEXT,
-    [position, id]
-  );
-  const renderDivider = useCallback(() => {
-    const isVertical = inline && movingComponent?.inline;
-    return (
-      <Divider
-        className={classNames(
-          styles["lc-item-driver"],
-          isVertical
-            ? styles["lc-item-driver__vertical"]
-            : styles["lc-item-driver__horizontal"]
-        )}
-        style={
-          isVertical
-            ? {
-                height: position!.height + 10,
-              }
-            : { width: position!.width }
-        }
-        type={isVertical ? "vertical" : "horizontal"}
-      />
-    );
-  }, [position, inline]);
-
   const isActive = useMemo(
     () => activeComponent?.id === id,
     [activeComponent, id]
@@ -203,15 +169,6 @@ const Item = (props: IProps) => {
       setActiveComponent(item);
     },
     [setActiveComponent, item]
-  );
-
-  const className = useMemo(
-    () =>
-      classNames(styles["lc-item"], {
-        [styles["lc-item__active"]]: isActive,
-        [styles["lc-item__dragging"]]: isDragging,
-      }),
-    [isActive, isDragging, movingComponent]
   );
 
   const [setHoverRef, isHover] = useHover<HTMLElement>();
@@ -229,24 +186,48 @@ const Item = (props: IProps) => {
     [item, onDelete, onPaste, onCopy]
   );
 
+  const dividerClass = useMemo(() => {
+    if (position?.id !== id) return;
+    if (position?.direction === Direction.TOP)
+      return "important-border-t-[rgb(var(--primary-6))] important-border-t-4";
+    if (position?.direction === Direction.LEFT)
+      return "important-border-l-[rgb(var(--primary-6))] important-border-l-4";
+    if (position?.direction === Direction.BOTTOM)
+      return "important-border-b-[rgb(var(--primary-6))] important-border-b-4";
+    if (position?.direction === Direction.RIGHT)
+      return "important-border-r-[rgb(var(--primary-6))] important-border-r-4";
+    if (position?.direction === Direction.MIDDLE)
+      return "important-bg-[rgb(var(--primary-2))]";
+  }, [position, id]);
+
   const wrapperProps = useMemo(
     () => ({
       ...attributes,
       onClick: setActive,
-      className: classNames(className, {
-        "min-w-160px important-pt-[20px]": showActions,
+      className: classNames(styles["lc-item"], dividerClass, {
+        [styles["lc-item__active"]]: isActive && !movingComponent,
+        [styles["lc-item__dragging"]]: isDragging,
         [styles["lc-item__inline"]]: inline,
         "important-pb-25px": container,
+        "min-w-160px important-pt-[20px]": showActions,
       }),
     }),
-    [attributes, setActive, className, inline, showActions]
+    [
+      attributes,
+      setActive,
+      inline,
+      showActions,
+      isActive,
+      isDragging,
+      movingComponent,
+      dividerClass,
+    ]
   );
 
   return (
     <ErrorBoundary
       fallbackRender={(args) => <ErrorComp {...args} name={name} id={id} />}
     >
-      {isPrev && renderDivider()}
       <ItemWrapper
         ref={(ref: HTMLElement) => {
           setDragRef(ref);
@@ -295,12 +276,10 @@ const Item = (props: IProps) => {
             </div>
           )
         }
-        divider={isMiddle && renderDivider()}
         {...wrapperProps}
       >
         {displayChildren}
       </ItemWrapper>
-      {isNext && renderDivider()}
     </ErrorBoundary>
   );
 };

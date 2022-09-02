@@ -30,9 +30,11 @@ import Viewer from "./Viewer";
 import { useSettings } from "../Settings";
 
 export enum Direction {
-  PREV,
+  TOP,
+  LEFT,
+  BOTTOM,
+  RIGHT,
   MIDDLE,
-  NEXT,
 }
 
 type PositionType = {
@@ -134,7 +136,7 @@ const Editor = (props: IProps) => {
       if (over) {
         const {
           id: overId,
-          rect: { top, left, height, width },
+          rect: { top, left, bottom, right, height, width },
           data: { current },
         } = over;
         // 当前元素是目标元素的祖父
@@ -152,30 +154,42 @@ const Editor = (props: IProps) => {
           }
         }
         let direction: Direction;
-        const percentX = (currentX - left) / width,
-          percentY = (currentY - top) / height;
-        if (current?.inline && movingComponent?.inline) {
-          if (current?.container) {
-            direction =
-              percentX < 1 / 4
-                ? Direction.PREV
-                : percentX > 3 / 4
-                ? Direction.NEXT
-                : Direction.MIDDLE;
-          } else {
-            direction = percentX < 1 / 2 ? Direction.PREV : Direction.NEXT;
-          }
+        if (current?.container) {
+          const diffTop = currentY - top,
+            diffLeft = currentX - left,
+            diffBottom = currentY - bottom,
+            diffRight = currentX - right;
+          const isTop = diffTop <= 15,
+            isLeft = diffLeft <= 15,
+            isBottom = diffBottom >= -15,
+            isRight = diffRight >= -15;
+          direction = isTop
+            ? Direction.TOP
+            : isLeft
+            ? Direction.LEFT
+            : isBottom
+            ? Direction.BOTTOM
+            : isRight
+            ? Direction.RIGHT
+            : Direction.MIDDLE;
         } else {
-          if (current?.container) {
-            direction =
-              percentY < 1 / 4
-                ? Direction.PREV
-                : percentY > 3 / 4
-                ? Direction.NEXT
-                : Direction.MIDDLE;
-          } else {
-            direction = percentY < 1 / 2 ? Direction.PREV : Direction.NEXT;
-          }
+          const percentX = (currentX - left) / width,
+            percentY = (currentY - top) / height;
+          const isTop = percentY <= 1 / 4,
+            isLeft = percentX <= 1 / 4,
+            isBottom = percentY > 3 / 4,
+            isRight = percentX > 3 / 4;
+          direction = isTop
+            ? Direction.TOP
+            : isLeft
+            ? Direction.LEFT
+            : isBottom
+            ? Direction.BOTTOM
+            : isRight
+            ? Direction.RIGHT
+            : current?.inline
+            ? Direction.RIGHT
+            : Direction.BOTTOM;
         }
         const currentPosition = {
           id: overId,
@@ -227,10 +241,16 @@ const Editor = (props: IProps) => {
                 const wrapperInfo = findWrapper(schema, targetId);
                 if (wrapperInfo) {
                   const { wrapper, index } = wrapperInfo;
-                  if (targetDirection === Direction.PREV) {
+                  if (
+                    targetDirection === Direction.TOP ||
+                    targetDirection === Direction.LEFT
+                  ) {
                     wrapper.splice(index, 0, movingComponent);
                     // 放置到目标组件的后一个
-                  } else if (targetDirection === Direction.NEXT) {
+                  } else if (
+                    targetDirection === Direction.RIGHT ||
+                    targetDirection === Direction.BOTTOM
+                  ) {
                     wrapper.splice(index + 1, 0, movingComponent);
                   }
                 }

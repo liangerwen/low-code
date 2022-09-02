@@ -1,6 +1,5 @@
 import {
   Button,
-  Divider,
   Drawer,
   Grid,
   Layout,
@@ -26,7 +25,6 @@ import { produce } from "@/utils";
 import Item from "./components/Item";
 
 import styles from "./styles/container.module.less";
-import itemStyles from "./components/styles/item.module.less";
 import { lazyload } from "@/Router";
 
 const { Row } = Grid;
@@ -142,7 +140,11 @@ export default function EditorContainer(props: IProps) {
           className={classNames(
             styles["lc-content"],
             styles["lc-editor-container"],
-            "p-2 h-full flex-1"
+            "p-2 h-full flex-1",
+            {
+              "important-bg-[rgb(var(--primary-2))]":
+                position?.id === PAGE_FLAG,
+            }
           )}
           onClick={(e) => {
             e.stopPropagation();
@@ -153,14 +155,6 @@ export default function EditorContainer(props: IProps) {
           {props.schema.body.map((component, idx) => (
             <Item key={idx} item={component} index={idx} />
           ))}
-          {position && position.id === PAGE_FLAG && (
-            <Divider
-              className={classNames(
-                itemStyles["lc-item-driver"],
-                itemStyles["lc-item-driver__horizontal"]
-              )}
-            />
-          )}
         </div>
       </Layout.Content>
       <Layout.Sider

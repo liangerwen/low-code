@@ -1,7 +1,7 @@
 import { Cascader, Form, FormItemProps, Tooltip } from "@arco-design/web-react";
 import { IconSwap } from "@arco-design/web-react/icon";
 import { isEmpty, isPlainObject, pick } from "lodash";
-import { cloneElement, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const objToOptions = (data) =>
   Object.keys(data).map((i) => {
@@ -73,7 +73,7 @@ function BindFormItemChildrenWrapper({
       )}
       <Tooltip content={isBind ? "切换为固定值" : "切换为绑定变量"}>
         <IconSwap
-          className="ml-2 cursor-pointer color-[var(--color-text-1)]"
+          className="ml-2 cursor-pointer important-color-[var(--color-text-1)]"
           onClick={() => setIsBind(!isBind)}
         />
       </Tooltip>
