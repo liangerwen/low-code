@@ -118,7 +118,7 @@ export default defineConfig(({ mode }) => {
         ],
         rules: [
           [
-            /^frosted-glass-warpper-\[(.+)\]$/,
+            /^frosted-glass-wrapper-\[(.+)\]$/,
             ([, d]) => ({
               position: "relative",
               overflow: "hidden",
