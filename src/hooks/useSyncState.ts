@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { produce } from "@/utils";
+import { produce } from "immer";
 
 /**
  * 同步的useState

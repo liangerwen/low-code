@@ -6,7 +6,7 @@ import {
   generateEventProps,
   getEventsFromProps,
 } from "@/components/Editor/utils/events";
-import { produce } from "@/utils";
+import { produce } from "immer";
 import {
   Form as ArcoForm,
   FormInstance,

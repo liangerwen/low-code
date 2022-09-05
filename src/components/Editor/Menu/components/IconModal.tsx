@@ -1,6 +1,6 @@
 import { useSettings } from "@/components/Settings";
 import useLocale from "@/hooks/useLocale";
-import { produce } from "@/utils";
+import { produce } from "immer";
 import {
   Modal,
   Grid,

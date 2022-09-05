@@ -25,7 +25,7 @@ import {
 } from "@dnd-kit/modifiers";
 import { generate as uuid } from "shortid";
 import { isEmpty } from "lodash";
-import { produce } from "@/utils";
+import { produce } from "immer";
 
 function OptionsInputItem<
   T extends { id: string | number; value: string; label: string }

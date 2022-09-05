@@ -1,4 +1,4 @@
-import { produce } from "@/utils";
+import { produce } from "immer";
 import { InputNumber, Select, Space } from "@arco-design/web-react";
 import { CSSProperties } from "react";
 import BoxInput, { ValueType } from "./BoxInput";

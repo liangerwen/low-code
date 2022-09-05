@@ -186,18 +186,21 @@ const Item = (props: IProps) => {
     [item, onDelete, onPaste, onCopy]
   );
 
+  // 上下左右中预览样式
   const dividerClass = useMemo(() => {
     if (position?.id !== id) return;
-    if (position?.direction === Direction.TOP)
-      return "important-border-t-[rgb(var(--primary-6))] important-border-t-4";
-    if (position?.direction === Direction.LEFT)
-      return "important-border-l-[rgb(var(--primary-6))] important-border-l-4";
-    if (position?.direction === Direction.BOTTOM)
-      return "important-border-b-[rgb(var(--primary-6))] important-border-b-4";
-    if (position?.direction === Direction.RIGHT)
-      return "important-border-r-[rgb(var(--primary-6))] important-border-r-4";
-    if (position?.direction === Direction.MIDDLE)
-      return "important-bg-[rgb(var(--primary-2))]";
+    switch (position?.direction) {
+      case Direction.TOP:
+        return "important-border-t-[rgb(var(--primary-6))] important-border-t-4";
+      case Direction.LEFT:
+        return "important-border-l-[rgb(var(--primary-6))] important-border-l-4";
+      case Direction.BOTTOM:
+        return "important-border-b-[rgb(var(--primary-6))] important-border-b-4";
+      case Direction.RIGHT:
+        return "important-border-r-[rgb(var(--primary-6))] important-border-r-4";
+      case Direction.MIDDLE:
+        return "important-bg-[rgb(var(--primary-2))]";
+    }
   }, [position, id]);
 
   const wrapperProps = useMemo(

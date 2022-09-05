@@ -1,4 +1,4 @@
-import { produce } from "@/utils";
+import { produce } from "immer";
 import { Empty, Tooltip, Tree } from "@arco-design/web-react";
 import { IconCopy, IconDelete, IconPaste } from "@arco-design/web-react/icon";
 import { isEmpty } from "lodash";

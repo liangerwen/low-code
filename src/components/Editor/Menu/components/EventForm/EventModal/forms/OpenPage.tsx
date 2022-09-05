@@ -4,7 +4,7 @@ import MENUKEYS from "../../keys";
 import { FormPropsType, FormRefType, OpenPageFormType } from "../../types";
 import { Form, Input, Radio, Select, Switch } from "@arco-design/web-react";
 import UrlParamsInput from "../../../UrlParamsInput";
-import { produce } from "@/utils";
+import { produce } from "immer";
 
 const { useForm, Item: FormItem } = Form;
 const { Group: RadioGroup } = Radio;

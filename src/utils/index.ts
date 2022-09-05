@@ -1,12 +1,6 @@
 import axios from "axios";
 import { cloneDeep, cloneDeepWith, difference, pick } from "lodash";
 
-export const produce = <T>(obj: T, update: (obj: T) => void) => {
-  const _obj = cloneDeep(obj);
-  update(_obj);
-  return _obj;
-};
-
 export const deepProduce = <T>(
   obj: T,
   update: (

@@ -1,6 +1,7 @@
 import { isPlainObject } from "lodash";
-import { copy, downloadByUrl, produce } from "@/utils";
+import { copy, downloadByUrl } from "@/utils";
 import { generate as uuid } from "shortid";
+import { produce } from "immer";
 import MENUKEYS from "../Menu/components/EventForm/keys";
 import {
   CopyFormType,

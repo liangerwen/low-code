@@ -5,7 +5,7 @@ import {
   getEventsFromProps,
   generateEventProps,
 } from "@/components/Editor/utils/events";
-import { produce } from "@/utils";
+import { produce } from "immer";
 import { Checkbox } from "@arco-design/web-react";
 import { IconCheckSquare } from "@arco-design/web-react/icon";
 import { generate as uuid } from "shortid";

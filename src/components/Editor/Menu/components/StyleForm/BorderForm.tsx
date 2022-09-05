@@ -1,4 +1,4 @@
-import { produce } from "@/utils";
+import { produce } from "immer";
 import { InputNumber, Select, Space } from "@arco-design/web-react";
 import classNames from "classnames";
 import { CSSProperties, useCallback, useMemo, useState } from "react";

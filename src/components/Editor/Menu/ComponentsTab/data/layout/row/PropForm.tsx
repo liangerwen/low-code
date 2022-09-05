@@ -1,5 +1,5 @@
 import BindFormItem from "@/components/Editor/Menu/components/BindFormItem";
-import { produce } from "@/utils";
+import { produce } from "immer";
 import { Form, InputNumber, RowProps, Select } from "@arco-design/web-react";
 import { useCallback, useEffect } from "react";
 import { ActionProps } from "../..";

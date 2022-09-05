@@ -21,7 +21,7 @@ import { EditorContext } from ".";
 import { findComponent } from "./utils";
 import { getRenderActionByName } from "./Menu/ComponentsTab/data";
 import { ModeType, useSettings } from "../Settings";
-import { produce } from "@/utils";
+import { produce } from "immer";
 import Item from "./components/Item";
 
 import styles from "./styles/container.module.less";

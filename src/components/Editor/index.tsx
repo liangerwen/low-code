@@ -18,7 +18,8 @@ import {
 } from "@dnd-kit/core";
 import { createPortal } from "react-dom";
 import { cloneDeep, isEqual, isPlainObject } from "lodash";
-import { copy, deepProduce, produce } from "@/utils";
+import { produce } from "immer";
+import { copy, deepProduce } from "@/utils";
 import {
   filterComponent,
   findComponent,
@@ -154,6 +155,7 @@ const Editor = (props: IProps) => {
           }
         }
         let direction: Direction;
+        // 容器组件以15px为限决定上下左右
         if (current?.container) {
           const diffTop = currentY - top,
             diffLeft = currentX - left,
@@ -173,6 +175,7 @@ const Editor = (props: IProps) => {
             ? Direction.RIGHT
             : Direction.MIDDLE;
         } else {
+          // 非容器组件以自身的1/4为限决定上下左右  默认为下(块级)或者右(非块级)
           const percentX = (currentX - left) / width,
             percentY = (currentY - top) / height;
           const isTop = percentY <= 1 / 4,

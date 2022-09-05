@@ -4,7 +4,7 @@ import { generate as uuid } from "shortid";
 import { useNavigate, useParams } from "react-router-dom";
 import { LocalKeys } from "@/utils/storage";
 import { useCallback, useEffect } from "react";
-import { produce } from "@/utils";
+import { produce } from "immer";
 
 const defaultSchema: ISchema = {
   name: "page",

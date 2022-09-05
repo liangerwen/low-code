@@ -4,7 +4,7 @@ import { IconPlus } from "@arco-design/web-react/icon";
 import { generate as uuid } from "shortid";
 import { useMemo, useRef, useState } from "react";
 import RuleModal from "./RuleModal";
-import { produce } from "@/utils";
+import { produce } from "immer";
 
 type ValueType = (Omit<RulesProps, "match"> & {
   id: string;

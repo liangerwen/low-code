@@ -5,7 +5,7 @@ import {
   generateEventProps,
   getEventsFromProps,
 } from "@/components/Editor/utils/events";
-import { produce } from "@/utils";
+import { produce } from "immer";
 import { Typography } from "@arco-design/web-react";
 import { IconH1 } from "@arco-design/web-react/icon";
 import { pick } from "lodash";

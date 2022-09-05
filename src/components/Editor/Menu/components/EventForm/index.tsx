@@ -1,7 +1,7 @@
 import { Select } from "@arco-design/web-react";
 import { ReactNode, useMemo } from "react";
 import EventList from "./EventList";
-import { produce } from "@/utils";
+import { produce } from "immer";
 
 interface IProps {
   value?: Record<string, EventType>;

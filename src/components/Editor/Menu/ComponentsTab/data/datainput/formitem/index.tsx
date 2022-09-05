@@ -1,6 +1,6 @@
 import ActionWarp from "@/components/Editor/Menu/components/ActionWarp";
 import StyleForm from "@/components/Editor/Menu/components/StyleForm";
-import { produce } from "@/utils";
+import { produce } from "immer";
 import { Form } from "@arco-design/web-react";
 import { pick } from "lodash";
 import { ActionProps } from "../..";
