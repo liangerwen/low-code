@@ -6,6 +6,13 @@ interface NavigateFunction {
   (to: string, options?: NavigateOptions): void;
   (delta: number): void;
 }
+interface ReactRouterLocation {
+  pathname: string;
+  search: string;
+  hash: string;
+  state: any;
+  key: string;
+}
 type Params<Key extends string = string> = {
   readonly [key in Key]: string | undefined;
 };
@@ -141,6 +148,7 @@ interface IPage {
   schema: ISchema; //当前页面的schema
   forms: Record<string, IFormInstance>; //当前页面所有的表单实例
   navigate: NavigateFunction; //路由跳转方法
+  location: ReactRouterLocation; //react-router的Location对象
   params: Params<string>; //当前路由的params参数
   data: Record<string, any>; //当前页面的全局变量
   setData: SetDataFunction; //设置当前页面的全局变量

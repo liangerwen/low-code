@@ -24,8 +24,8 @@ import {
   IconSend,
 } from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
-import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 import { generate as uuid } from "shortid";
 import defaultSchema from "./defaultSchema.json";

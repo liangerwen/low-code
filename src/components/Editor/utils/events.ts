@@ -10,7 +10,7 @@ import {
   OpenPageFormType,
 } from "../Menu/components/EventForm/types";
 import { FormInstance, Message, Notification } from "@arco-design/web-react";
-import { NavigateFunction, Params } from "react-router-dom";
+import { NavigateFunction, Params, Location } from "react-router-dom";
 
 const utils = {
   message: Message,
@@ -29,6 +29,7 @@ export function doActions(
   actions: ActionType[],
   options: {
     navigate: NavigateFunction;
+    location: Location;
     params: Params<string>;
     current: IComponent | null;
     schema: ISchema;
@@ -38,11 +39,13 @@ export function doActions(
   },
   args = []
 ) {
-  const { navigate, params, current, schema, forms, data, setData } = options;
+  const { navigate, location, params, current, schema, forms, data, setData } =
+    options;
   const page = {
     schema,
     params,
     navigate,
+    location,
     forms,
     data,
     setData,

@@ -11,8 +11,10 @@ import {
 } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import {
+  Location,
   NavigateFunction,
   Params,
+  useLocation,
   useNavigate,
   useParams,
 } from "react-router-dom";
@@ -29,6 +31,7 @@ interface ItemProps {
 
 const ViewerContext = createContext<{
   navigate: NavigateFunction;
+  location: Location;
   params: Params<string>;
   current: IComponent | null;
   schema: ISchema;
@@ -37,6 +40,7 @@ const ViewerContext = createContext<{
   setData: (data: Record<string, any>) => void;
 }>({
   navigate: noop,
+  location: null,
   params: {},
   current: null,
   schema: null,
@@ -127,10 +131,12 @@ export default function EditorViewer(props: IProps) {
 
   const navigate = useNavigate();
   const params = useParams();
+  const location = useLocation();
 
   const options = useMemo(
     () => ({
       navigate,
+      location,
       params,
       schema,
       current: null,
