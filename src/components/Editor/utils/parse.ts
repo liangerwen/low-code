@@ -1,7 +1,7 @@
 import { FormInstance } from "@arco-design/web-react";
 import { get, isArray, isEmpty, isPlainObject } from "lodash";
 import { createElement } from "react";
-import { NavigateFunction, Params } from "react-router-dom";
+import { NavigateFunction, Params, Location } from "react-router-dom";
 import EditorIcon from "../Menu/components/EditorIcon";
 import { doActions } from "./events";
 
@@ -45,6 +45,7 @@ export const parsePropsForViewer = (
   props: Record<string, any>,
   options: {
     navigate: NavigateFunction;
+    location: Location;
     params: Params<string>;
     current: IComponent | null;
     schema: ISchema;

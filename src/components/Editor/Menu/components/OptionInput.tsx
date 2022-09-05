@@ -25,7 +25,7 @@ import {
 } from "@dnd-kit/modifiers";
 import { generate as uuid } from "shortid";
 import { isEmpty } from "lodash";
-import { produce } from "immer";
+import { Draft, produce } from "immer";
 
 function OptionsInputItem<
   T extends { id: string | number; value: string; label: string }
@@ -135,7 +135,7 @@ export default function OptionsInput<
                 onChange={(val) => {
                   onChange?.(
                     produce(value, (value) => {
-                      value[idx] = val;
+                      value[idx] = val as Draft<T>;
                     })
                   );
                 }}
