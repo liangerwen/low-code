@@ -34,14 +34,20 @@ interface IProps {
 export function CommonItem({ item }) {
   const { id, name, props: p = {}, children } = item as IComponent;
 
+  const { globalData: data } = useContext(EditorContext);
+
   const Common = getComponentByName(name);
-  const commonProps = useMemo(() => parsePropsForEditor(p), [p]);
+  const commonProps = useMemo(
+    () => parsePropsForEditor(p, { data }),
+    [p, data]
+  );
   const commonChildren = useMemo(
     () =>
       parseChildrenForEditor(children, {
         render: (child, idx) => <CommonItem item={child} key={idx} />,
+        data,
       }),
-    [children]
+    [children, data]
   );
 
   return (
@@ -139,15 +145,6 @@ const Item = (props: IProps) => {
     data: item,
   });
 
-  const Comp = getComponentByName(name);
-  const displayProps = useMemo(() => parsePropsForEditor(p), [p]);
-  const displayChildren = useMemo(() => {
-    const RenderItem = !!container ? Item : CommonItem;
-    return parseChildrenForEditor(children, {
-      render: (child, idx) => <RenderItem item={child} index={idx} key={idx} />,
-    });
-  }, [children, !!container]);
-
   const {
     activeComponent,
     setActiveComponent,
@@ -156,7 +153,21 @@ const Item = (props: IProps) => {
     onDelete,
     onCopy,
     onPaste,
+    globalData: data,
   } = useContext(EditorContext);
+
+  const Comp = getComponentByName(name);
+  const displayProps = useMemo(
+    () => parsePropsForEditor(p, { data }),
+    [p, data]
+  );
+  const displayChildren = useMemo(() => {
+    const RenderItem = !!container ? Item : CommonItem;
+    return parseChildrenForEditor(children, {
+      render: (child, idx) => <RenderItem item={child} index={idx} key={idx} />,
+      data,
+    });
+  }, [children, !!container, data]);
 
   const isActive = useMemo(
     () => activeComponent?.id === id,

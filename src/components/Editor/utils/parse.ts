@@ -12,7 +12,10 @@ import { doActions } from "./events";
  * @returns 属性
  */
 export const parsePropsForEditor = (
-  props: Record<string, any>
+  props: Record<string, any>,
+  options: {
+    data: Record<string, any>;
+  }
 ): Record<string, any> => {
   if (!isPlainObject(props)) return props;
   const ret = {};
@@ -23,13 +26,13 @@ export const parsePropsForEditor = (
     } else if (prop?.isEvent) {
       ret[k] = undefined;
     } else if (prop?.isBind) {
-      ret[k] = "${" + prop.path.join(".") + "}";
+      ret[k] = get(options.data, prop.path);
     } else if (prop?.isRegExp) {
       ret[k] = new RegExp(prop.source);
     } else if (isPlainObject(prop)) {
-      ret[k] = parsePropsForEditor(prop);
+      ret[k] = parsePropsForEditor(prop, options);
     } else if (isArray(prop)) {
-      ret[k] = prop.map((i) => parsePropsForEditor(i));
+      ret[k] = prop.map((i) => parsePropsForEditor(i, options));
     } else ret[k] = prop;
   });
   return ret;
@@ -80,7 +83,8 @@ export const parseChildrenForEditor = (
   children,
   options: {
     render?: (child: any, idx?: number) => void;
-  } = {}
+    data: Record<string, any>;
+  } = { data: {} }
 ) => {
   const { render } = options;
   if (isEmpty(children)) return null;
@@ -92,7 +96,7 @@ export const parseChildrenForEditor = (
       return createElement(EditorIcon, { name: child.name });
     }
     if (child?.isBind) {
-      return "${" + child.path.join(".") + "}";
+      return get(options.data, child.path);
     }
     if (render) return render(child, idx);
   });
