@@ -9,7 +9,7 @@ import SortCardList from "../SortCardList";
 const { Text } = Typography;
 
 const eventOptions = menus
-  .map((i) => i.children)
+  .map((i) => i.children || i)
   .flat()
   .map((i) => ({ label: i.title, value: i.key }));
 

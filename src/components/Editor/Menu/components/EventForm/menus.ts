@@ -21,36 +21,15 @@ export default [
       { title: "消息提醒", key: MENUKEYS.MESSAGE },
     ],
   },
-  // {
-  //   title: "表单",
-  //   key: "form",
-  //   children: [
-  //     { title: "提交表单", key: MENUKEYS.SUBMIT_FORM },
-  //     { title: "校验表单", key: MENUKEYS.VALIDATE_FORM },
-  //     { title: "清空表单", key: MENUKEYS.CLEAR_FORM },
-  //     { title: "重置表单", key: MENUKEYS.RESET_FORM },
-  //   ],
-  // },
+  {
+    title: "表单",
+    key: MENUKEYS.FORM,
+  },
   {
     title: "服务",
     key: "service",
-    children: [
-      // { title: "发送请求", key: MENUKEYS.REQUEST },
-      { title: "下载文件", key: MENUKEYS.DOWNLOAD_FILE },
-      // { title: "上传文件", key: MENUKEYS.UPLOAD_FILE },
-    ],
+    children: [{ title: "下载文件", key: MENUKEYS.DOWNLOAD_FILE }],
   },
-  // {
-  //   title: "组件",
-  //   key: "components",
-  //   children: [
-  //     { title: "刷新组件", key: MENUKEYS.REFRESH_COMPONENT },
-  //     { title: "显示组件", key: MENUKEYS.DISPLAY_COMPONENT },
-  //     { title: "隐藏组件", key: MENUKEYS.HIDDEN_COMPONENT },
-  //     { title: "设置组件属性", key: MENUKEYS.SET_COMPONENT_ATTRS },
-  //     { title: "触发组件事件", key: MENUKEYS.TRIGGER_COMPONENT_EVENT },
-  //   ],
-  // },
   {
     title: "其他",
     key: "other",

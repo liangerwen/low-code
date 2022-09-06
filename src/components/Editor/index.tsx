@@ -1,4 +1,4 @@
-import { Layout, Message } from "@arco-design/web-react";
+import { FormInstance, Layout, Message } from "@arco-design/web-react";
 import classNames from "classnames";
 import { generate as uuid } from "shortid";
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
@@ -29,6 +29,7 @@ import {
 import { isAdd } from "./Menu/ComponentsTab/MenuItem";
 import Viewer from "./Viewer";
 import { useSettings } from "../Settings";
+import ProFormProvider from "./Menu/components/ProFormProvider";
 
 export enum Direction {
   TOP,
@@ -58,6 +59,7 @@ interface IProvider {
   onSave: () => void;
   onPreview: () => void;
   globalData: Record<string, any>;
+  forms: Record<string, FormInstance>;
 }
 
 export const EditorContext = createContext<IProvider>({
@@ -74,6 +76,7 @@ export const EditorContext = createContext<IProvider>({
   onSave: () => {},
   onPreview: () => {},
   globalData: {},
+  forms: {},
 });
 
 interface IProps {
@@ -96,6 +99,7 @@ const Editor = (props: IProps) => {
   const [active, setActive] = useState<null | string>(null);
 
   const dragOverlayRef = useRef(null);
+  const formRef = useRef({});
 
   const onDragStart = useCallback((e: DragStartEvent) => {
     const {
@@ -427,6 +431,7 @@ const Editor = (props: IProps) => {
         onForward,
         onBack,
         globalData: value.data || {},
+        forms: formRef.current,
       }}
     >
       <DndContext
@@ -435,39 +440,41 @@ const Editor = (props: IProps) => {
         onDragMove={onDragMove}
         sensors={sensors}
       >
-        <Layout className={styles["lc-layout"]}>
-          {pageSetting.menu && (
-            <Layout.Sider
-              width={pageSetting.menuWidth}
-              className={classNames(
-                styles["lc-container"],
-                "p-0 important-mr-2"
-              )}
-            >
-              <EditorMenu schema={value} onChange={onChange} />
-            </Layout.Sider>
-          )}
-          <Layout.Content className={styles["lc-container"]}>
-            <EditorContainer schema={value} onChange={onChange} />
-          </Layout.Content>
-        </Layout>
-        {createPortal(
-          <DragOverlay>
-            {active ? (
-              <div
-                ref={(node) => {
-                  if (node) {
-                    dragOverlayRef.current = node.parentElement;
-                  }
-                }}
-                className={classNames(styles["dragging-btn"], "cursor-move")}
+        <ProFormProvider ref={formRef}>
+          <Layout className={styles["lc-layout"]}>
+            {pageSetting.menu && (
+              <Layout.Sider
+                width={pageSetting.menuWidth}
+                className={classNames(
+                  styles["lc-container"],
+                  "p-0 important-mr-2"
+                )}
               >
-                {active}
-              </div>
-            ) : null}
-          </DragOverlay>,
-          document.body
-        )}
+                <EditorMenu schema={value} onChange={onChange} />
+              </Layout.Sider>
+            )}
+            <Layout.Content className={styles["lc-container"]}>
+              <EditorContainer schema={value} onChange={onChange} />
+            </Layout.Content>
+          </Layout>
+          {createPortal(
+            <DragOverlay>
+              {active ? (
+                <div
+                  ref={(node) => {
+                    if (node) {
+                      dragOverlayRef.current = node.parentElement;
+                    }
+                  }}
+                  className={classNames(styles["dragging-btn"], "cursor-move")}
+                >
+                  {active}
+                </div>
+              ) : null}
+            </DragOverlay>,
+            document.body
+          )}
+        </ProFormProvider>
       </DndContext>
     </EditorContext.Provider>
   );
