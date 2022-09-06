@@ -1,134 +1,134 @@
-import { FormInstance } from "@arco-design/web-react";
-import { get, isArray, isEmpty, isPlainObject } from "lodash";
+import { get, isArray, isEmpty, isFunction, isPlainObject, noop } from "lodash";
 import { createElement } from "react";
-import { NavigateFunction, Params, Location } from "react-router-dom";
 import EditorIcon from "../Menu/components/EditorIcon";
 import { doActions } from "./events";
 
-/**
- * 根据属性转换icon bind event等属性
- * @param props 属性
- * @param global 全局方法与变量
- * @returns 属性
- */
-export const parsePropsForEditor = (
-  props: Record<string, any>,
-  options: {
-    data: Record<string, any>;
+type ParseFunction = (...args: any[]) => any;
+
+const execParses = (parses: ParseFunction[], ...args) => {
+  for (let i = 0; i < parses.length; i++) {
+    const parse = parses[i];
+    const parseRet = parse(...args);
+    if (parseRet !== undefined) {
+      return parseRet;
+    }
   }
-): Record<string, any> => {
-  if (!isPlainObject(props)) return props;
-  const ret = {};
-  Object.keys(props).forEach((k) => {
-    const prop = props[k];
-    if (prop?.isIcon) {
-      ret[k] = createElement(EditorIcon, { name: (prop as IconType).name });
-    } else if (prop?.isEvent) {
-      ret[k] = undefined;
-    } else if (prop?.isBind) {
-      ret[k] = get(options.data, prop.path);
-    } else if (prop?.isRegExp) {
-      ret[k] = new RegExp(prop.source);
-    } else if (isPlainObject(prop)) {
-      ret[k] = parsePropsForEditor(prop, options);
-    } else if (isArray(prop)) {
-      ret[k] = prop.map((i) => parsePropsForEditor(i, options));
-    } else ret[k] = prop;
-  });
-  return ret;
 };
 
-/**
- * 根据属性转换icon bind event等属性
- * @param props 属性
- * @param global 全局方法与变量
- * @returns 属性
- */
-export const parsePropsForViewer = (
-  props: Record<string, any>,
-  options: {
-    navigate: NavigateFunction;
-    location: Location;
-    params: Params<string>;
-    current: IComponent | null;
-    schema: ISchema;
-    forms: Record<string, FormInstance>;
-    data: Record<string, any>;
-    setData: SetDataFunction;
-  }
-): Record<string, any> => {
-  if (!isPlainObject(props)) return props;
-  const ret = {};
-  Object.keys(props).forEach((k) => {
-    const prop = props[k];
-    if (prop?.isIcon) {
-      ret[k] = createElement(EditorIcon, { name: (prop as IconType).name });
-    } else if (prop?.isEvent) {
-      ret[k] = (...args) => doActions(prop.actions, options, args);
-    } else if (prop?.isBind) {
-      ret[k] = get(options.data, prop.path);
-    } else if (prop?.isRegExp) {
-      ret[k] = new RegExp(prop.source);
-      JSON.stringify;
-    } else if (isPlainObject(prop)) {
-      ret[k] = parsePropsForViewer(prop, options);
-    } else if (isArray(prop)) {
-      ret[k] = prop.map((i) => parsePropsForViewer(i, options));
-    } else ret[k] = prop;
-  });
-  return ret;
+const _parseChildren = (parses: ParseFunction[]) => {
+  return (children, options) => {
+    if (isEmpty(children)) return null;
+    const ret = children.map(
+      (child, idx) => execParses(parses, child, options, idx) || child
+    );
+    if (ret.length === 1) {
+      return ret[0];
+    }
+    return ret;
+  };
 };
 
-export const parseChildrenForEditor = (
-  children,
-  options: {
-    render?: (child: any, idx?: number) => void;
-    data: Record<string, any>;
-  } = { data: {} }
-) => {
+const _parseProps = (parses: ParseFunction[]) => {
+  return (props, options) => {
+    if (!isPlainObject(props)) return props;
+    const ret = {};
+    Object.keys(props).forEach((k) => {
+      const prop = props[k];
+      ret[k] = prop;
+      const parseRet = execParses(parses, prop, options);
+      if (parseRet !== undefined) {
+        ret[k] = parseRet;
+      }
+    });
+    return ret;
+  };
+};
+
+// 解析绑定变量
+const parseBind = (prop, options) => {
+  if (prop?.isBind) {
+    return get(options.data, prop.path);
+  }
+};
+// 解析图标
+const parseIcon = (prop) => {
+  if (prop?.isIcon)
+    return createElement(EditorIcon, { name: (prop as IconType).name });
+};
+// 解析事件
+const parseEventForViewer = (prop, options) => {
+  if (prop?.isEvent) {
+    return (...args) => doActions(prop.actions, options, args);
+  }
+};
+// editor不需要触发事件
+const parseEventForEditor = (prop) => {
+  if (prop?.isEvent) {
+    return noop;
+  }
+};
+// 解析正则
+const parseRegexp = (prop) => {
+  if (prop?.isRegExp) {
+    return new RegExp(prop.source);
+  }
+};
+// 解析对象
+const parsePlainObject = (prop, options) => {
+  if (isPlainObject(prop)) {
+    return parsePropsForViewer(prop, options);
+  }
+};
+// 解析数组
+const parseArray = (prop, options) => {
+  if (isArray(prop)) {
+    return prop.map((i) => parsePropsForViewer(i, options));
+  }
+};
+// 解析基础类型
+const parsePrimitive = (child) => {
+  const type = Object.prototype.toString.call(child);
+  const isPrimitive = [
+    "String",
+    "Number",
+    "Boolean",
+    "BigInt",
+    "Null",
+    "Undefined",
+    "Symbol",
+  ]
+    .map((i) => `[object ${i}]`)
+    .includes(type);
+  if (isPrimitive) {
+    return String(child);
+  }
+};
+// 解析自定义渲染
+const parseRender = (child, options, idx) => {
   const { render } = options;
-  if (isEmpty(children)) return null;
-  const ret = children.map((child, idx) => {
-    if (typeof child === "string") {
-      return child;
-    }
-    if (child?.isIcon) {
-      return createElement(EditorIcon, { name: child.name });
-    }
-    if (child?.isBind) {
-      return get(options.data, child.path);
-    }
-    if (render) return render(child, idx);
-  });
-  if (ret.length === 1) {
-    return ret[0];
+  if (render && child?.name) {
+    return render(child, idx);
   }
-  return ret;
 };
-
-export const parseChildrenForViewer = (
-  children,
-  options: {
-    render?: (child: any, idx?: number) => void;
-    data: Record<string, any>;
-  } = { data: {} }
-) => {
-  const { render, data } = options;
-  if (isEmpty(children)) return null;
-  const ret = children.map((child, idx) => {
-    if (typeof child === "string") {
-      return child;
-    }
-    if (child?.isIcon) {
-      return createElement(EditorIcon, { name: child.name });
-    }
-    if (child?.isBind) {
-      return get(data, child.path);
-    }
-    if (render) return render(child, idx);
-  });
-  if (ret.length === 1) {
-    return ret[0];
-  }
-  return ret;
-};
+export const parsePropsForEditor = _parseProps([
+  parseBind,
+  parseIcon,
+  parseEventForEditor,
+  parseRegexp,
+  parsePlainObject,
+  parseArray,
+]);
+export const parsePropsForViewer = _parseProps([
+  parseBind,
+  parseIcon,
+  parseEventForViewer,
+  parseRegexp,
+  parsePlainObject,
+  parseArray,
+]);
+export const parseChildren = _parseChildren([
+  parsePrimitive,
+  parseBind,
+  parseIcon,
+  parseRender,
+]);

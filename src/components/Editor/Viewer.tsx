@@ -23,7 +23,7 @@ import ErrorComp from "./components/ErrorComp";
 import ProFormProvider from "./Menu/components/ProFormProvider";
 import { getComponentByName } from "./Menu/ComponentsTab/data";
 import { doActions } from "./utils/events";
-import { parseChildrenForViewer, parsePropsForViewer } from "./utils/parse";
+import { parseChildren, parsePropsForViewer } from "./utils/parse";
 
 interface ItemProps {
   item: IComponent;
@@ -65,7 +65,7 @@ function ViewerCommonItem({ item, ...rest }) {
   );
   const commonChildren = useMemo(
     () =>
-      parseChildrenForViewer(children, {
+      parseChildren(children, {
         render: (child, idx) => <ViewerCommonItem item={child} key={idx} />,
         data: options.data,
       }),
@@ -100,7 +100,7 @@ const ViewerItem = (props: ItemProps) => {
 
   const renderChildren = useCallback(() => {
     const Item = !!container ? ViewerItem : ViewerCommonItem;
-    return parseChildrenForViewer(children, {
+    return parseChildren(children, {
       render: (child, idx) => <Item item={child} key={idx} />,
       data: options.data,
     });
