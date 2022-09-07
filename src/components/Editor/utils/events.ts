@@ -7,6 +7,7 @@ import {
   CopyFormType,
   CustomFormType,
   DownLoadFileFormType,
+  FormActionType,
   MessageFormType,
   OpenPageFormType,
 } from "../Menu/components/EventForm/types";
@@ -89,6 +90,25 @@ export function doActions(
             content,
             duration: duration || 3000,
           });
+        }
+        break;
+      }
+      case MENUKEYS.FORM: {
+        const { id, type } = (action.form || {}) as FormActionType;
+        const form = forms[id];
+        switch (type) {
+          case "submit":
+            form?.submit();
+            break;
+          case "validate":
+            form?.validate();
+            break;
+          case "reset":
+            form?.resetFields();
+            break;
+          case "clear":
+            form?.clearFields();
+            break;
         }
         break;
       }

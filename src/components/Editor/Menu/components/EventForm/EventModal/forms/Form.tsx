@@ -7,17 +7,16 @@ import {
 } from "react";
 import EventContentWarp from "../EventContentWarp";
 import MENUKEYS from "../../keys";
-import { FormPropsType, FormRefType, OpenPageFormType } from "../../types";
+import { FormPropsType, FormRefType, FormActionType } from "../../types";
 import { Form, Radio, Select } from "@arco-design/web-react";
-import { produce } from "immer";
 import { EditorContext } from "@/components/Editor";
 
 const { useForm, Item: FormItem } = Form;
 const { Group: RadioGroup } = Radio;
 
-const FormAction = forwardRef<FormRefType, FormPropsType<OpenPageFormType>>(
+const FormAction = forwardRef<FormRefType, FormPropsType<FormActionType>>(
   function ({ value = {} }, ref) {
-    const [form] = useForm<OpenPageFormType>();
+    const [form] = useForm<FormActionType>();
 
     const { forms } = useContext(EditorContext);
 
@@ -27,14 +26,7 @@ const FormAction = forwardRef<FormRefType, FormPropsType<OpenPageFormType>>(
     );
 
     useImperativeHandle(ref, () => ({
-      validate: () =>
-        form.validate().then((value) =>
-          produce(value, (value) => {
-            if (value.params) {
-              value.params = value.params.filter((i) => i.key && i.value);
-            }
-          })
-        ),
+      validate: form.validate,
     }));
 
     useEffect(() => {
@@ -46,6 +38,13 @@ const FormAction = forwardRef<FormRefType, FormPropsType<OpenPageFormType>>(
       <EventContentWarp desc="表单">
         <Form form={form} layout="vertical">
           <FormItem
+            field="id"
+            label="表单ID"
+            rules={[{ required: true, message: "请选择表单ID" }]}
+          >
+            <Select placeholder="选择表单ID" allowClear options={options} />
+          </FormItem>
+          <FormItem
             field="type"
             label="操作类型"
             rules={[{ required: true, message: "请选择操作类型" }]}
@@ -56,13 +55,6 @@ const FormAction = forwardRef<FormRefType, FormPropsType<OpenPageFormType>>(
               <Radio value="clear">清空</Radio>
               <Radio value="reset">重置</Radio>
             </RadioGroup>
-          </FormItem>
-          <FormItem
-            field="id"
-            label="表单ID"
-            rules={[{ required: true, message: "请选择表单ID" }]}
-          >
-            <Select placeholder="选择表单ID" allowClear options={options} />
           </FormItem>
         </Form>
       </EventContentWarp>

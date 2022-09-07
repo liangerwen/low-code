@@ -31,3 +31,8 @@ export interface CopyFormType {
 export interface CustomFormType {
   content: string;
 }
+
+export interface FormActionType {
+  id: string;
+  type: "submit" | "validate" | "clear" | "reset";
+}
