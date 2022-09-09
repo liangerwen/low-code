@@ -52,8 +52,7 @@ const parseBind = (prop, options) => {
 };
 // 解析图标
 const parseIcon = (prop) => {
-  if (prop?.isIcon)
-    return createElement(EditorIcon, { name: (prop as IconType).name });
+  if (prop?.isIcon) return createElement(EditorIcon, { name: prop.name });
 };
 // 解析事件
 const parseEventForViewer = (prop, options) => {

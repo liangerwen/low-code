@@ -3,7 +3,6 @@ import { Button, Modal } from "@arco-design/web-react";
 import { IconClose } from "@arco-design/web-react/icon";
 import { isEmpty } from "lodash";
 import CodeEditor, { CodeEditorInstance } from "@/components/CodeEditor";
-import * as monaco from "monaco-editor";
 
 interface IProps {
   value?: string;

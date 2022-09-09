@@ -33,7 +33,7 @@ const ButtonGroup = Button.Group;
 interface IProps {
   value?: IconType;
   onChange?: (val: IconType) => void;
-  trigger?: ReactNode;
+  trigger?: ReactElement;
 }
 
 export default (props: IProps) => {
@@ -93,7 +93,7 @@ export default (props: IProps) => {
   return (
     <>
       {props.trigger ? (
-        cloneElement(props.trigger as ReactElement, {
+        cloneElement(props.trigger, {
           onClick: () => {
             setVisible(true);
           },

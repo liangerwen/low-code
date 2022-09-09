@@ -16,7 +16,7 @@ export const findComponent = (
       return component;
     }
     if (component.container && component.children) {
-      const ret = findComponent(component.children as IComponent[], condition);
+      const ret = findComponent(component.children, condition);
       if (ret) return ret;
     }
   }
@@ -26,12 +26,12 @@ export const findComponent = (
 export const isParentComponent = (schema: IComponent[], parentId, childId) => {
   if (!parentId || !childId || schema.length === 0) return false;
   const parentComponent = findComponent(schema, (c) => c.id === parentId);
-  if (parentComponent.children) {
-    const childConponent = findComponent(
-      parentComponent.children as IComponent[],
+  if (parentComponent.container && parentComponent.children) {
+    const childComponent = findComponent(
+      parentComponent.children,
       (c) => c.id === childId
     );
-    if (childConponent) return true;
+    if (childComponent) return true;
   }
   return false;
 };
@@ -46,7 +46,7 @@ export const diffSchema = (schema: IComponent[], callback: ICallback) => {
   for (const component of schema) {
     callback(component);
     if (component.container && component.children) {
-      diffSchema(component.children as IComponent[], callback);
+      diffSchema(component.children, callback);
     }
   }
 };
@@ -65,7 +65,7 @@ export const filterComponent = (
     if (s.container) {
       return {
         ...s,
-        children: filterComponent(s.children as IComponent[], condition),
+        children: filterComponent(s.children, condition),
       };
     }
     return s;
@@ -77,7 +77,10 @@ export const filterComponent = (
  * @param id 子组件id
  * @returns 父组件孩子数组和子组件对应索引 | 空
  */
-export const findWrapper = (schema: IComponent[], id: string | number) => {
+export const findWrapper = (
+  schema: IComponent[],
+  id: string | number
+): { wrapper: IComponent[]; index: number } | null => {
   const rootIdx = schema.findIndex((component) => component.id === id);
   if (rootIdx >= 0) {
     return { wrapper: schema, index: rootIdx };
@@ -85,17 +88,16 @@ export const findWrapper = (schema: IComponent[], id: string | number) => {
   const wrapperComponent = findComponent(
     schema,
     (c) =>
-      !!c.container &&
-      !!c.children &&
-      (c.children as IComponent[]).find((child) => child.id === id) !==
-        undefined
-  );
+      c.container &&
+      c.children &&
+      c.children.find((child) => child.id === id) !== undefined
+  ) as ContainerComponent;
   if (!wrapperComponent) return null;
-  const wrapperIdx = (wrapperComponent.children as IComponent[])!.findIndex(
+  const wrapperIdx = wrapperComponent.children!.findIndex(
     (component) => component.id === id
   );
   return {
-    wrapper: wrapperComponent.children as IComponent[],
+    wrapper: wrapperComponent.children,
     index: wrapperIdx,
   };
 };

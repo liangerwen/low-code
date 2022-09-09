@@ -2,8 +2,6 @@ import BindFormItem from "@/components/Editor/Menu/components/BindFormItem";
 import { produce } from "immer";
 import {
   Form,
-  FormItemProps,
-  Grid,
   Input,
   Select,
   Switch,
@@ -13,10 +11,7 @@ import { omit } from "lodash";
 import { useCallback, useEffect } from "react";
 import { ActionProps } from "../..";
 
-const FormItem = Form.Item;
 const useForm = Form.useForm;
-const Row = Grid.Row;
-const Col = Grid.Col;
 
 type TextProps = Omit<
   TypographyTextProps & {

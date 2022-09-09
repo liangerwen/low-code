@@ -1,15 +1,12 @@
 import BindFormItem from "@/components/Editor/Menu/components/BindFormItem";
 import { produce } from "immer";
-import { Form, Grid, Input, Select, Switch } from "@arco-design/web-react";
+import { Form, Input, Select, Switch } from "@arco-design/web-react";
 import { omit } from "lodash";
 import { useCallback, useEffect } from "react";
 import { ActionProps } from "../..";
 import IconModal from "../../../../components/IconModal";
 
-const FormItem = Form.Item;
 const useForm = Form.useForm;
-const Row = Grid.Row;
-const Col = Grid.Col;
 
 interface LinkProps {
   status: "warning" | "error" | "success";

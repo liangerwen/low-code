@@ -6,7 +6,6 @@ import {
   useRef,
   useState,
 } from "react";
-import * as monaco from "monaco-editor";
 import useMode, {
   getElementMode,
 } from "@/components/Settings/ModeSetting/useMode";

@@ -26,9 +26,7 @@ export default function PageNodeTreeTab(props: IProps) {
         key: t.id,
         title: t.title,
         icons,
-        children: t.container
-          ? createTreeData((t.children as IComponent[]) || [])
-          : [],
+        children: t.container ? createTreeData(t.children || []) : [],
       };
     });
   }, []);

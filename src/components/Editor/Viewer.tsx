@@ -49,8 +49,8 @@ const ViewerContext = createContext<{
   setData: noop,
 });
 
-function ViewerCommonItem({ item, ...rest }) {
-  const { id, name, props: p = {}, children } = item as IComponent;
+function ViewerCommonItem({ item, ...rest }: ItemProps) {
+  const { id, name, props: p = {}, children } = item;
 
   const options = useContext(ViewerContext);
   const itemOptions = useMemo(

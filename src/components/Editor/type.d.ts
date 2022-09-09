@@ -19,18 +19,36 @@ type IconType = {
   name: string;
 };
 
-interface IComponent {
-  id?: string;
+interface BaseComponent {
   name: string;
-  title?: string;
   props?: Record<string, any>;
-  children?: (string | IconType | BindType | IComponent)[];
+  children?: (string | IconType | BindType | BaseComponent)[];
+}
+
+interface ContainerComponent {
+  id: string;
+  name: string;
+  title: string;
+  props?: Record<string, any>;
+  children?: IComponent[];
   // inner: 需要额外的wrapper，divider和容器tip放在组件children里
   // outside: 需要额外的wrapper，divider和容器tip放在wrapper里
   // self: 不需要额外的wrapper，divider和容器tip放在组件children里
-  container?: "inner" | "outside" | "self";
+  container: "inner" | "outside" | "self";
   inline?: boolean;
 }
+
+interface NormalComponent {
+  id: string;
+  name: string;
+  title: string;
+  props?: Record<string, any>;
+  children?: (string | IconType | BindType | BaseComponent)[];
+  container?: false;
+  inline?: boolean;
+}
+
+type IComponent = NormalComponent | ContainerComponent;
 
 interface ISchema {
   name: "page";
@@ -38,9 +56,6 @@ interface ISchema {
   onDestroy?: EventType;
   onUpdate?: EventType;
   data?: Record<string, any>;
+  css?: string;
   body: IComponent[];
 }
-
-type PowerPartial<T> = {
-  [U in keyof T]?: Partial<T[U]>;
-};
