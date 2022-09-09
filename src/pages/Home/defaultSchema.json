@@ -128,78 +128,67 @@
 							"id": "c7f1m6djOf",
 							"children": [
 								{
-									"name": "space",
-									"title": "间距",
-									"container": "outside",
-									"id": "Fcsqto0t9af",
-									"children": [
-										{
-											"name": "button",
-											"title": "按钮",
-											"props": {
-												"type": "primary",
-												"long": true,
-												"icon": {
-													"isIcon": true,
-													"name": "IconCheck"
-												},
-												"loading": {
-													"isBind": true,
-													"path": [
-														"loginLoading"
-													]
-												},
-												"htmlType": "submit"
-											},
-											"children": [
-												"登 录"
-											],
-											"inline": false,
-											"id": "yMEvbAW8v"
-										},
-										{
-											"name": "button",
-											"title": "按钮",
-											"props": {
-												"type": "secondary",
-												"long": true,
-												"htmlType": "reset",
-												"icon": {
-													"isIcon": true,
-													"name": "IconRefresh"
-												},
-												"loading": {
-													"isBind": true,
-													"path": [
-														"loginLoading"
-													]
-												},
-												"onClick": {
-													"isEvent": true,
-													"actions": [
-														{
-															"id": "FeRDA948_",
-															"name": "custom",
-															"form": {
-																"content": "page.forms['KPx2ElqTc']?.resetFields()"
-															}
-														}
-													]
-												}
-											},
-											"children": [
-												"重 置"
-											],
-											"inline": false,
-											"id": "SZB5UgOpa"
-										}
-									],
+									"name": "button",
+									"title": "按钮",
 									"props": {
-										"direction": "vertical",
+										"type": "primary",
+										"long": true,
+										"icon": {
+											"isIcon": true,
+											"name": "IconCheck"
+										},
+										"loading": {
+											"isBind": true,
+											"path": [
+												"loginLoading"
+											]
+										},
+										"htmlType": "submit",
 										"style": {
-											"display": "flex"
+											"marginBottom": 8
 										}
-									}
+									},
+									"children": [
+										"登 录"
+									],
+									"inline": false,
+									"id": "yMEvbAW8v"
+								},
+								{
+									"name": "button",
+									"title": "按钮",
+									"props": {
+										"type": "secondary",
+										"long": true,
+										"htmlType": "reset",
+										"icon": {
+											"isIcon": true,
+											"name": "IconRefresh"
+										},
+										"loading": {
+											"isBind": true,
+											"path": [
+												"loginLoading"
+											]
+										},
+										"onClick": {
+											"isEvent": true,
+											"actions": [
+												{
+													"id": "FeRDA948_",
+													"name": "custom",
+													"form": {
+														"content": "page.forms['KPx2ElqTc']?.resetFields()"
+													}
+												}
+											]
+										}
+									},
+									"children": [
+										"重 置"
+									],
+									"inline": false,
+									"id": "SZB5UgOpa"
 								}
 							]
 						}
