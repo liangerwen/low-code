@@ -1,4 +1,4 @@
-import { get, isArray, isEmpty, isFunction, isPlainObject, noop } from "lodash";
+import { get, isArray, isEmpty, isPlainObject, noop } from "lodash";
 import { createElement } from "react";
 import EditorIcon from "../Menu/components/EditorIcon";
 import { doActions } from "./events";

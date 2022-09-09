@@ -2,20 +2,22 @@ import { produce } from "immer";
 import {
   Form,
   Input,
-  InputNumber,
-  InputProps,
+  InputTag,
+  InputTagProps,
   Select,
   Switch,
 } from "@arco-design/web-react";
 import { useCallback, useEffect } from "react";
+import { get } from "lodash";
 import { ActionProps } from "../..";
 import BindFormItem from "@/components/Editor/Menu/components/BindFormItem";
 import IconModal from "@/components/Editor/Menu/components/IconModal";
 
 const useForm = Form.useForm;
+const FormItem = Form.Item;
 
 const PropForm = (props: ActionProps) => {
-  const [form] = useForm<InputProps>();
+  const [form] = useForm<InputTagProps>();
 
   const onChange = useCallback(
     (_, form) => {
@@ -34,7 +36,29 @@ const PropForm = (props: ActionProps) => {
 
   return (
     <Form form={form} layout="vertical" onChange={onChange}>
-      <BindFormItem data={props.schema.data} label="内容" field="value">
+      <FormItem
+        noStyle
+        shouldUpdate={(pre, next) => pre.labelInValue !== next.labelInValue}
+      >
+        {(value) => (
+          <BindFormItem data={props.schema.data} label="控件值" field="value">
+            <InputTag
+              placeholder="输入控件值"
+              allowClear
+              labelInValue={
+                value.labelInValue?.isBind
+                  ? get(props.schema.data, value.labelInValue.path)
+                  : value.labelInValue
+              }
+            />
+          </BindFormItem>
+        )}
+      </FormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="输入框内容"
+        field="inputValue"
+      >
         <Input placeholder="输入内容" allowClear />
       </BindFormItem>
       <BindFormItem
@@ -56,26 +80,21 @@ const PropForm = (props: ActionProps) => {
           allowClear
         />
       </BindFormItem>
-      <BindFormItem data={props.schema.data} label="前置标签" field="addBefore">
-        <Input placeholder="输入前置标签" allowClear />
-      </BindFormItem>
-      <BindFormItem data={props.schema.data} label="后置标签" field="addAfter">
-        <Input placeholder="输入后置标签" allowClear />
-      </BindFormItem>
-      <BindFormItem data={props.schema.data} label="高度" field="height">
-        <InputNumber placeholder="输入高度" min={20} precision={0} />
+      <BindFormItem data={props.schema.data} label="后缀图标" field="suffix">
+        <IconModal />
       </BindFormItem>
       <BindFormItem
         data={props.schema.data}
-        label="最大字符数"
-        field="maxLength"
+        label="删除图标图标"
+        field="icons.removeIcon"
       >
-        <InputNumber placeholder="输入最大字符数" min={0} precision={0} />
-      </BindFormItem>
-      <BindFormItem data={props.schema.data} label="前缀图标" field="prefix">
         <IconModal />
       </BindFormItem>
-      <BindFormItem data={props.schema.data} label="后缀图标" field="suffix">
+      <BindFormItem
+        data={props.schema.data}
+        label="清空图标"
+        field="icons.clearIcon"
+      >
         <IconModal />
       </BindFormItem>
       <BindFormItem
@@ -102,23 +121,39 @@ const PropForm = (props: ActionProps) => {
       >
         <Switch />
       </BindFormItem>
-      <Form.Item
-        shouldUpdate={(prev, next) => prev.maxLength !== next.maxLength}
-        noStyle
+      <BindFormItem
+        data={props.schema.data}
+        label="自动聚焦"
+        field="autoFocus"
+        triggerPropName="checked"
       >
-        {(value: InputProps) =>
-          value.maxLength !== undefined && (
-            <BindFormItem
-              data={props.schema.data}
-              label="显示最大字符数"
-              field="showWordLimit"
-              triggerPropName="checked"
-            >
-              <Switch />
-            </BindFormItem>
-          )
-        }
-      </Form.Item>
+        <Switch />
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="拖拽排序"
+        field="dragToSort"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="失焦时自动存储"
+        field="saveOnBlur"
+        triggerPropName="checked"
+      >
+        <Switch />
+      </BindFormItem>
+      <BindFormItem
+        data={props.schema.data}
+        label="对象值模式"
+        field="labelInValue"
+        triggerPropName="checked"
+        extra="设置传入和回调出的值均为 { label: '', value: ''} 格式"
+      >
+        <Switch />
+      </BindFormItem>
     </Form>
   );
 };
