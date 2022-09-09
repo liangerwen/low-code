@@ -234,9 +234,9 @@ export default function LayoutForm({ value = {}, onChange }: IProps) {
               onChange({ ...value, flexWrap: val });
             }}
             options={[
-              { label: "不换行", value: "nowarp" },
-              { label: "正换行", value: "warp" },
-              { label: "逆换行", value: "warp-reverse" },
+              { label: "不换行", value: "nowrap" },
+              { label: "正换行", value: "wrap" },
+              { label: "逆换行", value: "wrap-reverse" },
             ]}
           />
         </Space>,
